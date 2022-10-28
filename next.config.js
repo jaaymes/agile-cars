@@ -1,7 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-}
+/* eslint-disable @typescript-eslint/no-var-requires */
+const withTM = require('next-transpile-modules')([]);
 
-module.exports = nextConfig
+module.exports = withTM({
+  swcMinify: false,
+  trailingSlash: true,
+});
