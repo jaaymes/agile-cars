@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Head from 'next/head';
@@ -6,26 +5,18 @@ import Head from 'next/head';
 import { useProduct } from '@/hooks/useProduct';
 
 import FormProvider from '@/components/hook-form';
-import { useSettingsContext } from '@/components/settings';
 import { ShopProductList, ShopProductSearch } from '@/components/shop';
 
 import { IProductFilter } from '@/@types/product';
 import LayoutShop from '@/layouts/LayoutShop';
-import { Container, Typography, Stack } from '@mui/material';
+import { Typography, Stack, Box } from '@mui/material';
 
 EcommerceShopPage.getLayout = (page: React.ReactElement) => (
   <LayoutShop>{page}</LayoutShop>
 );
 
 export default function EcommerceShopPage() {
-  const { themeStretch } = useSettingsContext();
   const { product } = useProduct()
-
-  // const dispatch = useDispatch();
-
-  // const { products } = useSelector((state) => state.product);
-
-  const [openFilter, setOpenFilter] = useState(false);
 
   const defaultValues = {
     gender: [],
@@ -41,8 +32,6 @@ export default function EcommerceShopPage() {
   });
 
   const {
-    reset,
-    watch,
     formState: { dirtyFields },
   } = methods;
 
@@ -58,7 +47,7 @@ export default function EcommerceShopPage() {
       </Head>
 
       <FormProvider methods={methods}>
-        <Container maxWidth={themeStretch ? false : 'lg'}>
+        <Box sx={{ p: 2 }}>
           <Stack
             spacing={2}
             direction={{ xs: 'column', sm: 'row' }}
@@ -79,7 +68,7 @@ export default function EcommerceShopPage() {
             )}
           </Stack>
           <ShopProductList products={product} loading={!product?.length && isDefault} />
-        </Container>
+        </Box>
       </FormProvider>
     </>
   );

@@ -1,19 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-
-import { useRouter } from 'next/router';
-
-import orderBy from 'lodash/orderBy';
 
 import { useProduct } from '@/hooks/useProduct';
 import useResponsive from '@/hooks/useResponsive';
 
-import FormProvider, { RHFRadioGroup, RHFSlider } from '@/components/hook-form';
+import FormProvider, { RHFSlider } from '@/components/hook-form';
 import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
-import { ShopProductSort } from '@/components/shop';
 
 import { getCategory, getOptional } from '@/services/filters';
 import { getProducts } from '@/services/products';
@@ -75,11 +69,9 @@ export const FILTER_COLOR_OPTIONS = [
 ];
 
 export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
-  const { pathname } = useRouter();
-  const { setProduct, product } = useProduct()
+  const { setProduct } = useProduct()
 
   const [filters, setFilters] = useState<IProductFilter>(defaultValues);
-  const [selected, setSelected] = useState<string[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [categories, setCategories] = useState<ICategories[]>([]);
@@ -88,10 +80,15 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
   const handleChangeAccordion =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      // scroll focus when click accordion
+      if (isExpanded) {
+        const element = document.getElementById(panel);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
       setExpanded(isExpanded ? panel : false);
     };
-
-  const dispatch = useDispatch();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -163,23 +160,24 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }, []);
 
   useEffect(() => {
+
+    console.log('optionals', optionals)
+  }, [optionals]);
+
+  useEffect(() => {
     if (filters.category === 'Todos') {
       setProducts(products)
     }
-    if (filters.optional) {
+    if (filters.optional.length > 0) {
       setProduct(applyFilter(products, filters))
-    } if (filters.category !== 'Todos') {
+    }
+    if (filters.category !== 'Todos') {
       setProduct(applyFilter(products, filters))
-    } else {
+    }
+    if (filters.optional.length < 1) {
       setProduct(products)
     }
   }, [filters]);
-
-  useEffect(() => {
-    if (openNav) {
-      onCloseNav();
-    }
-  }, [pathname]);
 
   const renderContent = (
     <Scrollbar
