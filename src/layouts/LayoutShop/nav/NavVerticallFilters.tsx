@@ -9,14 +9,16 @@ import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
 
+import { fCurrencyBR } from '@/utils/formatNumber';
+
 import { getCategory, getOptional } from '@/services/filters';
-import { getProducts } from '@/services/products';
+import { getMarcas, getProducts } from '@/services/products';
 
 import { NAV } from '@/config';
 
 import { IProduct, IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
-import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio } from '@mui/material';
+import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider } from '@mui/material';
 
 type Props = {
   openNav: boolean;
@@ -31,11 +33,9 @@ export const FILTER_GENDER_OPTIONS = [
 
 const defaultValues = {
   optional: [],
-  category: 'All',
-  colors: [],
-  priceRange: [0, 200],
-  rating: '',
-  sortBy: 'featured',
+  category: 'todos',
+  price: [0, 400000],
+  marcas: 'todos',
 };
 
 interface IOptionals {
@@ -75,6 +75,8 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [categories, setCategories] = useState<ICategories[]>([]);
+  const [marcas, setMarcas] = useState<ICategories[]>([]);
+  const [price, setPrice] = useState<number[]>([]);
 
   const [expanded, setExpanded] = useState<string | false>(false);
 
@@ -96,17 +98,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     defaultValues,
   });
 
-  const marksLabel = [...Array(21)].map((_, index) => {
-    const value = index * 10;
-
-    const firstValue = index === 0 ? `$${value}` : `${value}`;
-
-    return {
-      value,
-      label: index % 4 ? '' : firstValue,
-    };
-  });
-
   const handleChange = (value: string) => {
     const { optional } = filters;
 
@@ -126,58 +117,95 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }
   }
 
-  useEffect(() => {
-    console.log(filters)
-  }, [filters]);
-
   const handleProducts = async () => {
     const products = await getProducts()
-    console.log('products return', products)
-    setProduct(products.collection)
-    setProducts(products.collection)
+    const productWithImages = products.collection.map((product: any) => ({
+      ...product,
+      images: [product?.foto1, product?.foto2, product?.foto3, product?.foto4, product?.foto5, product?.foto6, product?.foto7, product?.foto8].filter(index =>
+        index !== undefined
+      ),
+      opcionaisArray: product?.opcionais.replaceAll(/\s/g, '').split(',')
+    }))
+    // pegar maior valor e menor valor 
+    const maxPrice = Math.max(...productWithImages.map((product: any) => product?.valor))
+    const minPrice = Math.min(...productWithImages.map((product: any) => product?.valor))
+    setPrice([Math.ceil(minPrice), Math.ceil(maxPrice)])
+    setProduct(productWithImages)
+    setProducts(productWithImages)
   }
 
   const handleGetOptional = async () => {
     const optional = await getOptional()
     setOptionals(optional.collection)
-    // console.log('optional return', optional)
   }
 
   const handleGetCategory = async () => {
     const category = await getCategory()
     const categorysReturn = category.collection.map((item: { descricaoCategoria: any; idCategoria: any; }) => ({
       label: item.descricaoCategoria,
-      value: item.idCategoria
+      value: item.descricaoCategoria
     }))
     categorysReturn.unshift({ label: 'Todos', value: 'todos' })
     setCategories(categorysReturn)
   }
 
+  const handleGetMarcas = async () => {
+    const { collection: marcasResponse } = await getMarcas()
+    const marcasReturn = marcasResponse.map((item: { descricaoMarca: any; idMarca: any; }) => ({
+      label: item.descricaoMarca,
+      value: item.descricaoMarca.toUpperCase()
+    }))
+    console.log('marcasReturn', marcasReturn)
+    marcasReturn.unshift({ label: 'Todos', value: 'todos' })
+    setMarcas(marcasReturn)
+  }
+
+  const handleChangeRangePrice = (event: Event, newValue: number | number[]) => {
+    setPrice(newValue as number[]);
+  };
+
   useEffect(() => {
     handleProducts()
     handleGetOptional()
     handleGetCategory()
+    handleGetMarcas()
   }, []);
 
   useEffect(() => {
-
-    console.log('optionals', optionals)
-  }, [optionals]);
-
-  useEffect(() => {
-    if (filters.category === 'Todos') {
-      setProducts(products)
-    }
     if (filters.optional.length > 0) {
       setProduct(applyFilter(products, filters))
     }
-    if (filters.category !== 'Todos') {
+    if (filters.category) {
       setProduct(applyFilter(products, filters))
     }
-    if (filters.optional.length < 1) {
-      setProduct(products)
+    if (filters.marcas) {
+      setProduct(applyFilter(products, filters))
+    }
+    if (filters.optional.length < 1 || filters.category === 'todos' || filters.marcas === 'todos') {
+      setProduct(applyFilter(products, filters))
     }
   }, [filters]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (event.target.id === "left") {
+      // Left input box is changed
+      const newValue = [event.target.value, price[1]];
+      // @ts-ignore
+      setPrice(newValue);
+    } else {
+      // Right input box is changed
+      const newValue = [price[0], event.target.value];
+      // @ts-ignore
+      setPrice(newValue);
+    }
+  };
+
+  useEffect(() => {
+    setFilters({
+      ...filters,
+      price: [price[0], price[1]]
+    })
+  }, [price]);
 
   const renderContent = (
     <Scrollbar
@@ -203,12 +231,40 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
       </Stack>
       <FormProvider methods={methods}>
-        {/* <Stack spacing={1} sx={{ px: 1.5 }}>
-          <ShopProductSort />
-        </Stack> */}
         <Stack spacing={3} sx={{ p: 2.5 }}>
-
           <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                Marcas
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="female"
+                  name="radio-buttons-group"
+                >
+                  {
+                    marcas.map((marca) => (
+                      <FormControlLabel key={marca.value} value={marca.label} control={<Radio />} label={marca.label} onChange={
+                        () => {
+                          setFilters({
+                            ...filters,
+                            marcas: marca.value
+                          })
+                        }
+                      } />
+                    ))
+                  }
+                </RadioGroup>
+              </FormControl>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >
@@ -223,7 +279,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                     key={option.idOpcional}
                     control={
                       <Checkbox
-                        onChange={() => handleChange(option.descricaoOpcional)}
+                        onChange={() => handleChange(option.descricaoOpcional.replaceAll(/\s/g, ''))}
                       />
                     }
                     label={option.descricaoOpcional}
@@ -232,7 +288,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               </FormGroup>
             </AccordionDetails>
           </Accordion>
-          <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
+          <Accordion expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >
@@ -251,7 +307,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                         () => {
                           setFilters({
                             ...filters,
-                            category: category.label
+                            category: category.label.toLowerCase()
                           })
                         }
                       } />
@@ -270,28 +326,23 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               Valor
             </Typography>
 
-            <Stack direction="row" spacing={2}>
-              <InputRange type='min' />
-              <InputRange type='max' />
+            <Stack direction="column" spacing={2}>
+              <InputRange id="left" type='min' value={String(price[0])} setValue={handleInputChange} />
+              <InputRange id="right" type='max' value={String(price[1])} setValue={handleInputChange} />
             </Stack>
 
-            <RHFSlider
-              onChange={(e, value) => setFilters({
-                ...filters,
-                priceRange: value as number[]
-              })}
-              name="priceRange"
-              value={filters.priceRange}
-              step={10}
+            <Slider
+              getAriaLabel={() => 'Preço dos Carros'}
+              value={price}
+              max={400000}
               min={0}
-              max={200}
-              marks={marksLabel}
-              getAriaValueText={(value) => `$${value}`}
-              valueLabelFormat={(value) => `$${value}`}
-              sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
+              defaultValue={price}
+              onChange={handleChangeRangePrice}
+              valueLabelDisplay="auto"
+              getAriaValueText={(value) => `R$ ${fCurrencyBR(value)}`}
+              valueLabelFormat={(value) => `R$ ${fCurrencyBR(value)}`}
             />
           </Stack>
-
         </Stack>
       </FormProvider>
       <Box sx={{ flexGrow: 1 }} />
@@ -342,22 +393,29 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
 
 function applyFilter(products: IProduct[], filters: IProductFilter) {
-  const { optional, category, priceRange } = filters;
+  const { optional, category, price, marcas } = filters;
 
-  const min = priceRange[0];
+  const min = price[0];
 
-  const max = priceRange[1];
+  const max = price[1];
 
   if (optional.length) {
-    products = products.filter((product) => optional.includes(product.obs));
+    products = products.filter((product) => product?.opcionaisArray?.some((opt) => optional.includes(opt)));
   }
 
   if (category !== 'todos') {
     products = products.filter((product) => product.descricaoCategoria === category);
   }
 
-  if (min !== 0 || max !== 200) {
+  if (marcas !== 'todos') {
+    products = products.filter((product) => product.descricaoMarca === marcas);
+  }
+
+  if (min !== 0 || max !== 400000) {
     products = products.filter((product) => product.valor >= min && product.valor <= max);
   }
+
+  console.log('productsFiltred', products)
+
   return products;
 }

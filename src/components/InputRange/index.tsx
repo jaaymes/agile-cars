@@ -1,7 +1,10 @@
 import { alpha, Input, Stack, Typography } from "@mui/material";
 
-const InputRange = ({ type }: { type: 'min' | 'max' }) => (
-  <Stack direction="row" spacing={0.5} alignItems="center" sx={{ width: 1 }}>
+const InputRange = ({ type, value, setValue, id }: {
+  type: 'min' | 'max', value: string, id: string
+  setValue: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
+}) => (
+  <Stack direction="row" spacing={0.5} alignItems="center" sx={{ width: '100%' }}>
     <Typography
       variant="caption"
       sx={{
@@ -14,15 +17,17 @@ const InputRange = ({ type }: { type: 'min' | 'max' }) => (
       {`${type} (R$)`}
     </Typography>
     <Input
+      id={id}
+      value={value}
       disableUnderline
+      onChange={(event) => setValue(event)}
       size="small"
       type={type}
       inputProps={{
-        step: 10,
+        step: 500,
         min: 0,
-        max: 200,
+        max: 400000,
         type: 'number',
-        'aria-labelledby': 'input-slider',
       }}
       sx={{
         pr: 1,

@@ -9,8 +9,14 @@ export function fNumber(number: InputValue) {
 }
 
 //  fCurrency Real Brasil
+
 export function fCurrency(number: InputValue) { 
   return result(numeral(number).format('0,0.00'));
+}
+
+// formatar moeda para brasil
+export function fCurrencyBR(number: InputValue) { 
+  return result(numeral(number).format('0,0.00'), ',00');
 }
 
 // export function fCurrency(number: InputValue) {

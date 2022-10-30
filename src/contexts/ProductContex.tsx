@@ -1,7 +1,9 @@
 import { createContext, useState } from 'react'
 
+import { IProduct } from '@/@types/product'
+
 export interface IProductContext {
-  product: any
+  product: IProduct[]
   setProduct: React.Dispatch<React.SetStateAction<any>>
 }
 

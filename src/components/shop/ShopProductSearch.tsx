@@ -92,7 +92,7 @@ export default function ShopProductSearch() {
         />
       )}
       renderOption={(props, product, { inputValue }) => {
-        const { descricaoModeloVersao, foto1 } = product;
+        const { descricaoModeloVersao, images } = product;
         const matches = match(descricaoModeloVersao, inputValue);
         const parts = parse(descricaoModeloVersao, matches);
 
@@ -100,7 +100,7 @@ export default function ShopProductSearch() {
           <li {...props}>
             <Image
               alt={descricaoModeloVersao}
-              src={foto1}
+              src={`data:image/png;base64,${images[0] || images[1]}`}
               sx={{ width: 48, height: 48, borderRadius: 1, flexShrink: 0, mr: 1.5 }}
             />
 

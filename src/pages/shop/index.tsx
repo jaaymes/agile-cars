@@ -38,7 +38,7 @@ export default function EcommerceShopPage() {
   const isDefault =
     (!dirtyFields.optional &&
       !dirtyFields.category &&
-      !dirtyFields.priceRange) || false;
+      !dirtyFields.price) || false;
 
   return (
     <>

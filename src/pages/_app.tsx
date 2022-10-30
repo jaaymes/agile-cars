@@ -6,13 +6,11 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import 'react-quill/dist/quill.snow.css';
 
-// import 'slick-carousel/slick/slick.css';
-// import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-
-import { Provider as ReduxProvider } from 'react-redux';
 
 import { NextPage } from 'next';
 import { AppProps } from 'next/app';
@@ -28,10 +26,9 @@ import SnackbarProvider from '@/components/snackbar';
 
 import ThemeProvider from '@/styles/theme';
 
-import { store } from '@/redux/store';
-import { CacheProvider, EmotionCache } from '@emotion/react';
+import createEmotionCache from '@/utils/createEmotionCache';
 
-import createEmotionCache from '../utils/createEmotionCache';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -55,22 +52,20 @@ export default function MyApp(props: MyAppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
 
-      <ReduxProvider store={store}>
-        <SettingsProvider>
-          <MotionLazyContainer>
-            <ThemeProvider>
-              <ThemeSettings>
-                <SnackbarProvider>
-                  <ProductProvider>
-                    <ProgressBar />
-                    {getLayout(<Component {...pageProps} />)}
-                  </ProductProvider>
-                </SnackbarProvider>
-              </ThemeSettings>
-            </ThemeProvider>
-          </MotionLazyContainer>
-        </SettingsProvider>
-      </ReduxProvider>
+      <SettingsProvider>
+        <MotionLazyContainer>
+          <ThemeProvider>
+            <ThemeSettings>
+              <SnackbarProvider>
+                <ProductProvider>
+                  <ProgressBar />
+                  {getLayout(<Component {...pageProps} />)}
+                </ProductProvider>
+              </SnackbarProvider>
+            </ThemeSettings>
+          </ThemeProvider>
+        </MotionLazyContainer>
+      </SettingsProvider>
     </CacheProvider>
   );
 }

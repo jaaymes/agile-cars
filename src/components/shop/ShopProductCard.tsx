@@ -1,5 +1,7 @@
 import { RiWhatsappLine } from 'react-icons/ri';
 
+import { useRouter } from 'next/router';
+
 import Image from '@/components/image';
 import Label from '@/components/label';
 
@@ -13,6 +15,11 @@ type Props = {
 };
 
 export default function ShopProductCard({ product }: Props) {
+  const { push } = useRouter()
+  const handleRedirectWhatsapp = () => {
+    window.open(`https://api.whatsapp.com/send?phone=55${product.whatsapp}&text=Olá, 
+    gostaria de mais informações sobre o veículo`, '_blank');
+  }
   return (
     <Card
       sx={{
@@ -27,7 +34,7 @@ export default function ShopProductCard({ product }: Props) {
     >
 
       <Box sx={{ position: 'relative', p: 1 }}>
-        <Image alt={product.chassi} src={`data:image/png;base64,${product?.foto1 || product?.foto2}`} ratio="1/1" sx={{ borderRadius: 1.5 }} />
+        <Image alt={product.chassi} src={`data:image/png;base64,${product?.images[0] || product?.images[1]}`} ratio="1/1" sx={{ borderRadius: 1.5 }} />
       </Box>
       <Stack spacing={1} sx={{ px: 2, display: 'flex', height: '100%' }} justifyContent="space-between" direction="column">
         <Stack direction="column" spacing={0.5}>
@@ -51,18 +58,20 @@ export default function ShopProductCard({ product }: Props) {
         </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 1 }}>
-          <IconButton sx={{
-            color: colors.lightGreen[700],
-            width: 30,
-            height: 30,
-            p: 0,
-            '&:hover': {
-              color: colors.lightGreen[500],
-            }
-          }}>
+          <IconButton
+            onClick={handleRedirectWhatsapp}
+            sx={{
+              color: colors.lightGreen[700],
+              width: 30,
+              height: 30,
+              p: 0,
+              '&:hover': {
+                color: colors.lightGreen[500],
+              }
+            }}>
             <RiWhatsappLine />
           </IconButton>
-          <Button> + Detalhes</Button>
+          <Button onClick={() => push(`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`)}> + Detalhes</Button>
         </Stack>
       </Stack>
     </Card>

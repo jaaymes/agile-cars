@@ -27,11 +27,15 @@ export default function Header({ onOpenNav }: Props) {
 
   const renderContent = (
     <>
-      {!isDesktop && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1, color: 'text.primary' }}>
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-      )}
+      {
+        onOpenNav && (
+          !isDesktop && (
+            <IconButton onClick={onOpenNav} sx={{ mr: 1, color: 'text.primary' }}>
+              <Iconify icon="eva:menu-2-fill" />
+            </IconButton>
+          )
+        )
+      }
 
       <Stack
         flexGrow={1}
@@ -58,7 +62,7 @@ export default function Header({ onOpenNav }: Props) {
           duration: theme.transitions.duration.shorter,
         }),
         ...(isDesktop && {
-          width: `calc(100% - ${NAV.W_DASHBOARD + 1}px)`,
+          width: onOpenNav ? `calc(100% - ${NAV.W_DASHBOARD + 1}px)` : '100%',
           height: HEADER.H_DASHBOARD_DESKTOP,
           ...(isOffset && {
             height: HEADER.H_DASHBOARD_DESKTOP_OFFSET,

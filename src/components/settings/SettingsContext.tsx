@@ -73,17 +73,6 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
   const [themeDirection, setThemeDirection] = useState(defaultSettings.themeDirection);
   const [themeColorPresets, setThemeColorPresets] = useState(defaultSettings.themeColorPresets);
 
-  const langStorage = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') : '';
-
-  const isArabic = langStorage === 'ar';
-
-  useEffect(() => {
-    if (isArabic) {
-      onChangeDirectionByLang('ar');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isArabic]);
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const mode = getCookie('themeMode') || defaultSettings.themeMode;

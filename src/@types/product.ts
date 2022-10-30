@@ -1,18 +1,6 @@
-// ----------------------------------------------------------------------
-
-export type IProductReview = {
-  id: string;
-  name: string;
-  avatarUrl: string;
-  comment: string;
-  rating: number;
-  isPurchased: boolean;
-  helpful: number;
-  postedAt: Date | string | number;
-};
-
 export type IProduct = {
-  opcionais(opcionais: any): unknown;
+  opcionais: string;
+  opcionaisArray: string[];
   idVeiculo: number
   idFranqueado: number
   idMarca: number
@@ -31,21 +19,17 @@ export type IProduct = {
   valor: number
   km: number
   obs: string
+  franqueado: string
+  whatsapp: string
   renavam: number
-  foto1: string
-  foto2: string
-  foto3: string
-  foto4: string
-  foto5: string
-  foto6: string
-  foto7: string
-  foto8: string
+  images: string[]
 };
 
 export type IProductFilter = {
   optional: string[];
   category: string;
-  priceRange: number[];
+  marcas: string;
+  price: number[];
 };
 
 // ----------------------------------------------------------------------
