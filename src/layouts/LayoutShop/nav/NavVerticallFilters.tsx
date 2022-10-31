@@ -124,7 +124,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       images: [product?.foto1, product?.foto2, product?.foto3, product?.foto4, product?.foto5, product?.foto6, product?.foto7, product?.foto8].filter(index =>
         index !== undefined
       ),
-      opcionaisArray: product?.opcionais.replaceAll(/\s/g, '').split(',')
+      opcionaisArray: product?.opcionais?.replaceAll(/\s/g, '').split(',')
     }))
     // pegar maior valor e menor valor 
     const maxPrice = Math.max(...productWithImages.map((product: any) => product?.valor))
