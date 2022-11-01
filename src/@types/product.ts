@@ -27,7 +27,10 @@ export type IProduct = {
 
 export type IProductFilter = {
   optional: string[];
-  category: string;
+  category: {
+    label: string;
+    value: string;
+  };
   marcas: {
     label: string;
     value: string;

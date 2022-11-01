@@ -27,7 +27,10 @@ type Props = {
 
 const defaultValues = {
   optional: [],
-  category: 'todos',
+  category: {
+    value: 'todos',
+    label: 'Todas',
+  },
   price: [0, 400000],
   marcas: {
     value: 'todos',
@@ -208,7 +211,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     if (filters.optional.length > 0) {
       setProduct(applyFilter(products, filters))
     }
-    if (filters.category !== 'todos') {
+    if (filters.category.value !== 'todos') {
       setProduct(applyFilter(products, filters))
     }
     if (filters.marcas.value !== 'todos') {
@@ -486,7 +489,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                         () => {
                           setFilters({
                             ...filters,
-                            category: category.label.toLowerCase()
+                            category: category
                           })
                         }
                       } />
@@ -584,8 +587,8 @@ function applyFilter(products: IProduct[], filters: IProductFilter) {
     products = products.filter((product) => product?.opcionaisArray?.some((opt) => optional.includes(opt)));
   }
 
-  if (category !== 'todos') {
-    products = products.filter((product) => product.descricaoCategoria === category);
+  if (category.value !== 'todos') {
+    products = products.filter((product) => product.descricaoCategoria === category.label);
   }
 
   if (marcas.value !== 'todos') {
