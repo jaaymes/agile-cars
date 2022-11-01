@@ -34,9 +34,9 @@ export const getMarcas = async () => {
     }
 }
 
-export const getModelos = async () => { 
+export const getModelos = async (id: number) => { 
     try {
-      const response = await api.get(`/modelo/pesquisar`);
+      const response = await api.get(`/modelo/pesquisar?idMarca=${id}`);
       return response.data
     } catch (error) {
       console.error(error);
@@ -44,9 +44,9 @@ export const getModelos = async () => {
     }
 }
 
-export const getModelosVersao = async () => { 
+export const getModelosVersao = async (id: number) => { 
     try {
-      const response = await api.get(`/modeloversao/pesquisar`);
+      const response = await api.get(`/modeloversao/pesquisar?idModelo=${id}`);
       return response.data
     } catch (error) {
       console.error(error);

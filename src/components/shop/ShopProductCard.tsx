@@ -1,6 +1,6 @@
 import { RiWhatsappLine } from 'react-icons/ri';
 
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import Image from '@/components/image';
 import Label from '@/components/label';
@@ -15,11 +15,20 @@ type Props = {
 };
 
 export default function ShopProductCard({ product }: Props) {
-  const { push } = useRouter()
+  const message = `${process.env.NEXT_PUBLIC_SITE}shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`
+
+  const whatsappMessage = encodeURIComponent(message)
+
   const handleRedirectWhatsapp = () => {
     window.open(`https://api.whatsapp.com/send?phone=55${product.whatsapp}&text=Olá, 
-    gostaria de mais informações sobre o veículo`, '_blank');
+    gostaria de mais informações sobre o veículo
+    %0A%0A
+    Link: ${whatsappMessage}
+    `, '_blank');
   }
+
+
+
   return (
     <Card
       sx={{
@@ -34,7 +43,7 @@ export default function ShopProductCard({ product }: Props) {
     >
 
       <Box sx={{ position: 'relative', p: 1 }}>
-        <Image alt={product.chassi} src={`data:image/png;base64,${product?.images[0] || product?.images[1]}`} ratio="1/1" sx={{ borderRadius: 1.5 }} />
+        <Image alt={product.chassi} src={product?.images.length > 0 ? `data:image/png;base64,${product?.images[0] || product?.images[1]}` : '/sem-imagem.png'} ratio="1/1" sx={{ borderRadius: 1.5 }} />
       </Box>
       <Stack spacing={1} sx={{ px: 2, display: 'flex', height: '100%' }} justifyContent="space-between" direction="column">
         <Stack direction="column" spacing={0.5}>
@@ -71,7 +80,10 @@ export default function ShopProductCard({ product }: Props) {
             }}>
             <RiWhatsappLine />
           </IconButton>
-          <Button onClick={() => push(`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`)}> + Detalhes</Button>
+          <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
+            {/* @ts-ignore */}
+            <Button rel="noopener noreferrer"> + Detalhes</Button>
+          </Link>
         </Stack>
       </Stack>
     </Card>

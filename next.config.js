@@ -2,7 +2,7 @@
 const withTM = require('next-transpile-modules')([]);
 
 module.exports = withTM({
-  swcMinify: false,
+  swcMinify: true,
   reactStrictMode: true,
   images: {
     minimumCacheTTL: 86400

@@ -92,7 +92,6 @@ type Props = {
 };
 
 export default function ProductDetailsCarousel({ product }: Props) {
-  const theme = useTheme();
 
   const carousel1 = useRef<Carousel | null>(null);
 
@@ -164,24 +163,43 @@ export default function ProductDetailsCarousel({ product }: Props) {
   const renderLargeImg = (
     <Box sx={{ mb: 3, borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
       <Carousel {...carouselSettings1} asNavFor={nav2} ref={carousel1}>
-        {product.images.map((img) => (
-          <Image
-            key={img}
-            alt="product"
-            src={`data:image/png;base64,${img}`}
-            ratio="1/1"
-            onClick={() => handleOpenLightbox(img)}
-            sx={{ cursor: 'zoom-in' }}
-          />
-        ))}
+        {
+          product.images.length > 0 && (
+            product.images.map((img) => (
+              <Image
+                key={img}
+                alt="product"
+                src={`data:image/png;base64,${img}`}
+                ratio="1/1"
+                onClick={() => handleOpenLightbox(img)}
+                sx={{ cursor: 'zoom-in' }}
+              />
+            ))
+
+          )
+        }
+        {
+          product.images.length === 0 && (
+            <Image
+              alt="product"
+              src={`/sem-imagem.png`}
+              ratio="1/1"
+              sx={{ cursor: 'zoom-in' }}
+            />
+          )
+        }
       </Carousel>
 
-      <CarouselArrowIndex
-        index={currentIndex}
-        total={product.images.length}
-        onNext={handleNext}
-        onPrevious={handlePrev}
-      />
+      {
+        product.images.length > 0 && (
+          <CarouselArrowIndex
+            index={currentIndex}
+            total={product.images.length}
+            onNext={handleNext}
+            onPrevious={handlePrev}
+          />
+        )
+      }
     </Box>
   );
 

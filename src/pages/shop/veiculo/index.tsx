@@ -23,7 +23,6 @@ export default function ProductDetails() {
   const { query: { id, idFranqueado } } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
-
   const [product, setProduct] = useState<IProduct | null>(null);
 
   const handleGetProduct = async (id: number, idFranqueado: number) => {

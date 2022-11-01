@@ -28,8 +28,19 @@ export type IProduct = {
 export type IProductFilter = {
   optional: string[];
   category: string;
-  marcas: string;
+  marcas: {
+    label: string;
+    value: string;
+  };
   price: number[];
+  modelos: {
+    label: string;
+    value: string;
+  }
+  modelosVersao: {
+    label: string;
+    value: string;
+  }
 };
 
 // ----------------------------------------------------------------------

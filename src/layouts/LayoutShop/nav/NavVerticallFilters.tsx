@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useProduct } from '@/hooks/useProduct';
 import useResponsive from '@/hooks/useResponsive';
 
-import FormProvider, { RHFSlider } from '@/components/hook-form';
+import FormProvider from '@/components/hook-form';
 import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
@@ -12,30 +12,35 @@ import Scrollbar from '@/components/scrollbar';
 import { fCurrencyBR } from '@/utils/formatNumber';
 
 import { getCategory, getOptional } from '@/services/filters';
-import { getMarcas, getProducts } from '@/services/products';
+import { getMarcas, getModelos, getModelosVersao, getProducts } from '@/services/products';
 
 import { NAV } from '@/config';
 
 import { IProduct, IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
-import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider } from '@mui/material';
+import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button } from '@mui/material';
 
 type Props = {
   openNav: boolean;
   onCloseNav: VoidFunction;
 };
 
-export const FILTER_GENDER_OPTIONS = [
-  { label: 'Men', value: 'Men' },
-  { label: 'Women', value: 'Women' },
-  { label: 'Kids', value: 'Kids' },
-];
-
 const defaultValues = {
   optional: [],
   category: 'todos',
   price: [0, 400000],
-  marcas: 'todos',
+  marcas: {
+    value: 'todos',
+    label: 'Todas',
+  },
+  modelos: {
+    value: 'todos',
+    label: 'Todos',
+  },
+  modelosVersao: {
+    value: 'todos',
+    label: 'Todos',
+  }
 };
 
 interface IOptionals {
@@ -48,25 +53,6 @@ interface ICategories {
   value: any;
 }
 
-export const FILTER_CATEGORY_OPTIONS = [
-  { label: 'All', value: 'All' },
-  { label: 'Shose', value: 'Shose' },
-  { label: 'Apparel', value: 'Apparel' },
-  { label: 'Accessories', value: 'Accessories' },
-];
-
-export const FILTER_RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
-
-export const FILTER_COLOR_OPTIONS = [
-  '#00AB55',
-  '#000000',
-  '#FFFFFF',
-  '#FFC0CB',
-  '#FF4842',
-  '#1890FF',
-  '#94D82D',
-  '#FFC107',
-];
 
 export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   const { setProduct } = useProduct()
@@ -77,26 +63,37 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [marcas, setMarcas] = useState<ICategories[]>([]);
   const [price, setPrice] = useState<number[]>([]);
+  const [modelos, setModelos] = useState<ICategories[]>([]);
+  const [modelosVersao, setModelosVersao] = useState<ICategories[]>([]);
 
-  const [expanded, setExpanded] = useState<string | false>(false);
+  const [expanded, setExpanded] = useState<string | false>('panel1');
 
-  const handleChangeAccordion =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      // scroll focus when click accordion
-      if (isExpanded) {
-        const element = document.getElementById(panel);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-      setExpanded(isExpanded ? panel : false);
-    };
+  const [numberOfitemsShown, setNumberOfItemsToShown] = useState(8);
+
+  const showMore = () => {
+    if (numberOfitemsShown + 3 <= optionals.length) {
+      setNumberOfItemsToShown(numberOfitemsShown + 5);
+    } else {
+      setNumberOfItemsToShown(optionals.length);
+    }
+  };
+
+  const handleChangeAccordion = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const isDesktop = useResponsive('up', 'lg');
 
   const methods = useForm<IProductFilter>({
     defaultValues,
   });
+
+  const handleReset = () => {
+    setFilters({
+      ...filters,
+      optional: [],
+    });
+  }
 
   const handleChange = (value: string) => {
     const { optional } = filters;
@@ -152,12 +149,32 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   const handleGetMarcas = async () => {
     const { collection: marcasResponse } = await getMarcas()
     const marcasReturn = marcasResponse.map((item: { descricaoMarca: any; idMarca: any; }) => ({
-      label: item.descricaoMarca,
-      value: item.descricaoMarca.toUpperCase()
+      label: item.descricaoMarca.toUpperCase(),
+      value: item.idMarca
     }))
-    console.log('marcasReturn', marcasReturn)
     marcasReturn.unshift({ label: 'Todos', value: 'todos' })
     setMarcas(marcasReturn)
+  }
+
+  const handleGetModelos = async () => {
+    const { collection: modelosResponse } = await getModelos(Number(filters.marcas.value))
+    const modelosReturn = modelosResponse.map((item: { descricaoModelo: any; idModelo: any; }) => ({
+      label: item.descricaoModelo,
+      value: item.idModelo
+    }))
+    modelosReturn.unshift({ label: 'Todos', value: 'todos' })
+    setModelos(modelosReturn)
+  }
+
+  const handleGetModeloVersao = async () => {
+    const { collection: modeloVersaoResponse } = await getModelosVersao(Number(filters.modelos.value))
+    const modeloVersaoReturn = modeloVersaoResponse.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
+      label: item.descricaoModeloVersao,
+      value: item.idModeloVersao
+    }))
+    console.log('modeloVersaoResponse', modeloVersaoResponse)
+    modeloVersaoReturn.unshift({ label: 'Todos', value: 'todos' })
+    setModelosVersao(modeloVersaoReturn)
   }
 
   const handleChangeRangePrice = (event: Event, newValue: number | number[]) => {
@@ -172,16 +189,40 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }, []);
 
   useEffect(() => {
+    if (filters.modelos.value !== 'todos') {
+      handleGetModeloVersao()
+    }
+  }, [filters.modelos.value]);
+
+  useEffect(() => {
+    if (filters.marcas.value !== 'todos') {
+      handleGetModelos()
+    }
+  }, [filters.marcas.value]);
+
+  useEffect(() => {
+    handleReset()
+  }, [filters.marcas]);
+
+  useEffect(() => {
     if (filters.optional.length > 0) {
       setProduct(applyFilter(products, filters))
     }
-    if (filters.category) {
+    if (filters.category !== 'todos') {
       setProduct(applyFilter(products, filters))
     }
-    if (filters.marcas) {
+    if (filters.marcas.value !== 'todos') {
+      setProduct(applyFilter(products, filters))
+      setExpanded('panel2')
+    }
+    if (filters.modelos.value !== 'todos') {
+      setExpanded('panel3')
       setProduct(applyFilter(products, filters))
     }
-    if (filters.optional.length < 1 || filters.category === 'todos' || filters.marcas === 'todos') {
+    if (filters.modelosVersao.value !== 'todos') {
+      setProduct(applyFilter(products, filters))
+    }
+    if (filters.optional.length < 1) {
       setProduct(applyFilter(products, filters))
     }
   }, [filters]);
@@ -243,17 +284,73 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             <AccordionDetails>
               <FormControl>
                 <RadioGroup
+                  defaultValue={'todos'}
+                  value={filters.marcas.value || ''}
+                >
+                  {
+                    marcas.map((marca) => (
+                      <FormControlLabel key={marca.value} value={marca.value} control={<Radio />} label={marca.label}
+                        onChange={
+                          () => {
+                            setFilters({
+                              ...defaultValues,
+                              marcas: marca,
+                              optional: [],
+                            })
+                          }
+                        } />
+                    ))
+                  }
+                </RadioGroup>
+              </FormControl>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion
+            sx={{
+              display: modelos.length > 0 ? 'block' : 'none',
+            }}
+            expanded={expanded === 'panel2'}>
+            <AccordionSummary
+              sx={{
+                '& .MuiAccordionSummary-content': {
+                  flexGrow: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }
+              }}
+              expandIcon={<ExpandMoreIcon />}
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                Modelos
+              </Typography>
+              <Button onClick={() => {
+                setFilters({
+                  ...defaultValues
+                })
+                setExpanded('panel1')
+                setModelos([])
+                setModelosVersao([])
+              }}>
+                Limpar
+              </Button>
+            </AccordionSummary>
+            <AccordionDetails>
+              <FormControl>
+                <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="female"
                   name="radio-buttons-group"
                 >
                   {
-                    marcas.map((marca) => (
-                      <FormControlLabel key={marca.value} value={marca.label} control={<Radio />} label={marca.label} onChange={
+                    modelos.map((modelo) => (
+                      <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
-                            ...filters,
-                            marcas: marca.value
+                            ...defaultValues,
+                            modelos: modelo,
+                            optional: [],
                           })
                         }
                       } />
@@ -264,31 +361,113 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
+          <Accordion
+            sx={{
+              display: modelosVersao.length > 0 ? 'block' : 'none'
+            }}
+            expanded={expanded === 'panel3'}>
             <AccordionSummary
+              sx={{
+                '& .MuiAccordionSummary-content': {
+                  flexGrow: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }
+              }}
               expandIcon={<ExpandMoreIcon />}
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                Modelos Versão
+              </Typography>
+              <Button onClick={() => {
+                setFilters({
+                  ...defaultValues,
+                })
+                setExpanded('panel1')
+                setModelos([])
+                setModelosVersao([])
+              }}>
+                Limpar
+              </Button>
+            </AccordionSummary>
+            <AccordionDetails>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="female"
+                  name="radio-buttons-group"
+                >
+                  {
+                    modelosVersao.map((modelo) => (
+                      <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
+                        () => {
+                          setFilters({
+                            ...defaultValues,
+                            modelosVersao: modelo,
+                            optional: [],
+                          })
+                        }
+                      } />
+                    ))
+                  }
+                </RadioGroup>
+              </FormControl>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion expanded={true}>
+            <AccordionSummary
+              sx={{
+                '& .MuiAccordionSummary-content': {
+                  flexGrow: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }
+              }}
             >
               <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 Opcionais
               </Typography>
+              <Button onClick={() => {
+                setFilters({
+                  ...defaultValues,
+                })
+                setExpanded('panel1')
+                setModelos([])
+                setModelosVersao([])
+              }}>
+                Limpar
+              </Button>
             </AccordionSummary>
             <AccordionDetails>
               <FormGroup>
-                {optionals.map((option) => (
-                  <FormControlLabel
-                    key={option.idOpcional}
-                    control={
-                      <Checkbox
-                        onChange={() => handleChange(option.descricaoOpcional.replaceAll(/\s/g, ''))}
-                      />
-                    }
-                    label={option.descricaoOpcional}
-                  />
-                ))}
+                {optionals
+                  .slice(0, numberOfitemsShown)
+                  .map((item, index) => (
+                    <FormControlLabel
+                      key={index}
+                      control={
+                        <Checkbox
+                          checked={filters.optional.includes(item.descricaoOpcional.replaceAll(/\s/g, ''))}
+                          onChange={() => handleChange(item.descricaoOpcional.replaceAll(/\s/g, ''))}
+                        />
+                      }
+                      label={item.descricaoOpcional}
+                    />
+                  ))
+                }
+                <Button sx={{ p: 2, mt: 2 }}>
+                  <Typography onClick={showMore}>
+                    + Mostrar mais
+                  </Typography>
+                </Button>
               </FormGroup>
             </AccordionDetails>
           </Accordion>
-          <Accordion expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')}>
+
+          <Accordion expanded={expanded === 'panel4'} onChange={handleChangeAccordion('panel4')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >
@@ -321,6 +500,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               })} /> */}
             </AccordionDetails>
           </Accordion>
+
           <Stack spacing={1} sx={{ pb: 2 }}>
             <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
               Valor
@@ -346,7 +526,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
         </Stack>
       </FormProvider>
       <Box sx={{ flexGrow: 1 }} />
-    </Scrollbar>
+    </Scrollbar >
   );
 
   return (
@@ -393,11 +573,12 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
 
 function applyFilter(products: IProduct[], filters: IProductFilter) {
-  const { optional, category, price, marcas } = filters;
+  const { optional, category, price, marcas, modelos, modelosVersao } = filters;
 
   const min = price[0];
 
   const max = price[1];
+
 
   if (optional.length) {
     products = products.filter((product) => product?.opcionaisArray?.some((opt) => optional.includes(opt)));
@@ -407,15 +588,23 @@ function applyFilter(products: IProduct[], filters: IProductFilter) {
     products = products.filter((product) => product.descricaoCategoria === category);
   }
 
-  if (marcas !== 'todos') {
-    products = products.filter((product) => product.descricaoMarca === marcas);
+  if (marcas.value !== 'todos') {
+    products = products.filter((product) => product.descricaoMarca === marcas.label);
+  }
+
+  if (modelos.value !== 'todos') {
+    products = products.filter((product) => product.descricaoModelo === modelos.label);
+  }
+
+  if (modelosVersao.value !== 'todos') {
+    products = products.filter((product) => product.descricaoModeloVersao === modelosVersao.label);
   }
 
   if (min !== 0 || max !== 400000) {
     products = products.filter((product) => product.valor >= min && product.valor <= max);
   }
 
-  console.log('productsFiltred', products)
+  // console.log('productsFiltred', products)
 
   return products;
 }

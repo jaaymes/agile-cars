@@ -12,6 +12,11 @@ type Props = {
 export default function ProductDetailsSummary({
   product,
 }: Props) {
+  // converter mensagem para unicode
+  const message = `${process.env.NEXT_PUBLIC_SITE}shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`
+
+  const whatsappMessage = encodeURIComponent(message)
+
   return (
     <Stack
       spacing={3}
@@ -106,7 +111,10 @@ export default function ProductDetailsSummary({
 
       <Stack direction="row" spacing={2} sx={{ alignSelf: 'center' }}>
         <Button
-          onClick={() => window.open(`https://api.whatsapp.com/send?phone=${product?.whatsapp.replace('+', '')}&text=Olá, gostaria de mais informações sobre o veículo ${product?.descricaoMarca}, ${product?.descricaoModeloVersao}`, '_blank')}
+          // https://api.whatsapp.com/send?phone=5518997531840&text=http%3A%2F%2Flocalhost%3A3000%2Fshop%2Fveiculo%3Fid%3D105%26idFranqueado%3D1
+          onClick={() => window.open(`https://api.whatsapp.com/send?phone=${product?.whatsapp.replace('+', '')}&text=Olá, gostaria de mais informações sobre o veículo ${product?.descricaoMarca}, ${product?.descricaoModeloVersao}
+          %0A%0A
+          link: ${whatsappMessage}`, '_blank')}
           size="large"
           color="success"
           variant="contained"
