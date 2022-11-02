@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react';
+
 import Head from 'next/head';
 
 import { useProduct } from '@/hooks/useProduct';
 
 import { ShopProductList, ShopProductSearch } from '@/components/shop';
 
+import { IProduct } from '@/@types/product';
 import LayoutShop from '@/layouts/LayoutShop';
 import { Typography, Stack, Box } from '@mui/material';
 
@@ -13,6 +16,30 @@ EcommerceShopPage.getLayout = (page: React.ReactElement) => (
 
 export default function EcommerceShopPage() {
   const { product } = useProduct()
+  const [searchProducts, setSearchProducts] = useState('');
+  const [searchResults, setSearchResults] = useState<IProduct[]>([]);
+
+  const onChangeSearch = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setSearchProducts(event.target.value);
+  }
+
+  useEffect(() => {
+    setSearchResults([])
+    const results = product?.filter((product) => product.descricaoMarca.toLocaleLowerCase().includes(
+      searchProducts
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleLowerCase()
+    ) ||
+      product.descricaoModelo.toLocaleLowerCase().includes(
+        searchProducts
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLocaleLowerCase()
+      ))
+    setSearchResults(results)
+  }, [searchProducts]);
+
   return (
     <>
       <Head>
@@ -26,19 +53,22 @@ export default function EcommerceShopPage() {
           justifyContent="space-between"
           sx={{ mb: 2 }}
         >
-          <ShopProductSearch />
+          <ShopProductSearch
+            value={searchProducts}
+            onChangeSearch={onChangeSearch}
+          />
         </Stack>
 
         <Stack sx={{ mb: 3 }}>
           {!product?.length && (
             <>
-              <Typography variant="body1" gutterBottom alignSelf={"center"}>
+              <Typography variant="h2" gutterBottom alignSelf={"center"}>
                 &nbsp;Nenhum Produto
               </Typography>
             </>
           )}
         </Stack>
-        <ShopProductList products={product} loading={!product?.length} />
+        <ShopProductList products={searchProducts.length ? searchResults : product} loading={!product?.length} />
       </Box>
     </>
   );

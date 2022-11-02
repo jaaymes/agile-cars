@@ -18,6 +18,7 @@ import { NAV } from '@/config';
 
 import { IProduct, IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button } from '@mui/material';
 
 type Props = {
@@ -276,6 +277,20 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       </Stack>
       <FormProvider methods={methods}>
         <Stack spacing={3} sx={{ p: 2.5 }}>
+          <Button onClick={() => {
+            setFilters({
+              ...defaultValues,
+            })
+            setExpanded('panel1')
+            setModelos([])
+            setModelosVersao([])
+          }}
+            startIcon={<RestartAltIcon />}
+          >
+            Resetar Filtros
+          </Button>
+        </Stack>
+        <Stack spacing={3} sx={{ p: 2.5 }}>
           <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -313,6 +328,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             sx={{
               display: modelos.length > 0 ? 'block' : 'none',
             }}
+            onChange={handleChangeAccordion('panel2')}
             expanded={expanded === 'panel2'}>
             <AccordionSummary
               sx={{
@@ -328,7 +344,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 Modelos
               </Typography>
-              <Button onClick={() => {
+              {/* <Button onClick={() => {
                 setFilters({
                   ...defaultValues
                 })
@@ -337,7 +353,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                 setModelosVersao([])
               }}>
                 Limpar
-              </Button>
+              </Button> */}
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
@@ -368,6 +384,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             sx={{
               display: modelosVersao.length > 0 ? 'block' : 'none'
             }}
+            onChange={handleChangeAccordion('panel3')}
             expanded={expanded === 'panel3'}>
             <AccordionSummary
               sx={{
@@ -383,7 +400,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 Modelos Versão
               </Typography>
-              <Button onClick={() => {
+              {/* <Button onClick={() => {
                 setFilters({
                   ...defaultValues,
                 })
@@ -392,7 +409,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                 setModelosVersao([])
               }}>
                 Limpar
-              </Button>
+              </Button> */}
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
@@ -435,11 +452,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               </Typography>
               <Button onClick={() => {
                 setFilters({
-                  ...defaultValues,
+                  ...filters,
+                  optional: []
                 })
-                setExpanded('panel1')
-                setModelos([])
-                setModelosVersao([])
               }}>
                 Limpar
               </Button>

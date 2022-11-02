@@ -63,14 +63,36 @@ export const presets = [
     darker: '#7A0930',
     contrastText: '#FFFFFF',
   },
+  // GREY
+  {
+    name: 'grey',
+    lighter: '#F7F7F7',
+    light: '#E5E5E5',
+    main: '#C4C4C4',
+    dark: '#8E8E8E',
+    darker: '#5A5A5A',
+    contrastText: themePalette.grey[800],
+  },
+  // BLACK
+  {
+    name: 'black',
+    lighter: '#F7F7F7',
+    light: '#E5E5E5',
+    main: '#C4C4C4',
+    dark: '#8E8E8E',
+    darker: '#5A5A5A',
+    contrastText: themePalette.grey[800],
+  }
 ];
 
-export const defaultPreset = presets[4];
+export const defaultPreset = presets[3];
 export const cyanPreset = presets[1];
 export const purplePreset = presets[2];
 export const bluePreset = presets[3];
 export const orangePreset = presets[4];
 export const redPreset = presets[5];
+export const greyPreset = presets[6];
+export const blackPreset = presets[7];
 
 export const presetsOption = presets.map((color) => ({
   name: color.name,
@@ -85,5 +107,7 @@ export function getPresets(key: ThemeColorPresetsValue) {
     blue: bluePreset,
     orange: orangePreset,
     red: redPreset,
+    grey: greyPreset,
+    black: blackPreset
   }[key];
 }

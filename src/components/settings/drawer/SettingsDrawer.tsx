@@ -109,14 +109,6 @@ export default function SettingsDrawer() {
             <ModeOptions />
           </Block>
 
-          <Block title="Direction">
-            <DirectionOptions />
-          </Block>
-
-          <Block title="Layout">
-            <LayoutOptions />
-          </Block>
-
           <Block title="Presets">
             <ColorPresetsOptions />
           </Block>

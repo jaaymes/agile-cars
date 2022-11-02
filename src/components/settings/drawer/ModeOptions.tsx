@@ -1,15 +1,28 @@
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { IconButton } from '@mui/material';
+import { RadioGroup } from '@mui/material';
 
+import SvgColor from '../../svg-color';
 import { useSettingsContext } from '../SettingsContext';
+import { StyledCard, StyledWrap, MaskControl } from '../styles';
+
+
+const OPTIONS = ['light', 'dark'] as const;
 
 export default function ModeOptions() {
-  const { themeMode, onChangeMode, onToggleMode } = useSettingsContext();
+  const { themeMode, onChangeMode } = useSettingsContext();
 
   return (
-    <IconButton sx={{ ml: 1 }} onClick={onToggleMode} color="inherit">
-      {themeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-    </IconButton>
+    <RadioGroup name="themeMode" value={themeMode} onChange={onChangeMode}>
+      <StyledWrap>
+        {OPTIONS.map((mode) => (
+          <StyledCard key={mode} selected={themeMode === mode}>
+            <SvgColor
+              src={`/assets/icons/setting/${mode === 'light' ? 'ic_sun' : 'ic_moon'}.svg`}
+            />
+
+            <MaskControl value={mode} />
+          </StyledCard>
+        ))}
+      </StyledWrap>
+    </RadioGroup>
   );
 }

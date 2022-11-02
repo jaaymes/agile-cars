@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
+import { BsFillGearFill } from 'react-icons/bs';
 
-// @mui
 import { bgBlur } from '@/utils/cssStyles';
 
 import { Tooltip, Box } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import { IconButtonAnimate } from '../../animate';
-import SvgColor from '../../svg-color';
 import BadgeDot from './BadgeDot';
 
 type Props = {
@@ -36,10 +35,10 @@ export default function ToggleButton({ notDefault, open, onToggle }: Props) {
         zIndex: 999,
         position: 'fixed',
         borderRadius: '50%',
-        boxShadow: `-12px 12px 32px -4px ${alpha(
-          theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.common.black,
-          0.36
-        )}`,
+        // boxShadow: `-12px 12px 32px -4px ${alpha(
+        //   theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.common.black,
+        //   0.36
+        // )}`,
         ...bgBlur({ color: theme.palette.background.default }),
       }}
     >
@@ -54,7 +53,7 @@ export default function ToggleButton({ notDefault, open, onToggle }: Props) {
 
       <Tooltip title="Settings">
         <IconButtonAnimate color="primary" onClick={onToggle} sx={{ p: 1.25 }}>
-          <SvgColor src="/assets/icons/setting/ic_setting.svg" />
+          <BsFillGearFill />
         </IconButtonAnimate>
       </Tooltip>
     </Box>
