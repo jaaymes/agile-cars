@@ -36,7 +36,7 @@ export default function ShopProductList({ products, loading, ...other }: Props) 
         }}
         {...other}
       >
-        {(loading ? [...Array(5)] : products).slice(0, numberOfitemsShown).map((product: IProduct, index) =>
+        {(loading ? [...Array(5)] : products)?.slice(0, numberOfitemsShown).map((product: IProduct, index) =>
           product ? (
             <ShopProductCard key={product.idVeiculo} product={product} />
           ) : (
