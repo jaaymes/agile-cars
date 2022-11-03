@@ -251,10 +251,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     })
   }, [price]);
 
-  useEffect(() => {
-    console.log('filters', filters)
-  }, [filters]);
-
   const renderContent = (
     <Scrollbar
       sx={{
