@@ -316,6 +316,8 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                               modelos: { label: 'Todos', value: 'todos' },
                               optional: [],
                             })
+                            setModelos([])
+                            setModelosVersao([])
                           }
                         } />
                     ))
@@ -362,6 +364,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             modelosVersao: { label: 'Todos', value: 'todos' },
                             optional: [],
                           })
+                          setModelosVersao([])
                         }
                       } />
                     ))
