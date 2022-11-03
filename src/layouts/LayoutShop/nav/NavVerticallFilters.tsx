@@ -290,6 +290,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
           </Button>
         </Stack>
         <Stack spacing={3} sx={{ p: 2.5 }}>
+
           <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -349,10 +350,11 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <FormControl>
                 <RadioGroup
                   defaultValue={'todos'}
+                  value={filters.modelos.value || ''}
                 >
                   {
                     modelos.map((modelo) => (
-                      <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
+                      <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
                             ...filters,
