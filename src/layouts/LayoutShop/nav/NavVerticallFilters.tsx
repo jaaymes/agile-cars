@@ -251,6 +251,10 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     })
   }, [price]);
 
+  useEffect(() => {
+    console.log('filters', filters)
+  }, [filters]);
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -314,6 +318,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                               ...filters,
                               marcas: marca,
                               modelos: { label: 'Todos', value: 'todos' },
+                              modelosVersao: { label: 'Todos', value: 'todos' },
                               optional: [],
                             })
                             setModelos([])
