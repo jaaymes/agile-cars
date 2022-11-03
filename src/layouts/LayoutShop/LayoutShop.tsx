@@ -21,8 +21,6 @@ export default function LayoutShop({ children }: Props) {
     setOpen(true);
   };
 
-  const renderNavVertical = <NavVerticalFilters openNav={open} onCloseNav={handleClose} />;
-
   return (
     <>
       <Header onOpenNav={handleOpen} />
@@ -33,8 +31,7 @@ export default function LayoutShop({ children }: Props) {
           minHeight: { lg: 1 },
         }}
       >
-        {renderNavVertical}
-
+        <NavVerticalFilters openNav={open} onCloseNav={handleClose} />
         <Main>{children}</Main>
       </Box>
     </>

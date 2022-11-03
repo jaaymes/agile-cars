@@ -176,7 +176,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       label: item.descricaoModeloVersao,
       value: item.idModeloVersao
     }))
-    console.log('modeloVersaoResponse', modeloVersaoResponse)
     modeloVersaoReturn.unshift({ label: 'Todos', value: 'todos' })
     setModelosVersao(modeloVersaoReturn)
   }
@@ -311,7 +310,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                         onChange={
                           () => {
                             setFilters({
-                              ...defaultValues,
+                              ...filters,
                               marcas: marca,
                               optional: [],
                             })
@@ -344,30 +343,19 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 Modelos
               </Typography>
-              {/* <Button onClick={() => {
-                setFilters({
-                  ...defaultValues
-                })
-                setExpanded('panel1')
-                setModelos([])
-                setModelosVersao([])
-              }}>
-                Limpar
-              </Button> */}
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
                 <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="female"
-                  name="radio-buttons-group"
+                  defaultValue={'todos'}
+                  value={filters.modelos.value || ''}
                 >
                   {
                     modelos.map((modelo) => (
                       <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
-                            ...defaultValues,
+                            ...filters,
                             modelos: modelo,
                             optional: [],
                           })
@@ -400,16 +388,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 Modelos Versão
               </Typography>
-              {/* <Button onClick={() => {
-                setFilters({
-                  ...defaultValues,
-                })
-                setExpanded('panel1')
-                setModelos([])
-                setModelosVersao([])
-              }}>
-                Limpar
-              </Button> */}
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
@@ -423,7 +401,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                       <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
-                            ...defaultValues,
+                            ...filters,
                             modelosVersao: modelo,
                             optional: [],
                           })
@@ -512,10 +490,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                   }
                 </RadioGroup>
               </FormControl>
-              {/* <RHFRadioGroup name="category" options={categories} row={false} value={filters.category} onChange={(e) => setFilters({
-                ...filters,
-                category: e.target.name,
-              })} /> */}
             </AccordionDetails>
           </Accordion>
 
@@ -621,8 +595,6 @@ function applyFilter(products: IProduct[], filters: IProductFilter) {
   if (min !== 0 || max !== 400000) {
     products = products.filter((product) => product.valor >= min && product.valor <= max);
   }
-
-  // console.log('productsFiltred', products)
 
   return products;
 }
