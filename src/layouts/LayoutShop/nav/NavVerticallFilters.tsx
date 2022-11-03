@@ -312,6 +312,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             setFilters({
                               ...filters,
                               marcas: marca,
+                              modelos: { label: 'Todos', value: 'todos' },
                               optional: [],
                             })
                           }
@@ -348,7 +349,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
               <FormControl>
                 <RadioGroup
                   defaultValue={'todos'}
-                  value={filters.modelos.value || ''}
                 >
                   {
                     modelos.map((modelo) => (
@@ -357,6 +357,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                           setFilters({
                             ...filters,
                             modelos: modelo,
+                            modelosVersao: { label: 'Todos', value: 'todos' },
                             optional: [],
                           })
                         }

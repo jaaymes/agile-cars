@@ -20,8 +20,7 @@ export default function ShopProductCard({ product }: Props) {
   const whatsappMessage = encodeURIComponent(message)
 
   const handleRedirectWhatsapp = () => {
-    window.open(`https://api.whatsapp.com/send?phone=55${product.whatsapp}&text=Olá, 
-    gostaria de mais informações sobre o veículo
+    window.open(`https://api.whatsapp.com/send?phone=55${product.whatsapp}&text=Olá, gostaria de mais informações sobre o veículo
     %0A%0A
     Link: ${whatsappMessage}
     `, '_blank');
