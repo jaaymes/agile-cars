@@ -26,8 +26,6 @@ export default function ShopProductCard({ product }: Props) {
     `, '_blank');
   }
 
-
-
   return (
     <Card
       sx={{
@@ -79,9 +77,9 @@ export default function ShopProductCard({ product }: Props) {
             }}>
             <RiWhatsappLine />
           </IconButton>
-          <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
+          <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref >
             {/* @ts-ignore */}
-            <Button rel="noopener noreferrer"> + Detalhes</Button>
+            <Button target="_blank" rel="noopener noreferrer"> + Detalhes</Button>
           </Link>
         </Stack>
       </Stack>

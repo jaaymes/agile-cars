@@ -67,8 +67,20 @@ export default function EcommerceShopPage() {
               </Typography>
             </>
           )}
+
+          {
+            searchProducts && (
+              !searchResults?.length && (
+                <>
+                  <Typography variant="h2" gutterBottom alignSelf={"center"}>
+                    &nbsp;Nenhum Produto
+                  </Typography>
+                </>
+              )
+            )
+          }
         </Stack>
-        <ShopProductList products={searchProducts.length ? searchResults : product} loading={!product?.length} />
+        <ShopProductList products={searchProducts.length ? searchResults : product} loading={searchProducts ? !searchResults.length : !product?.length} />
       </Box>
     </>
   );
