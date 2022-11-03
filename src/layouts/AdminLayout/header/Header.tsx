@@ -12,8 +12,6 @@ import { HEADER, NAV } from '@/config';
 import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import AccountPopover from './AccountPopover';
-
 type Props = {
   onOpenNav?: VoidFunction;
 };
@@ -40,16 +38,6 @@ export default function Header({ onOpenNav }: Props) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
-
-      <Stack
-        flexGrow={1}
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-end"
-        spacing={{ xs: 0.5, sm: 1.5 }}
-      >
-        <AccountPopover />
-      </Stack>
     </>
   );
 

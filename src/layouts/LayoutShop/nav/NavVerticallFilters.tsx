@@ -398,13 +398,12 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             <AccordionDetails>
               <FormControl>
                 <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="female"
-                  name="radio-buttons-group"
+                  defaultValue={'todos'}
+                  value={filters.modelosVersao.value || ''}
                 >
                   {
                     modelosVersao.map((modelo) => (
-                      <FormControlLabel key={modelo.value} value={modelo.label} control={<Radio />} label={modelo.label} onChange={
+                      <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
                             ...filters,

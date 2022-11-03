@@ -1,22 +1,18 @@
 import { useEffect } from 'react';
-// next
-import { useRouter } from 'next/router';
-// @mui
-import { Box, Stack, Drawer } from '@mui/material';
-// hooks
-import useResponsive from '../../../hooks/useResponsive';
-// config
-import { NAV } from '../../../config';
-// components
-import Logo from '../../../components/logo';
-import Scrollbar from '../../../components/scrollbar';
-import { NavSectionVertical } from '../../../components/nav-section';
-//
-import navConfig from './config';
-import NavDocs from './NavDocs';
-import NavAccount from './NavAccount';
 
-// ----------------------------------------------------------------------
+import { useRouter } from 'next/router';
+
+import useResponsive from '@/hooks/useResponsive';
+
+import Logo from '@/components/logo';
+import { NavSectionVertical } from '@/components/nav-section';
+import Scrollbar from '@/components/scrollbar';
+
+import { NAV } from '@/config';
+
+import { Box, Stack, Drawer } from '@mui/material';
+
+import navConfig from './config';
 
 type Props = {
   openNav: boolean;
@@ -57,14 +53,10 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       >
         <Logo />
 
-        <NavAccount />
       </Stack>
-
       <NavSectionVertical data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
-
-      <NavDocs />
     </Scrollbar>
   );
 
