@@ -1,5 +1,3 @@
-// ----------------------------------------------------------------------
-
 type ColorVariants = {
   name: string;
   lighter: string;

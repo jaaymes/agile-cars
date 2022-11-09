@@ -1,9 +1,5 @@
 import { useState } from 'react';
 
-import useResponsive from '@/hooks/useResponsive';
-
-import { useSettingsContext } from '@/components/settings';
-
 import { Box } from '@mui/material';
 
 import Header from './header';
@@ -15,15 +11,7 @@ type Props = {
 };
 
 export default function DashboardLayout({ children }: Props) {
-  const { themeLayout } = useSettingsContext();
-
-  const isDesktop = useResponsive('up', 'lg');
-
   const [open, setOpen] = useState(false);
-
-  const isNavHorizontal = themeLayout === 'horizontal';
-
-  const isNavMini = themeLayout === 'mini';
 
   const handleOpen = () => {
     setOpen(true);
@@ -32,9 +20,6 @@ export default function DashboardLayout({ children }: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const renderNavVertical = <NavVertical openNav={open} onCloseNav={handleClose} />;
-
 
   return (
     <>
@@ -46,7 +31,7 @@ export default function DashboardLayout({ children }: Props) {
           minHeight: { lg: 1 },
         }}
       >
-        {renderNavVertical}
+        <NavVertical openNav={open} onCloseNav={handleClose} />;
 
         <Main>{children}</Main>
       </Box>

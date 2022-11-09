@@ -9,14 +9,14 @@ import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
 
-import { fCurrencyBR } from '@/utils/formatNumber';
+import { fDecimal } from '@/utils/formatNumber';
 
 import { getCategory, getOptional } from '@/services/filters';
 import { getMarcas, getModelos, getModelosVersao, getProducts } from '@/services/products';
 
 import { NAV } from '@/config';
 
-import { IProduct, IProductFilter } from '@/@types/product';
+import { IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button } from '@mui/material';
@@ -32,7 +32,9 @@ const defaultValues = {
     value: 'todos',
     label: 'Todas',
   },
-  price: [0, 400000],
+  price: [],
+  year: [],
+  km: [],
   marcas: {
     value: 'todos',
     label: 'Todas',
@@ -57,21 +59,17 @@ interface ICategories {
   value: any;
 }
 
-
 export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
-  const { setProduct } = useProduct()
+  const { setProduct, page, setCountPage, setPage } = useProduct()
 
   const [filters, setFilters] = useState<IProductFilter>(defaultValues);
-  const [products, setProducts] = useState<IProduct[]>([]);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [marcas, setMarcas] = useState<ICategories[]>([]);
   const [price, setPrice] = useState<number[]>([]);
   const [modelos, setModelos] = useState<ICategories[]>([]);
   const [modelosVersao, setModelosVersao] = useState<ICategories[]>([]);
-
   const [expanded, setExpanded] = useState<string | false>('panel1');
-
   const [numberOfitemsShown, setNumberOfItemsToShown] = useState(8);
 
   const showMore = () => {
@@ -88,18 +86,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const methods = useForm<IProductFilter>({
-    defaultValues,
-  });
-
-  const handleReset = () => {
-    setFilters({
-      ...filters,
-      optional: [],
-    });
-  }
-
-  const handleChange = (value: string) => {
+  const handleChange = (value: number) => {
     const { optional } = filters;
 
     const optionalExist = optional.find(item => item === value)
@@ -119,20 +106,31 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }
 
   const handleProducts = async () => {
-    const products = await getProducts()
-    const productWithImages = products.collection.map((product: any) => ({
-      ...product,
-      images: [product?.foto1, product?.foto2, product?.foto3, product?.foto4, product?.foto5, product?.foto6, product?.foto7, product?.foto8].filter(index =>
-        index !== undefined
-      ),
-      opcionaisArray: product?.opcionais?.replaceAll(/\s/g, '').split(',')
-    }))
-    // pegar maior valor e menor valor 
-    const maxPrice = Math.max(...productWithImages.map((product: any) => product?.valor))
-    const minPrice = Math.min(...productWithImages.map((product: any) => product?.valor))
-    setPrice([Math.ceil(minPrice), Math.ceil(maxPrice)])
-    setProduct(productWithImages)
-    setProducts(productWithImages)
+    const products = await getProducts({
+      page,
+      idModelo: filters.modelos.value === 'todos' ? undefined : Number(filters.modelos.value),
+      idMarca: filters.marcas.value === 'todos' ? undefined : Number(filters.marcas.value),
+      idCategoria: filters.category.value === 'todos' ? undefined : Number(filters.category.value),
+      idModeloVersao: filters.modelosVersao.value === 'todos' ? undefined : Number(filters.modelosVersao.value),
+      opcionais: filters.optional.length > 0 ? filters.optional.toString() : undefined,
+      valorInicial: filters.price[0] ? filters.price[0] : undefined,
+      valorFinal: filters.price[1] ? filters.price[1] : undefined,
+      fabInicial: filters.year[0] ? filters.year[0] : undefined,
+      fabFinal: filters.year[1] ? filters.year[1] : undefined,
+      kmInicial: filters.km[0] ? filters.km[0] : undefined,
+      kmFinal: filters.km[1] ? filters.km[1] : undefined,
+    })
+    if (products) {
+      setCountPage(products?.pagination?.totalPages)
+      const productWithImages = products?.collection.map((product: any) => ({
+        ...product,
+        images: [product?.foto1, product?.foto2, product?.foto3, product?.foto4, product?.foto5, product?.foto6, product?.foto7, product?.foto8].filter(index =>
+          index !== undefined
+        ),
+        opcionaisArray: product?.opcionais?.split(',')
+      }))
+      setProduct(productWithImages)
+    }
   }
 
   const handleGetOptional = async () => {
@@ -144,7 +142,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     const category = await getCategory()
     const categorysReturn = category.collection.map((item: { descricaoCategoria: any; idCategoria: any; }) => ({
       label: item.descricaoCategoria,
-      value: item.descricaoCategoria
+      value: item.idCategoria
     }))
     categorysReturn.unshift({ label: 'Todos', value: 'todos' })
     setCategories(categorysReturn)
@@ -180,16 +178,25 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     setModelosVersao(modeloVersaoReturn)
   }
 
-  const handleChangeRangePrice = (event: Event, newValue: number | number[]) => {
-    setPrice(newValue as number[]);
-  };
-
   useEffect(() => {
-    handleProducts()
     handleGetOptional()
     handleGetCategory()
     handleGetMarcas()
   }, []);
+
+  useEffect(() => {
+    handleProducts()
+  }, [
+    page,
+    filters.modelos.value,
+    filters.marcas.value,
+    filters.category.value,
+    filters.modelosVersao.value,
+    filters.optional,
+    filters.price,
+    filters.km,
+    filters.year
+  ]);
 
   useEffect(() => {
     if (filters.modelos.value !== 'todos') {
@@ -204,52 +211,73 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }, [filters.marcas.value]);
 
   useEffect(() => {
-    handleReset()
-  }, [filters.marcas]);
-
-  useEffect(() => {
-    if (filters.optional.length > 0) {
-      setProduct(applyFilter(products, filters))
-    }
-    if (filters.category.value !== 'todos') {
-      setProduct(applyFilter(products, filters))
-    }
     if (filters.marcas.value !== 'todos') {
-      setProduct(applyFilter(products, filters))
       setExpanded('panel2')
     }
     if (filters.modelos.value !== 'todos') {
       setExpanded('panel3')
-      setProduct(applyFilter(products, filters))
-    }
-    if (filters.modelosVersao.value !== 'todos') {
-      setProduct(applyFilter(products, filters))
-    }
-    if (filters.optional.length < 1) {
-      setProduct(applyFilter(products, filters))
     }
   }, [filters]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    if (event.target.id === "left") {
+    if (event.target.id === "leftValue") {
       // Left input box is changed
-      const newValue = [event.target.value, price[1]];
+      const newValue = [Number(event.target.value), Number(filters.price[1])];
       // @ts-ignore
-      setPrice(newValue);
+      setFilters({
+        ...filters,
+        price: newValue
+      });
     } else {
       // Right input box is changed
-      const newValue = [price[0], event.target.value];
+      const newValue = [Number(filters.price[0]), Number(event.target.value)];
       // @ts-ignore
-      setPrice(newValue);
+      setFilters({
+        ...filters,
+        price: newValue
+      });
     }
   };
 
-  useEffect(() => {
-    setFilters({
-      ...filters,
-      price: [price[0], price[1]]
-    })
-  }, [price]);
+  const handleInputYear = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (event.target.id === "leftYear") {
+      // Left input box is changed
+      const newValue = [Number(event.target.value), Number(filters.year[1])];
+      // @ts-ignore
+      setFilters({
+        ...filters,
+        year: newValue
+      });
+    } else {
+      // Right input box is changed
+      const newValue = [Number(filters.year[0]), Number(event.target.value)];
+      // @ts-ignore
+      setFilters({
+        ...filters,
+        year: newValue
+      })
+    }
+  };
+
+  const handleInputKm = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (event.target.id === "leftKm") {
+      // Left input box is changed
+      const newValue = [Number(event.target.value), Number(filters.km[1])];
+      // @ts-ignore
+      setFilters({
+        ...filters,
+        km: newValue
+      })
+    } else {
+      // Right input box is changed
+      const newValue = [Number(filters.km[0]), Number(event.target.value)];
+      // @ts-ignore
+      setFilters({
+        ...filters,
+        km: newValue
+      })
+    }
+  };
 
   const renderContent = (
     <Scrollbar
@@ -274,7 +302,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
         <Logo />
 
       </Stack>
-      <FormProvider methods={methods}>
+      <Box>
         <Stack spacing={3} sx={{ p: 2.5 }}>
           <Button onClick={() => {
             setFilters({
@@ -319,6 +347,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             })
                             setModelos([])
                             setModelosVersao([])
+                            setPage(1)
                           }
                         } />
                     ))
@@ -351,10 +380,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
-                <RadioGroup
-                  defaultValue={'todos'}
-                  value={filters.modelos.value || ''}
-                >
+                <RadioGroup defaultValue={'todos'} value={filters.modelos.value || ''}>
                   {
                     modelos.map((modelo) => (
                       <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
@@ -365,6 +391,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             modelosVersao: { label: 'Todos', value: 'todos' },
                             optional: [],
                           })
+                          setPage(1)
                           setModelosVersao([])
                         }
                       } />
@@ -411,6 +438,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             modelosVersao: modelo,
                             optional: [],
                           })
+                          setPage(1)
                         }
                       } />
                     ))
@@ -439,6 +467,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                   ...filters,
                   optional: []
                 })
+
               }}>
                 Limpar
               </Button>
@@ -452,8 +481,11 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                       key={index}
                       control={
                         <Checkbox
-                          checked={filters.optional.includes(item.descricaoOpcional.replaceAll(/\s/g, ''))}
-                          onChange={() => handleChange(item.descricaoOpcional.replaceAll(/\s/g, ''))}
+                          checked={filters.optional.includes(item.idOpcional)}
+                          onChange={() => {
+                            setPage(1)
+                            handleChange(item.idOpcional)
+                          }}
                         />
                       }
                       label={item.descricaoOpcional}
@@ -490,6 +522,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             ...filters,
                             category: category
                           })
+                          setPage(1)
                         }
                       } />
                     ))
@@ -499,30 +532,43 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionDetails>
           </Accordion>
 
+          {/* VALOR */}
           <Stack spacing={1} sx={{ pb: 2 }}>
             <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
               Valor
             </Typography>
 
             <Stack direction="column" spacing={2}>
-              <InputRange id="left" type='min' value={String(price[0])} setValue={handleInputChange} />
-              <InputRange id="right" type='max' value={String(price[1])} setValue={handleInputChange} />
+              <InputRange id="leftValue" type='min' letter='(R$)' typeInput='number' value={String(filters.price[0])} setValue={handleInputChange} />
+              <InputRange id="rightValue" type='max' letter='(R$)' typeInput='number' value={String(filters.price[1])} setValue={handleInputChange} />
             </Stack>
+          </Stack>
 
-            <Slider
-              getAriaLabel={() => 'Preço dos Carros'}
-              value={price}
-              max={400000}
-              min={0}
-              defaultValue={price}
-              onChange={handleChangeRangePrice}
-              valueLabelDisplay="auto"
-              getAriaValueText={(value) => `R$ ${fCurrencyBR(value)}`}
-              valueLabelFormat={(value) => `R$ ${fCurrencyBR(value)}`}
-            />
+          {/* ANO */}
+          <Stack spacing={1} sx={{ pb: 2 }}>
+            <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+              Ano
+            </Typography>
+
+            <Stack direction="column" spacing={2}>
+              <InputRange id="leftYear" letter='Ano' typeInput='number' value={String(filters.year[0])} setValue={handleInputYear} />
+              <InputRange id="rightYear" letter='Ano' typeInput='number' value={String(filters.year[1])} setValue={handleInputYear} />
+            </Stack>
+          </Stack>
+
+          {/* KM */}
+          <Stack spacing={1} sx={{ pb: 2 }}>
+            <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+              KM
+            </Typography>
+
+            <Stack direction="column" spacing={2}>
+              <InputRange id="leftKm" letter='Km' typeInput='number' value={String(filters.km[0])} setValue={handleInputKm} />
+              <InputRange id="rightKm" letter='Km' typeInput='number' value={String(filters.km[1])} setValue={handleInputKm} />
+            </Stack>
           </Stack>
         </Stack>
-      </FormProvider>
+      </Box>
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar >
   );
@@ -567,40 +613,4 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       )}
     </Box>
   );
-}
-
-
-function applyFilter(products: IProduct[], filters: IProductFilter) {
-  const { optional, category, price, marcas, modelos, modelosVersao } = filters;
-
-  const min = price[0];
-
-  const max = price[1];
-
-
-  if (optional.length) {
-    products = products.filter((product) => product?.opcionaisArray?.some((opt) => optional.includes(opt)));
-  }
-
-  if (category.value !== 'todos') {
-    products = products.filter((product) => product.descricaoCategoria === category.label);
-  }
-
-  if (marcas.value !== 'todos') {
-    products = products.filter((product) => product.descricaoMarca === marcas.label);
-  }
-
-  if (modelos.value !== 'todos') {
-    products = products.filter((product) => product.descricaoModelo === modelos.label);
-  }
-
-  if (modelosVersao.value !== 'todos') {
-    products = products.filter((product) => product.descricaoModeloVersao === modelosVersao.label);
-  }
-
-  if (min !== 0 || max !== 400000) {
-    products = products.filter((product) => product.valor >= min && product.valor <= max);
-  }
-
-  return products;
 }

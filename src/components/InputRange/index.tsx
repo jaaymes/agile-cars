@@ -1,7 +1,7 @@
 import { alpha, Input, Stack, Typography } from "@mui/material";
 
-const InputRange = ({ type, value, setValue, id }: {
-  type: 'min' | 'max', value: string, id: string
+const InputRange = ({ type = '', value, setValue, id, letter, typeInput }: {
+  type?: string, value: string, id: string, letter: string, typeInput?: string
   setValue: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
 }) => (
   <Stack direction="row" spacing={0.5} alignItems="center" sx={{ width: '100%' }}>
@@ -14,7 +14,7 @@ const InputRange = ({ type, value, setValue, id }: {
         fontWeight: 'fontWeightBold',
       }}
     >
-      {`${type} (R$)`}
+      {`${type} ${letter} (R$)`}
     </Typography>
     <Input
       id={id}
@@ -24,10 +24,7 @@ const InputRange = ({ type, value, setValue, id }: {
       size="small"
       type={type}
       inputProps={{
-        step: 500,
-        min: 0,
-        max: 400000,
-        type: 'number',
+        type: typeInput || 'string',
       }}
       sx={{
         pr: 1,

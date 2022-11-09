@@ -17,6 +17,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 
 
+import { AuthProvider } from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContex';
 
 import { MotionLazyContainer } from '@/components/animate';
@@ -57,10 +58,12 @@ export default function MyApp(props: MyAppProps) {
           <ThemeProvider>
             <ThemeSettings>
               <SnackbarProvider>
-                <ProductProvider>
-                  <ProgressBar />
-                  {getLayout(<Component {...pageProps} />)}
-                </ProductProvider>
+                <AuthProvider>
+                  <ProductProvider>
+                    <ProgressBar />
+                    {getLayout(<Component {...pageProps} />)}
+                  </ProductProvider>
+                </AuthProvider>
               </SnackbarProvider>
             </ThemeSettings>
           </ThemeProvider>

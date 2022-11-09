@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { RadioGroup } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
@@ -6,7 +8,6 @@ import { StyledCard, StyledWrap, MaskControl, StyledCircleColor } from '../style
 
 export default function ColorPresetsOptions() {
   const { themeColorPresets, onChangeColorPresets, presetsOption } = useSettingsContext();
-
   return (
     <RadioGroup name="themeColorPresets" value={themeColorPresets} onChange={onChangeColorPresets}>
       <StyledWrap sx={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>

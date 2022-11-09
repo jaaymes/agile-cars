@@ -48,28 +48,31 @@ export default function ShopProductCard({ product }: Props) {
           <Box component="span" sx={{ fontSize: '12px' }}>{product.descricaoModelo}</Box>
           <Box component="span" sx={{ fontSize: '12px' }}>{product.descricaoModeloVersao}</Box>
           <Box component="span" sx={{ fontSize: '12px' }}>{`Cartegoria: ${product.descricaoCategoria}`}</Box>
+          <Box component="span" sx={{ fontSize: '12px' }}>{`${product.fab}/${product.mod}`}</Box>
+          <Box component="span" sx={{ fontSize: '12px' }}>{`KM: ${product.km}`}</Box>
           <Label
             variant="filled"
-            color={Math.random() > 0.5 && 'info' || 'error' || 'warning' || 'success'}
             sx={{
               top: 16,
               right: 16,
               zIndex: 9,
               position: 'absolute',
               textTransform: 'uppercase',
+              backgroundColor: (theme) => theme.palette.primary.main,
+              color: (theme) => theme.palette.primary.contrastText,
             }}
           >
             {`R$ ${fCurrency(product.valor)}`}
           </Label>
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 1 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-around">
           <IconButton
             onClick={handleRedirectWhatsapp}
             sx={{
               color: colors.lightGreen[700],
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
               p: 0,
               '&:hover': {
                 color: colors.lightGreen[500],

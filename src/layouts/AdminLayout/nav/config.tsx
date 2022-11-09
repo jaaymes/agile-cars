@@ -1,11 +1,8 @@
-// routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
-// components
-import Label from '../../../components/label';
-import Iconify from '../../../components/iconify';
-import SvgColor from '../../../components/svg-color';
+import Iconify from '@/components/iconify';
+import Label from '@/components/label';
+import SvgColor from '@/components/svg-color';
 
-// ----------------------------------------------------------------------
+import { PATH_DASHBOARD } from '@/routes/paths';
 
 const icon = (name: string) => (
   <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />

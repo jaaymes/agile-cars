@@ -19,6 +19,11 @@ export function fCurrencyBR(number: InputValue) {
   return result(numeral(number).format('0,0.00'), ',00');
 }
 
+// format number decimal
+export function fDecimal(number: InputValue) { 
+  return numeral(number).format('0,0.00');
+}
+
 // export function fCurrency(number: InputValue) {
 //   const format = number ? numeral(number).format('$0,0.00') : '';
 

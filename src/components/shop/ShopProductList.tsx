@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useProduct } from '@/hooks/useProduct';
 
 import { SkeletonProductItem } from '@/components/skeleton';
 
 import { IProduct } from '@/@types/product';
-import { Box, BoxProps, Button, Typography } from '@mui/material';
+import { Box, BoxProps, Button, Pagination, Typography } from '@mui/material';
 
 import ShopProductCard from './ShopProductCard';
 
@@ -13,16 +13,7 @@ interface Props extends BoxProps {
 }
 
 export default function ShopProductList({ products, loading, ...other }: Props) {
-  const [numberOfitemsShown, setNumberOfItemsToShown] = useState(10);
-
-  const showMore = () => {
-    if (numberOfitemsShown + 3 <= products.length) {
-      setNumberOfItemsToShown(numberOfitemsShown + 5);
-    } else {
-      setNumberOfItemsToShown(products.length);
-    }
-  };
-
+  const { setPage, page, countPage } = useProduct()
   return (
     <>
       <Box
@@ -36,7 +27,7 @@ export default function ShopProductList({ products, loading, ...other }: Props) 
         }}
         {...other}
       >
-        {(loading ? [...Array(5)] : products)?.slice(0, numberOfitemsShown).map((product: IProduct, index) =>
+        {(loading ? [...Array(5)] : products)?.map((product: IProduct, index) =>
           product ? (
             <ShopProductCard key={product.idVeiculo} product={product} />
           ) : (
@@ -45,16 +36,15 @@ export default function ShopProductList({ products, loading, ...other }: Props) 
         )}
 
       </Box>
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-        {
-          products?.length >= numberOfitemsShown && (
-            <Button sx={{ p: 2, mt: 2 }}>
-              <Typography onClick={showMore}>
-                + Mostrar mais
-              </Typography>
-            </Button>
-          )
-        }
+      <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
+        <Pagination
+          onChange={(event, value) => setPage(value)}
+          page={page}
+          count={countPage} sx={{
+            '& .MuiPaginationItem-root': {
+              background: (theme) => theme.palette.background.paper,
+            }
+          }} />
       </Box>
     </>
   );

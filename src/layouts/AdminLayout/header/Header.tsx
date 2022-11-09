@@ -9,7 +9,7 @@ import { bgBlur } from '@/utils/cssStyles';
 
 import { HEADER, NAV } from '@/config';
 
-import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { AppBar, Toolbar, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 type Props = {

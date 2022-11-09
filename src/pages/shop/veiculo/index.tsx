@@ -28,7 +28,10 @@ export default function ProductDetails() {
   const handleGetProduct = async (id: number, idFranqueado: number) => {
 
     try {
-      const { collection } = await getProducts(id, idFranqueado);
+      const { collection } = await getProducts({
+        id,
+        idFranqueado
+      });
       if (collection[0]) {
         collection[0].images = [collection[0]?.foto1, collection[0]?.foto2, collection[0]?.foto3, collection[0]?.foto4, collection[0]?.foto5, collection[0]?.foto6, collection[0]?.foto7, collection[0]?.foto8].filter(index =>
           index !== undefined)

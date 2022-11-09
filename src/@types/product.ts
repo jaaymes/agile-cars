@@ -26,7 +26,9 @@ export type IProduct = {
 };
 
 export type IProductFilter = {
-  optional: string[];
+  optional: number[];
+  year: number[];
+  km: number[];
   category: {
     label: string;
     value: string;
