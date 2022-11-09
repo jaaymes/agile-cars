@@ -66,7 +66,7 @@ export default function ShopProductCard({ product }: Props) {
           </Label>
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-around">
+        <Stack direction="row" alignItems="center" justifyContent="space-around" sx={{ pb: 1 }}>
           <IconButton
             onClick={handleRedirectWhatsapp}
             sx={{
@@ -80,9 +80,9 @@ export default function ShopProductCard({ product }: Props) {
             }}>
             <RiWhatsappLine />
           </IconButton>
-          <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref >
+          <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
             {/* @ts-ignore */}
-            <Button target="_blank" rel="noopener noreferrer"> + Detalhes</Button>
+            <Button target="_blank" rel="noopener noreferrer" > + Detalhes</Button>
           </Link>
         </Stack>
       </Stack>
