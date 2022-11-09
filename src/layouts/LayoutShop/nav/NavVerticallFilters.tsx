@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 import { useProduct } from '@/hooks/useProduct';
 import useResponsive from '@/hooks/useResponsive';
 
-import FormProvider from '@/components/hook-form';
 import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
-
-import { fDecimal } from '@/utils/formatNumber';
 
 import { getCategory, getOptional } from '@/services/filters';
 import { getMarcas, getModelos, getModelosVersao, getProducts } from '@/services/products';
@@ -60,13 +56,12 @@ interface ICategories {
 }
 
 export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
-  const { setProduct, page, setCountPage, setPage } = useProduct()
+  const { setProduct, page, setCountPage, setPage, order, direction } = useProduct()
 
   const [filters, setFilters] = useState<IProductFilter>(defaultValues);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [marcas, setMarcas] = useState<ICategories[]>([]);
-  const [price, setPrice] = useState<number[]>([]);
   const [modelos, setModelos] = useState<ICategories[]>([]);
   const [modelosVersao, setModelosVersao] = useState<ICategories[]>([]);
   const [expanded, setExpanded] = useState<string | false>('panel1');
@@ -113,12 +108,14 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       idCategoria: filters.category.value === 'todos' ? undefined : Number(filters.category.value),
       idModeloVersao: filters.modelosVersao.value === 'todos' ? undefined : Number(filters.modelosVersao.value),
       opcionais: filters.optional.length > 0 ? filters.optional.toString() : undefined,
-      valorInicial: filters.price[0] ? filters.price[0] : undefined,
-      valorFinal: filters.price[1] ? filters.price[1] : undefined,
-      fabInicial: filters.year[0] ? filters.year[0] : undefined,
-      fabFinal: filters.year[1] ? filters.year[1] : undefined,
-      kmInicial: filters.km[0] ? filters.km[0] : undefined,
-      kmFinal: filters.km[1] ? filters.km[1] : undefined,
+      valorInicial: filters?.price[0] || undefined,
+      valorFinal: filters?.price[1] || undefined,
+      fabInicial: filters?.year[0] || undefined,
+      fabFinal: filters?.year[1] || undefined,
+      kmInicial: filters?.km[0] || undefined,
+      kmFinal: filters?.km[1] || undefined,
+      ordenar: order,
+      direcao: direction
     })
     if (products) {
       setCountPage(products?.pagination?.totalPages)
@@ -195,7 +192,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     filters.optional,
     filters.price,
     filters.km,
-    filters.year
+    filters.year,
+    order,
+    direction
   ]);
 
   useEffect(() => {

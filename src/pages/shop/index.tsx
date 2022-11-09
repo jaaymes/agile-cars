@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useProduct } from '@/hooks/useProduct';
 
 import { ShopProductList } from '@/components/shop';
+import ShopProductSort from '@/components/shop/ShopProductSort';
 
 import LayoutShop from '@/layouts/LayoutShop';
 import { Typography, Stack, Box } from '@mui/material';
@@ -19,6 +20,7 @@ export default function EcommerceShopPage() {
         <title> Agile Motors | Store</title>
       </Head>
       <Box sx={{ p: 2 }}>
+        <ShopProductSort />
         <Stack sx={{ mb: 3 }}>
           {!product?.length && (
             <>

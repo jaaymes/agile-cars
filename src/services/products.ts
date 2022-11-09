@@ -15,6 +15,8 @@ interface IGetProducts {
   fabFinal?: number;
   kmInicial?: number;
   kmFinal?: number;
+  ordenar?: string | null;
+  direcao?: string | null;
 }
 
 export const getProducts = async ({
@@ -32,9 +34,11 @@ export const getProducts = async ({
   fabFinal,
   kmInicial,
   kmFinal,
+  ordenar = null,
+  direcao = null,
 }: IGetProducts) => {
     try {
-      const response = await api.post(`/veiculo/pesquisar?page=${page}&pagesize=10`, {
+      const response = await api.post(`/veiculo/pesquisar?page=${page}&pagesize=10${ordenar === null ? '&ordenar=valor' : `&ordenar=${ordenar}` } ${direcao === null ? '&direcao=asc' : `&direcao=${direcao}` }`, {
         idVeiculo: id,
         idFranqueado: idFranqueado,
         idModelo,
@@ -49,7 +53,6 @@ export const getProducts = async ({
         kmInicial,
         kmFinal,
       });
-      console.log('response.data', response.data)
       return response.data
     } catch (error) {
       console.error(error);

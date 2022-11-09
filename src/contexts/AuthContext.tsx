@@ -63,7 +63,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         descricaoFuncionario,
         senha
       })
-      console.log(data)
       const newUser = { ...data }
       setUser(newUser)
       setApiAuthHeader(data.token)

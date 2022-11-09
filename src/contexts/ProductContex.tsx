@@ -9,6 +9,10 @@ export interface IProductContext {
   page: number
   setCountPage: React.Dispatch<React.SetStateAction<number>>
   countPage: number
+  order: 'valor' | 'fab' | 'km' | '' | null
+  setOrder: React.Dispatch<React.SetStateAction<'valor' | 'fab' | 'km' | '' | null>>
+  direction: 'asc' | 'desc' | '' | null
+  setDirection: React.Dispatch<React.SetStateAction<'asc' | 'desc' | '' | null>>
 }
 
 interface IContextProvider {
@@ -21,7 +25,8 @@ export const ProductProvider: React.FC<IContextProvider> = ({ children }) => {
   const [product, setProduct] = useState<IProduct[]>([])
   const [page, setPage] = useState(1)
   const [countPage, setCountPage] = useState(1)
-
+  const [order, setOrder] = useState<'valor' | 'fab' | 'km' | '' | null>(null)
+  const [direction, setDirection] = useState<'asc' | 'desc' | '' | null>(null)
 
   return (
     <ProductContext.Provider value={{
@@ -30,7 +35,11 @@ export const ProductProvider: React.FC<IContextProvider> = ({ children }) => {
       page,
       setPage,
       countPage,
-      setCountPage
+      setCountPage,
+      order,
+      setOrder,
+      direction,
+      setDirection
     }}>
       {children}
     </ProductContext.Provider>
