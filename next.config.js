@@ -4,21 +4,6 @@ const runtimeCaching = require('next-pwa/cache.js')
 
 const path = require('path')
 
-const redirects = async () => [
-    {
-      source: '/_backups',
-      destination: '/',
-      permanent: true,
-    },
-  ]
-
-const rewrites = async () => [
-    {
-      source: '/rewrite',
-      destination: '/',
-    },
-  ]
-
 const headers = async () => [
     {
       source: '/:path*',
@@ -57,28 +42,6 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'image.shutterstock.com'],
   },
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'src/_styles')],
-  },
-  webpack: (config) => {
-    // find the built-in loader
-    const imageLoaderRule = config.module.rules.find(
-      (rule) => rule.loader === 'next-image-loader'
-    )
-    // make the loader ignore *.inline files
-    imageLoaderRule.exclude = /\.inline\.(png|jpg|svg)$/i
-    
-    // add a new URL loader for *.inline files
-    config.module.rules.push({
-      test: /\.inline\.(png|jpg|gif)$/i,
-      use: [
-        {
-          loader: 'url-loader'
-        }
-      ]
-    })
-    return config
-  },
   pwa: {
     dest: 'public',
     swSrc: './service-worker.js',
@@ -94,7 +57,7 @@ const nextConfig = {
 module.exports = buildConfig = _phase => {
   const plugins = [withPWA]
   const config = plugins.reduce((acc, plugin) => plugin(acc), {
-    ...nextConfig, headers, rewrites, redirects
+    ...nextConfig, headers
   })
   return config
 }

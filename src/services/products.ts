@@ -73,7 +73,7 @@ export const getProduct = async (id: number, idFranqueado: number) => {
 
 export const getMarcas = async () => { 
     try {
-      const response = await api.get(`/marca/pesquisar`);
+      const response = await api.get(`/marca/PesquisarSemPaginacao`);
       return response.data
     } catch (error) {
       console.error(error);
@@ -83,7 +83,7 @@ export const getMarcas = async () => {
 
 export const getModelos = async (id: number) => { 
     try {
-      const response = await api.get(`/modelo/pesquisar?idMarca=${id}`);
+      const response = await api.get(`/modelo/PesquisarSemPaginacao?idMarca=${id}`);
       return response.data
     } catch (error) {
       console.error(error);
@@ -93,7 +93,7 @@ export const getModelos = async (id: number) => {
 
 export const getModelosVersao = async (id: number) => { 
     try {
-      const response = await api.get(`/modeloversao/pesquisar?idModelo=${id}`);
+      const response = await api.get(`/modeloversao/PesquisarSemPaginacao?idModelo=${id}`);
       return response.data
     } catch (error) {
       console.error(error);

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { GoDiffRemoved } from 'react-icons/go';
+import { IoAddOutline } from 'react-icons/io5';
 
 import { useProduct } from '@/hooks/useProduct';
 import useResponsive from '@/hooks/useResponsive';
@@ -15,7 +17,8 @@ import { NAV } from '@/config';
 import { IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button } from '@mui/material';
+import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button, TextField } from '@mui/material';
+
 
 type Props = {
   openNav: boolean;
@@ -66,6 +69,13 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   const [modelosVersao, setModelosVersao] = useState<ICategories[]>([]);
   const [expanded, setExpanded] = useState<string | false>('panel1');
   const [numberOfitemsShown, setNumberOfItemsToShown] = useState(8);
+  const [searchMarca, setSearchMarca] = useState('');
+  const [searchModelo, setSearchModelo] = useState('');
+  const [searchModeloVersao, setSearchModeloVersao] = useState('');
+
+  const [searchMarcaResult, setSearchMarcaResult] = useState<ICategories[]>([]);
+  const [searchModeloResult, setSearchModeloResult] = useState<ICategories[]>([]);
+  const [searchModeloVersaoResult, setSearchModeloVersaoResult] = useState<ICategories[]>([]);
 
   const showMore = () => {
     if (numberOfitemsShown + 3 <= optionals.length) {
@@ -74,6 +84,12 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       setNumberOfItemsToShown(optionals.length);
     }
   };
+
+  const RemoveMore = () => {
+    if (numberOfitemsShown - 3 >= 8) {
+      setNumberOfItemsToShown(numberOfitemsShown - 3);
+    }
+  }
 
   const handleChangeAccordion = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
     setExpanded(newExpanded ? panel : false);
@@ -146,8 +162,8 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }
 
   const handleGetMarcas = async () => {
-    const { collection: marcasResponse } = await getMarcas()
-    const marcasReturn = marcasResponse.map((item: { descricaoMarca: any; idMarca: any; }) => ({
+    const response = await getMarcas()
+    const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
       label: item.descricaoMarca.toUpperCase(),
       value: item.idMarca
     }))
@@ -156,8 +172,8 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }
 
   const handleGetModelos = async () => {
-    const { collection: modelosResponse } = await getModelos(Number(filters.marcas.value))
-    const modelosReturn = modelosResponse.map((item: { descricaoModelo: any; idModelo: any; }) => ({
+    const response = await getModelos(Number(filters.marcas.value))
+    const modelosReturn = response.map((item: { descricaoModelo: any; idModelo: any; }) => ({
       label: item.descricaoModelo,
       value: item.idModelo
     }))
@@ -166,8 +182,8 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }
 
   const handleGetModeloVersao = async () => {
-    const { collection: modeloVersaoResponse } = await getModelosVersao(Number(filters.modelos.value))
-    const modeloVersaoReturn = modeloVersaoResponse.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
+    const { collection: responseModeloVersao } = await getModelosVersao(Number(filters.modelos.value))
+    const modeloVersaoReturn = responseModeloVersao.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
       label: item.descricaoModeloVersao,
       value: item.idModeloVersao
     }))
@@ -175,48 +191,6 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     setModelosVersao(modeloVersaoReturn)
   }
 
-  useEffect(() => {
-    handleGetOptional()
-    handleGetCategory()
-    handleGetMarcas()
-  }, []);
-
-  useEffect(() => {
-    handleProducts()
-  }, [
-    page,
-    filters.modelos.value,
-    filters.marcas.value,
-    filters.category.value,
-    filters.modelosVersao.value,
-    filters.optional,
-    filters.price,
-    filters.km,
-    filters.year,
-    order,
-    direction
-  ]);
-
-  useEffect(() => {
-    if (filters.modelos.value !== 'todos') {
-      handleGetModeloVersao()
-    }
-  }, [filters.modelos.value]);
-
-  useEffect(() => {
-    if (filters.marcas.value !== 'todos') {
-      handleGetModelos()
-    }
-  }, [filters.marcas.value]);
-
-  useEffect(() => {
-    if (filters.marcas.value !== 'todos') {
-      setExpanded('panel2')
-    }
-    if (filters.modelos.value !== 'todos') {
-      setExpanded('panel3')
-    }
-  }, [filters]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.target.id === "leftValue") {
@@ -278,6 +252,74 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }
   };
 
+  useEffect(() => {
+    setSearchMarcaResult([])
+    if (searchMarca) {
+      const search = marcas.filter((item: any) => item.label.toLowerCase().includes(searchMarca.toLowerCase()))
+      setSearchMarcaResult(search)
+    }
+  }, [searchMarca]);
+
+  useEffect(() => {
+    setSearchModeloResult([])
+    if (searchModelo) {
+      const search = modelos.filter((item: any) => item.label.toLowerCase().includes(searchModelo.toLowerCase()))
+      setSearchModeloResult(search)
+    }
+  }, [searchModelo]);
+
+  useEffect(() => {
+    setSearchModeloVersaoResult([])
+    if (searchModeloVersao) {
+      const search = modelosVersao.filter((item: any) => item.label.toLowerCase().includes(searchModeloVersao.toLowerCase()))
+      setSearchModeloVersaoResult(search)
+    }
+  }, [searchModeloVersao]);
+
+  useEffect(() => {
+    handleGetOptional()
+    handleGetCategory()
+    handleGetMarcas()
+  }, []);
+
+  useEffect(() => {
+    handleProducts()
+  }, [
+    page,
+    filters.modelos.value,
+    filters.marcas.value,
+    filters.category.value,
+    filters.modelosVersao.value,
+    filters.optional,
+    filters.price,
+    filters.km,
+    filters.year,
+    order,
+    direction
+  ]);
+
+  useEffect(() => {
+    if (filters.modelos.value !== 'todos') {
+      handleGetModeloVersao()
+    }
+  }, [filters.modelos.value]);
+
+  useEffect(() => {
+    if (filters.marcas.value !== 'todos') {
+      handleGetModelos()
+    }
+  }, [filters.marcas.value]);
+
+  useEffect(() => {
+    if (filters.marcas.value !== 'todos') {
+      setExpanded('panel2')
+    }
+    if (filters.modelos.value !== 'todos') {
+      setExpanded('panel3')
+    }
+  }, [filters]);
+
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -328,12 +370,20 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
+                <TextField size="small" sx={{
+                  width: '100%',
+                  pb: 1
+                }}
+                  variant="outlined"
+                  label="Pesquise por marca"
+                  onChange={(e) => setSearchMarca(e.target.value)}
+                />
                 <RadioGroup
                   defaultValue={'todos'}
                   value={filters.marcas.value || ''}
                 >
                   {
-                    marcas.map((marca) => (
+                    searchMarcaResult.length > 0 ? searchMarcaResult.map((marca: any) => (
                       <FormControlLabel key={marca.value} value={marca.value} control={<Radio />} label={marca.label}
                         onChange={
                           () => {
@@ -349,7 +399,24 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                             setPage(1)
                           }
                         } />
-                    ))
+                    )) :
+                      marcas.map((marca) => (
+                        <FormControlLabel key={marca.value} value={marca.value} control={<Radio />} label={marca.label}
+                          onChange={
+                            () => {
+                              setFilters({
+                                ...filters,
+                                marcas: marca,
+                                modelos: { label: 'Todos', value: 'todos' },
+                                modelosVersao: { label: 'Todos', value: 'todos' },
+                                optional: [],
+                              })
+                              setModelos([])
+                              setModelosVersao([])
+                              setPage(1)
+                            }
+                          } />
+                      ))
                   }
                 </RadioGroup>
               </FormControl>
@@ -379,9 +446,17 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
+                <TextField size="small" sx={{
+                  width: '100%',
+                  pb: 1
+                }}
+                  variant="outlined"
+                  label="Pesquise por Modelo"
+                  onChange={(e) => setSearchModelo(e.target.value)}
+                />
                 <RadioGroup defaultValue={'todos'} value={filters.modelos.value || ''}>
                   {
-                    modelos.map((modelo) => (
+                    searchModeloResult.length > 0 ? searchModeloResult.map((modelo) => (
                       <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
@@ -394,7 +469,21 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                           setModelosVersao([])
                         }
                       } />
-                    ))
+                    )) :
+                      modelos.map((modelo) => (
+                        <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
+                          () => {
+                            setFilters({
+                              ...filters,
+                              modelos: modelo,
+                              modelosVersao: { label: 'Todos', value: 'todos' },
+                              optional: [],
+                            })
+                            setPage(1)
+                            setModelosVersao([])
+                          }
+                        } />
+                      ))
                   }
                 </RadioGroup>
               </FormControl>
@@ -424,12 +513,20 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
             </AccordionSummary>
             <AccordionDetails>
               <FormControl>
+                <TextField size="small" sx={{
+                  width: '100%',
+                  pb: 1
+                }}
+                  variant="outlined"
+                  label="Pesquise por Modelo Versão"
+                  onChange={(e) => setSearchModeloVersao(e.target.value)}
+                />
                 <RadioGroup
                   defaultValue={'todos'}
                   value={filters.modelosVersao.value || ''}
                 >
                   {
-                    modelosVersao.map((modelo) => (
+                    searchModeloVersaoResult.length > 0 ? searchModeloVersaoResult.map((modelo) => (
                       <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
                         () => {
                           setFilters({
@@ -440,7 +537,19 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                           setPage(1)
                         }
                       } />
-                    ))
+                    )) :
+                      modelosVersao.map((modelo) => (
+                        <FormControlLabel key={modelo.value} value={modelo.value} control={<Radio />} label={modelo.label} onChange={
+                          () => {
+                            setFilters({
+                              ...filters,
+                              modelosVersao: modelo,
+                              optional: [],
+                            })
+                            setPage(1)
+                          }
+                        } />
+                      ))
                   }
                 </RadioGroup>
               </FormControl>
@@ -491,11 +600,29 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
                     />
                   ))
                 }
-                <Button sx={{ p: 2, mt: 2 }}>
-                  <Typography onClick={showMore}>
-                    + Mostrar mais
-                  </Typography>
-                </Button>
+                <Stack direction="row">
+                  <Button sx={{ p: 2, mt: 2 }}>
+                    <Typography onClick={showMore} sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1
+                    }}>
+                      <IoAddOutline /> Mais
+                    </Typography>
+                  </Button>
+                  <Button sx={{ p: 2, mt: 2 }}>
+                    <Typography onClick={RemoveMore} sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1
+                    }}>
+                      <GoDiffRemoved /> Remover
+                    </Typography>
+                  </Button>
+                </Stack>
+
               </FormGroup>
             </AccordionDetails>
           </Accordion>
