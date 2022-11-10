@@ -1,4 +1,3 @@
-// @mui
 import { useState } from 'react';
 
 import useOffSetTop from '@/hooks/useOffSetTop';
@@ -6,17 +5,15 @@ import useResponsive from '@/hooks/useResponsive';
 
 import Iconify from '@/components/iconify';
 import SettingsDrawer from '@/components/settings/drawer';
-import Block from '@/components/settings/drawer/Block';
-import ColorPresetsOptions from '@/components/settings/drawer/ColorPresetsOptions';
-import ModeOptions from '@/components/settings/drawer/ModeOptions';
 
 import { bgBlur } from '@/utils/cssStyles';
+import { InstallPWA } from '@/utils/Installpwa';
 
 import { HEADER, NAV } from '@/config';
 
-import InvertColorsIcon from '@mui/icons-material/InvertColors';
-import { Stack, AppBar, Toolbar, IconButton, Tooltip, MenuItem, Menu } from '@mui/material';
+import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
 
 type Props = {
   onOpenNav?: VoidFunction;
@@ -56,6 +53,7 @@ export default function Header({ onOpenNav }: Props) {
         justifyContent="flex-end"
         spacing={{ xs: 0.5, sm: 1.5 }}
       >
+        <InstallPWA />
         <SettingsDrawer />
         {/* <ModeOptions /> */}
 

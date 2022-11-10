@@ -1,63 +1,42 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withPWA = require('next-pwa')
-const runtimeCaching = require('next-pwa/cache.js')
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  scope: '/',
+  sw: 'service-worker.js',
+  skipWaiting: true,
+})
 
-const path = require('path')
-
-const headers = async () => [
-    {
-      source: '/:path*',
-      headers: [
-        {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff'
-        },
-        {
-          key: 'X-Frame-Options',
-          value: 'SAMEORIGIN'
-        },
-        {
-          key: 'X-XSS-Protection',
-          value: '1; mode=block'
-        },
-        {
-          key: 'Strict-Transport-Security',
-          value: 'max-age=63072000; includeSubDomains; preload'
-        },
-        {
-          key: 'X-DNS-Prefetch-Control',
-          value: 'on'
-        }
-      ],
-    },
-  ]
-
-
-const nextConfig = {
+/** @type {import('next').NextConfig} */
+module.exports = withPWA({
   reactStrictMode: true,
-  compiler: {
-    removeConsole: process.env.NODE_ENV !== 'development',
-  },
   swcMinify: true,
   images: {
-    domains: ['localhost', 'image.shutterstock.com'],
+    domains: ['*'],
+    minimumCacheTTL: 86400
   },
-  pwa: {
-    dest: 'public',
-    swSrc: './service-worker.js',
-    register: true,
-    runtimeCaching,
-    mode: 'production',
-    reloadOnOnline: true,
-    cacheOnFrontEndNav: true,
-    disable: process.env.NODE_ENV === 'development',
-  }
-}
-
-module.exports = buildConfig = _phase => {
-  const plugins = [withPWA]
-  const config = plugins.reduce((acc, plugin) => plugin(acc), {
-    ...nextConfig, headers
-  })
-  return config
-}
+  headers: async () => [
+      {
+        source: '/:all*(svg|jpg|png|webp)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=9999999999, must-revalidate',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ],
+      }
+    ],
+})
