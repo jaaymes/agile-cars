@@ -6,7 +6,6 @@ import { bgBlur } from '@/utils/cssStyles';
 
 import { HEADER } from '@/config';
 
-import { PATH_PAGE } from '@/routes/paths';
 import { AppBar, Toolbar, Box, BoxProps, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -39,12 +38,6 @@ export default function Header({ isOffset }: Props) {
         }}
       >
         <Logo />
-
-        <NextLink href={PATH_PAGE.faqs} passHref>
-          <Link variant="subtitle2" color="inherit">
-            Need Help?
-          </Link>
-        </NextLink>
       </Toolbar>
 
       {isOffset && <Shadow />}
