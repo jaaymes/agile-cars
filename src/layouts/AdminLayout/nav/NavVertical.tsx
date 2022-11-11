@@ -54,7 +54,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
         <Logo />
 
       </Stack>
-      <NavSectionVertical data={navConfig} />
+      <NavSectionVertical sx={{ mt: 4 }} data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

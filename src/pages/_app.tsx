@@ -1,6 +1,7 @@
 import 'simplebar/src/simplebar.css';
 
 import 'react-image-lightbox/style.css';
+import 'react-toastify/dist/ReactToastify.css'
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -11,6 +12,8 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
+
+import { ToastContainer } from 'react-toastify';
 
 import { NextPage } from 'next';
 import { AppProps } from 'next/app';
@@ -54,20 +57,32 @@ export default function MyApp(props: MyAppProps) {
       </Head>
 
       <SettingsProvider>
-        <MotionLazyContainer>
-          <ThemeProvider>
-            <ThemeSettings>
-              <SnackbarProvider>
-                <AuthProvider>
+        <AuthProvider>
+          <MotionLazyContainer>
+            <ThemeProvider>
+              <ThemeSettings>
+                <SnackbarProvider>
                   <ProductProvider>
                     <ProgressBar />
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme='colored'
+                    />
                     {getLayout(<Component {...pageProps} />)}
                   </ProductProvider>
-                </AuthProvider>
-              </SnackbarProvider>
-            </ThemeSettings>
-          </ThemeProvider>
-        </MotionLazyContainer>
+                </SnackbarProvider>
+              </ThemeSettings>
+            </ThemeProvider>
+          </MotionLazyContainer>
+        </AuthProvider >
       </SettingsProvider>
     </CacheProvider>
   );

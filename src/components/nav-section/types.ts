@@ -13,7 +13,7 @@ export type INavItem = {
 export type NavItemProps = INavItem & ListItemButtonProps;
 
 export type NavListProps = {
-  title: string;
+  title?: string;
   path: string;
   icon?: React.ReactElement;
   info?: React.ReactElement;
@@ -25,7 +25,6 @@ export type NavListProps = {
 
 export interface NavSectionProps extends StackProps {
   data: {
-    subheader: string;
     items: NavListProps[];
   }[];
 }

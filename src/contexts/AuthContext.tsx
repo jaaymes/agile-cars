@@ -1,10 +1,9 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/router';
 
-import { useSnackbar } from '@/components/snackbar';
-
-// import { createCookie, eraseAllCookies, removeCookie } from '@/utils/cookie';
+import { createCookie, eraseAllCookies } from '@/utils/cookie';
 
 import api from '@/services/api';
 import accountService from '@/services/login';
@@ -31,8 +30,6 @@ function setApiAuthHeader(token: string | null) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 export function AuthProvider({ children }: AuthProviderProps) {
-
-  const { enqueueSnackbar } = useSnackbar();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [user, setUser] = useState<any>(null)
@@ -67,21 +64,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(newUser)
       setApiAuthHeader(data.token)
 
+      createCookie('token', data.token, undefined, {
+        maxAge: 60 * 60 * 24, // 24 Hour
+        path: '/'
+      })
+
       setIsAuthenticated(true)
 
       sessionStorage.setItem('IsAuthenticated', JSON.stringify(true))
       sessionStorage.setItem('user', JSON.stringify(newUser))
 
-      router.push('/dashboard')
+      router.push('/admin/dashboard')
     } catch (error: any) {
-      console.log('error', error)
-      enqueueSnackbar(error.response.data.message, { variant: 'error' })
+      toast.error(error.response.data.message)
     }
   }, [])
 
 
   const logout = useCallback(async () => {
     sessionStorage.removeItem('user')
+    eraseAllCookies()
     setApiAuthHeader(null)
     setUser(null)
   }, [])

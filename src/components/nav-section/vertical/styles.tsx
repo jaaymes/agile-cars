@@ -77,14 +77,16 @@ export const StyledItem = styled(ListItemButton, {
 
 // ----------------------------------------------------------------------
 
-export const StyledIcon = styled(ListItemIcon)({
+export const StyledIcon = styled(ListItemIcon, {
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'caption',
+})<StyledItemProps>(({ theme }) => ({
   display: 'flex',
-  color: '#fff',
+  color: theme.palette.mode === 'light' ? theme?.palette.primary.main : 'grey.500',
   alignItems: 'center',
   justifyContent: 'center',
   width: ICON.NAV_ITEM,
   height: ICON.NAV_ITEM,
-});
+}));
 
 // ----------------------------------------------------------------------
 

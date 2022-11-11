@@ -22,16 +22,12 @@ export default function AuthLoginForm() {
   const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const LoginSchema = Yup.object().shape({
     colaborador: Yup.string().required('Colaborador é obrigatório'),
     senha: Yup.string().required('Senha é obrigatória')
   });
-
-  const defaultValues = {
-    email: 'demo@minimals.cc',
-    password: 'demo1234',
-  };
 
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(LoginSchema),
@@ -40,17 +36,19 @@ export default function AuthLoginForm() {
   const {
     reset,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
+      setLoading(true);
       await login({
         descricaoFuncionario: data.colaborador,
         senha: data.senha
       });
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
       reset();
     }
   };
@@ -82,7 +80,7 @@ export default function AuthLoginForm() {
           size="large"
           type="submit"
           variant="contained"
-          loading={isSubmitSuccessful || isSubmitting}
+          loading={loading}
           sx={{
             bgcolor: 'text.primary',
             color: (theme) => (theme.palette.mode === 'light' ? 'common.white' : 'grey.800'),

@@ -16,7 +16,7 @@ export default function LoginLayout({ children, illustration, title }: Props) {
     <StyledRoot>
       <StyledSection>
         <Typography variant="h3" sx={{ mb: 4, maxWidth: 580, textAlign: 'center', color: '#fff' }}>
-          {`Bem-vindo ao Gerenciador de carros`}
+          {`Bem-vindo ao Gestor de Carros`}
         </Typography>
         <Image
           disabledEffect

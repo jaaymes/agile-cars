@@ -1,5 +1,3 @@
-import { PATH_DASHBOARD } from './routes/paths';
-
 export const HOST_API_KEY = process.env.HOST_API_KEY || '';
 
 export const FIREBASE_API = {
@@ -23,12 +21,6 @@ export const AUTH0_API = {
 };
 
 export const MAPBOX_API = process.env.MAPBOX_API;
-
-// ROOT PATH AFTER LOGIN SUCCESSFUL
-export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.app; // as '/dashboard/app'
-
-// LAYOUT
-// ----------------------------------------------------------------------
 
 export const HEADER = {
   H_MOBILE: 64,

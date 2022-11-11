@@ -1,13 +1,11 @@
-// @mui
-import { Box, BoxProps } from '@mui/material';
-// hooks
-import useResponsive from '../../hooks/useResponsive';
-// config
-import { HEADER, NAV } from '../../config';
-// components
-import { useSettingsContext } from '../../components/settings';
+import useResponsive from '@/hooks/useResponsive';
 
-// ----------------------------------------------------------------------
+import { useSettingsContext } from '@/components/settings';
+import SettingsDrawer from '@/components/settings/drawer';
+
+import { HEADER, NAV } from '@/config';
+
+import { Box, BoxProps } from '@mui/material';
 
 const SPACING = 8;
 

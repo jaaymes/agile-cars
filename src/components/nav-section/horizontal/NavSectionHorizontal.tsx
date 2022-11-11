@@ -1,6 +1,8 @@
 import { memo } from 'react';
+
 // @mui
 import { Stack } from '@mui/material';
+
 // utils
 import { hideScrollbarY } from '../../../utils/cssStyles';
 //

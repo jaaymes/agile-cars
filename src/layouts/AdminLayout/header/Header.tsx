@@ -1,16 +1,19 @@
+import { useState } from 'react';
+
 import useOffSetTop from '@/hooks/useOffSetTop';
 import useResponsive from '@/hooks/useResponsive';
 
 import Iconify from '@/components/iconify';
-import Logo from '@/components/logo';
-import { useSettingsContext } from '@/components/settings';
+import SettingsDrawer from '@/components/settings/drawer';
 
 import { bgBlur } from '@/utils/cssStyles';
+import { InstallPWA } from '@/utils/Installpwa';
 
 import { HEADER, NAV } from '@/config';
 
-import { AppBar, Toolbar, IconButton } from '@mui/material';
+import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
 
 type Props = {
   onOpenNav?: VoidFunction;
@@ -18,26 +21,41 @@ type Props = {
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-
-  const { themeLayout } = useSettingsContext();
-
-  const isNavHorizontal = themeLayout === 'horizontal';
-
-  const isNavMini = themeLayout === 'mini';
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const isOffset = useOffSetTop(HEADER.H_DASHBOARD_DESKTOP) && !isNavHorizontal;
+  const isOffset = useOffSetTop(HEADER.H_DASHBOARD_DESKTOP)
 
   const renderContent = (
     <>
-      {isDesktop && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
+      {
+        onOpenNav && (
+          !isDesktop && (
+            <IconButton onClick={onOpenNav} sx={{ mr: 1, color: 'text.primary' }}>
+              <Iconify icon="eva:menu-2-fill" />
+            </IconButton>
+          )
+        )
+      }
 
-      {!isDesktop && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1, color: 'text.primary' }}>
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-      )}
+      <Stack
+        flexGrow={1}
+        direction="row"
+        alignItems="center"
+        justifyContent="flex-end"
+        spacing={{ xs: 0.5, sm: 1.5 }}
+      >
+        <InstallPWA />
+        <SettingsDrawer />
+      </Stack>
     </>
   );
 
@@ -54,19 +72,10 @@ export default function Header({ onOpenNav }: Props) {
           duration: theme.transitions.duration.shorter,
         }),
         ...(isDesktop && {
-          width: `calc(100% - ${NAV.W_DASHBOARD + 1}px)`,
+          width: onOpenNav ? `calc(100% - ${NAV.W_DASHBOARD + 1}px)` : '100%',
           height: HEADER.H_DASHBOARD_DESKTOP,
           ...(isOffset && {
             height: HEADER.H_DASHBOARD_DESKTOP_OFFSET,
-          }),
-          ...(isNavHorizontal && {
-            width: 1,
-            bgcolor: 'background.default',
-            height: HEADER.H_DASHBOARD_DESKTOP_OFFSET,
-            borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
-          }),
-          ...(isNavMini && {
-            width: `calc(100% - ${NAV.W_DASHBOARD_MINI + 1}px)`,
           }),
         }),
       }}

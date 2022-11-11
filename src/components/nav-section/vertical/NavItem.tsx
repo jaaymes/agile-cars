@@ -17,23 +17,23 @@ export default function NavItem({
   isExternalLink,
   ...other
 }: NavItemProps) {
-  const { title, path, icon, info, children, disabled, caption, roles } = item;
+  const { title, path, icon, info, children, disabled, caption } = item;
 
   const subItem = depth !== 1;
 
   const renderContent = (
     <StyledItem depth={depth} active={active} disabled={disabled} caption={!!caption} {...other}>
-      {icon && <StyledIcon>{icon}</StyledIcon>}
+      {icon && <StyledIcon depth={0}>{icon}</StyledIcon>}
 
       {subItem && (
-        <StyledIcon>
+        <StyledIcon depth={0}>
           <StyledDotIcon active={active && subItem} />
         </StyledIcon>
       )}
 
       <ListItemText
         sx={{
-          color: (theme) => theme.palette.mode === 'light' ? '#fff' : 'grey.500',
+          color: (theme) => theme.palette.mode === 'light' ? theme?.palette.primary.main : 'grey.500',
         }}
         primary={title}
         secondary={
@@ -58,9 +58,13 @@ export default function NavItem({
 
       {!!children && (
         <Iconify
+
           width={16}
           icon={open ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'}
-          sx={{ ml: 1, flexShrink: 0 }}
+          sx={{
+            ml: 1, flexShrink: 0,
+            color: (theme) => theme.palette.mode === 'light' ? theme?.palette.primary.main : 'grey.500',
+          }}
         />
       )}
     </StyledItem>
