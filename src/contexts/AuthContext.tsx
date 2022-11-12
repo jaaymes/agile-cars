@@ -13,10 +13,20 @@ interface SignInCredentials {
   senha: string
 }
 
+interface IUser {
+  descricaocliente: string
+  descricaofranqueado: string
+  descricaofuncionario: string
+  email: string
+  idfranqueado: number
+  idfuncionario: number
+  token: string
+}
+
 interface AuthContextData {
   login: (credentials: SignInCredentials) => Promise<void>
   logout: () => void
-  user: User
+  user: IUser
   isAuthenticated: boolean
 }
 

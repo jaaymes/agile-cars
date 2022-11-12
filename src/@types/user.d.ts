@@ -1,4 +1,4 @@
-interface User {
+interface IUser {
   descricaocliente: string
   descricaofranqueado: string
   descricaofuncionario: string

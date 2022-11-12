@@ -16,10 +16,6 @@ const navConfig = [
         title: 'colaboradores',
         path: '/admin/colaboradores',
         icon: <FaUserCog />,
-        children: [
-          { title: 'Lista', path: '/admin/colaboradores' },
-          { title: 'Cadastro', path: '/admin/colaboradores/cadastro' },
-        ],
       },
 
       // franqueadores
@@ -27,10 +23,6 @@ const navConfig = [
         title: 'Franqueadores',
         path: '/admin/franqueadores',
         icon: <AiOutlineApartment width={30} height={30} />,
-        children: [
-          { title: 'Lista', path: '/admin/franqueadores' },
-          { title: 'Cadastro', path: '/admin/franqueadores/cadastro' },
-        ],
       },
 
       // Veiculos
@@ -38,10 +30,6 @@ const navConfig = [
         title: 'veículos',
         path: '/admin/veiculos',
         icon: <AiFillCar width={30} height={30} />,
-        children: [
-          { title: 'Lista', path: '/admin/veiculos' },
-          { title: 'Cadastro', path: '/admin/veiculos/cadastro' },
-        ],
       },
 
       // MARCAS
@@ -49,10 +37,6 @@ const navConfig = [
         title: 'marcas',
         path: '/admin/marcas',
         icon: <FaCarSide width={30} height={30} />,
-        children: [
-          { title: 'Lista', path: '/admin/marcas' },
-          { title: 'Cadastro', path: '/admin/marcas/cadastro' },
-        ],
       },
 
       // MODELOS
@@ -60,10 +44,6 @@ const navConfig = [
         title: 'modelos',
         path: '/admin/modelos',
         icon: <IoCarSharp width={30} height={30} />,
-        children: [
-          { title: 'Lista', path: '/admin/modelos' },
-          { title: 'Cadastro', path: '/admin/modelos/cadastro' },
-        ],
       },
 
       // MODELOS VERSÃO
@@ -71,10 +51,6 @@ const navConfig = [
         title: 'modelo versão',
         path: '/admin/modelo-versao',
         icon: <IoCarSharp width={30} height={30} />,
-        children: [
-          { title: 'Lista', path: '/admin/modelo-versao' },
-          { title: 'Cadastro', path: '/admin/modelo-versao/cadastro' },
-        ],
       },
     ],
   },
