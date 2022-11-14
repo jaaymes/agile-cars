@@ -1,5 +1,6 @@
 // @mui
 import { TableRow, TableCell } from '@mui/material';
+
 //
 import EmptyContent from '../empty-content';
 
@@ -15,7 +16,7 @@ export default function TableNoData({ isNotFound }: Props) {
       {isNotFound ? (
         <TableCell colSpan={12}>
           <EmptyContent
-            title="No Data"
+            title="Sem Registros"
             sx={{
               '& span.MuiBox-root': { height: 160 },
             }}

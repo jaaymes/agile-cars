@@ -96,6 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     eraseAllCookies()
     setApiAuthHeader(null)
     setUser(null)
+    router.push('/admin')
   }, [])
 
   return (

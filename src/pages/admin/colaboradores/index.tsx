@@ -14,7 +14,6 @@ import Iconify from '@/components/iconify';
 import Scrollbar from '@/components/scrollbar';
 import {
   useTable,
-  getComparator,
   emptyRows,
   TableNoData,
   TableEmptyRows,
@@ -22,22 +21,15 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from '@/components/table';
-import { UserTableRow, UserTableToolbar } from '@/components/user/list';
+import { UserTableRow } from '@/components/user/list';
 
-import { getColaboradores } from '@/services/colaboradores';
-import { getFranqueados } from '@/services/franqueados';
+import { deleteColaborador, getColaboradores } from '@/services/colaboradores';
 
-// import { _userList } from '@/_mock/arrays';
-import { IUserAccountGeneral } from '@/@types/user';
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
-  Tab,
-  Tabs,
-  Card,
   Table,
   Button,
   Tooltip,
-  Divider,
   TableBody,
   Container,
   IconButton,
@@ -92,36 +84,13 @@ export default function UserListPage() {
     setOpenConfirm(false);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = colaboradores.filter((row) => String(row.idFuncionario) !== id);
-    setSelected([]);
-    setColaboradores(deleteRow);
-
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
-      }
-    }
+  const handleDeleteRow = async (id: number) => {
+    await deleteColaborador(id, user.idfranqueado)
+    const newColaboradores = colaboradores.filter((colaborador) => colaborador.idFuncionario !== id)
+    setColaboradores(newColaboradores)
   };
 
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = colaboradores.filter((row) => !selected.includes(String(row.idFuncionario)));
-    setSelected([]);
-    setColaboradores(deleteRows);
-
-    if (page > 0) {
-      if (selected.length === dataInPage.length) {
-        setPage(page - 1);
-      } else if (selected.length === dataInPage.length) {
-        setPage(0);
-      } else if (selected.length > dataInPage.length) {
-        const newPage = Math.ceil((colaboradores.length - selected.length) / rowsPerPage) - 1;
-        setPage(newPage);
-      }
-    }
-  };
-
-  const handleEditRow = (id: string) => {
+  const handleEditRow = (id: number) => {
     push(`/admin/colaboradores/create?id=${id}`);
   };
 
@@ -130,7 +99,6 @@ export default function UserListPage() {
       idFranqueado: user?.idfranqueado
     })
     setColaboradores(colaboradores.collection)
-    console.log("🚀 ~ file: index.tsx ~ line 180 ~ handleGetAllColaboradores ~ colaboradores", colaboradores)
   }
 
   useEffect(() => {
@@ -197,12 +165,6 @@ export default function UserListPage() {
                 rowCount={colaboradores.length}
                 numSelected={selected.length}
                 onSort={onSort}
-                onSelectAllRows={(checked) =>
-                  onSelectAllRows(
-                    checked,
-                    colaboradores.map((row) => String(row.idFuncionario))
-                  )
-                }
               />
               {
                 !isSSR && (
@@ -213,10 +175,8 @@ export default function UserListPage() {
                         <UserTableRow
                           key={row.idFuncionario}
                           row={row}
-                          selected={selected.includes(String(row.idFuncionario))}
-                          onSelectRow={() => onSelectRow(String(row.idFuncionario))}
-                          onDeleteRow={() => handleDeleteRow(String(row.idFuncionario))}
-                          onEditRow={() => handleEditRow(row.descricaoFuncionario)}
+                          onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
+                          onEditRow={() => handleEditRow(row.idFuncionario)}
                         />
                       ))}
 
@@ -241,71 +201,6 @@ export default function UserListPage() {
           onRowsPerPageChange={onChangeRowsPerPage}
         />
       </Container>
-
-      <ConfirmDialog
-        open={openConfirm}
-        onClose={handleCloseConfirm}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleDeleteRows(selected);
-              handleCloseConfirm();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
     </>
   );
-}
-
-// ----------------------------------------------------------------------
-
-function applyFilter({
-  inputData,
-  comparator,
-  filterName,
-  filterStatus,
-  filterRole,
-}: {
-  inputData: IUserAccountGeneral[];
-  comparator: (a: any, b: any) => number;
-  filterName: string;
-  filterStatus: string;
-  filterRole: string;
-}) {
-  const stabilizedThis = inputData.map((el, index) => [el, index] as const);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis.map((el) => el[0]);
-
-  if (filterName) {
-    inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-    );
-  }
-
-  if (filterStatus !== 'todos') {
-    inputData = inputData.filter((user) => user.status === filterStatus);
-  }
-
-  if (filterRole !== 'todos') {
-    inputData = inputData.filter((user) => user.role === filterRole);
-  }
-
-  return inputData;
 }

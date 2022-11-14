@@ -1,17 +1,13 @@
-// @mui
-import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
-// @types
-import { IUserProfileCover } from '../../../../@types/user';
-// utils
-import { bgBlur } from '../../../../utils/cssStyles';
-// auth
-import { useAuthContext } from '../../../../auth/useAuthContext';
-// components
-import Image from '../../../../components/image';
-import { CustomAvatar } from '../../../../components/custom-avatar';
+import { useAuth } from '@/hooks/useAuth';
 
-// ----------------------------------------------------------------------
+import { CustomAvatar } from '@/components/custom-avatar';
+import Image from '@/components/image';
+
+import { bgBlur } from '@/utils/cssStyles';
+
+import { IUserProfileCover } from '@/@types/user';
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const StyledRoot = styled('div')(({ theme }) => ({
   '&:before': {
@@ -45,15 +41,15 @@ const StyledInfo = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function ProfileCover({ name, role, cover }: IUserProfileCover) {
-  const { user } = useAuthContext();
+  const { user } = useAuth();
 
   return (
     <StyledRoot>
       <StyledInfo>
         <CustomAvatar
-          src={user?.photoURL}
-          alt={user?.displayName}
-          name={user?.displayName}
+          src={'/assets/avatar.png'}
+          alt={user?.descricaofuncionario}
+          name={user?.descricaofuncionario}
           sx={{
             mx: 'auto',
             borderWidth: 2,

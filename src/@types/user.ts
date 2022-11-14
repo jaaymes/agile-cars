@@ -93,19 +93,12 @@ export type IUserCard = {
 
 export type IUserAccountGeneral = {
   id: string;
-  avatarUrl: string;
-  name: string;
+  imagem: string;
+  descricaoFuncionario: string;
   email: string;
-  phoneNumber: string;
-  address: string;
-  country: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  company: string;
-  isVerified: boolean;
-  status: string;
-  role: string;
+  foneCelular: string;
+  dataCadastro?: Date | string | number;
+  idFuncionario?: number;
 };
 
 export type IUserAccountBillingCreditCard = {

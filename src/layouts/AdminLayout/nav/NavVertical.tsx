@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
+import { useAuth } from '@/hooks/useAuth';
 import useResponsive from '@/hooks/useResponsive';
 
 import Logo from '@/components/logo';
@@ -10,7 +11,7 @@ import Scrollbar from '@/components/scrollbar';
 
 import { NAV } from '@/config';
 
-import { Box, Stack, Drawer } from '@mui/material';
+import { Box, Stack, Drawer, Button } from '@mui/material';
 
 import navConfig from './config';
 
@@ -21,6 +22,7 @@ type Props = {
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { pathname } = useRouter();
+  const { logout } = useAuth()
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -81,6 +83,17 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           }}
         >
           {renderContent}
+          <Button
+            onClick={logout}
+            variant='contained' sx={{
+              mb: 2,
+              width: '90%',
+              justifySelf: 'center',
+              alignSelf: 'center',
+              display: 'flex',
+            }}>
+            Sair
+          </Button>
         </Drawer>
       ) : (
         <Drawer

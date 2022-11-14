@@ -31,7 +31,7 @@ export default function ToggleButton({ notDefault, open, onToggle }: Props) {
       sx={{
         p: 0.5,
         right: 24,
-        bottom: { xs: 2, md: 20 },
+        bottom: { xs: 2, md: 10, lg: 25 },
         zIndex: 999,
         position: 'fixed',
         borderRadius: '50%',

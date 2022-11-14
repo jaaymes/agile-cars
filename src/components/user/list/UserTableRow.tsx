@@ -3,16 +3,12 @@ import { useState } from 'react';
 import ConfirmDialog from '@/components/confirm-dialog';
 import Iconify from '@/components/iconify';
 import Label from '@/components/label';
-import MenuPopover from '@/components/menu-popover';
 
-import { IUserAccountGeneral } from '@/@types/user';
 import {
   Stack,
   Avatar,
   Button,
-  Checkbox,
   TableRow,
-  MenuItem,
   TableCell,
   IconButton,
   Typography,
@@ -20,22 +16,16 @@ import {
 
 type Props = {
   row: IColaboradores;
-  selected: boolean;
   onEditRow: VoidFunction;
-  onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
 
 export default function UserTableRow({
   row,
-  selected,
   onEditRow,
-  onSelectRow,
   onDeleteRow,
 }: Props) {
   const [openConfirm, setOpenConfirm] = useState(false);
-
-  const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -45,21 +35,9 @@ export default function UserTableRow({
     setOpenConfirm(false);
   };
 
-  const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
-    setOpenPopover(event.currentTarget);
-  };
-
-  const handleClosePopover = () => {
-    setOpenPopover(null);
-  };
-
   return (
     <>
-      <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
-
+      <TableRow hover>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar alt={row.descricaoFuncionario} src={row.imagem} />
@@ -75,7 +53,7 @@ export default function UserTableRow({
         <TableCell align="left">
           <Label
             variant="soft"
-            color={(row.idSituacao === 0 && 'error') || 'success'}
+            color={(row.idSituacao === 2 && 'error') || 'success'}
             sx={{ textTransform: 'capitalize' }}
           >
             {row.idSituacao === 1 ? 'Ativo' : 'Inativo'}
@@ -85,7 +63,6 @@ export default function UserTableRow({
         <TableCell align="center">
           <IconButton onClick={() => {
             onEditRow();
-            handleClosePopover();
           }}>
             <Iconify icon="eva:edit-fill" />
           </IconButton>
@@ -93,7 +70,6 @@ export default function UserTableRow({
             sx={{ color: 'error.main' }}
             onClick={() => {
               handleOpenConfirm();
-              handleClosePopover();
             }}>
             <Iconify icon="eva:trash-2-outline" />
           </IconButton>
@@ -107,7 +83,11 @@ export default function UserTableRow({
         title="Deletar"
         content="Tem certeza que quer deletar?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant="contained" color="error" onClick={() => {
+            onDeleteRow()
+            handleCloseConfirm()
+          }
+          }>
             Deletar
           </Button>
         }

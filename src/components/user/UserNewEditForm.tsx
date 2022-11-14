@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { useRouter } from 'next/router';
 
 import * as Yup from 'yup';
 
+import { useAuth } from '@/hooks/useAuth';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import FormProvider, {
-  RHFSelect,
-  RHFSwitch,
   RHFTextField,
   RHFUploadAvatar,
 } from '@/components/hook-form';
@@ -17,103 +17,146 @@ import Label from '@/components/label';
 import { useSnackbar } from '@/components/snackbar';
 import { CustomFile } from '@/components/upload';
 
+import { convertBase64 } from '@/utils/convertBase64';
 import { fData } from '@/utils/formatNumber';
+import { normalizePhone } from '@/utils/normalize';
 
-import { countries } from '@/assets/data';
+import { createColaborador, getColaborador, updateColaborador } from '@/services/colaboradores';
+import { getFranqueados } from '@/services/franqueados';
 
 import { IUserAccountGeneral } from '@/@types/user';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel } from '@mui/material';
-
+import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel, TextField, MenuItem, colors } from '@mui/material';
 
 interface FormValuesProps extends Omit<IUserAccountGeneral, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
+  phoneNumber: string
+  descricaoFuncionario: string
+  email: string
+  senha?: string,
+  idFranqueado: string,
 }
 
-type Props = {
-  isEdit?: boolean;
-  currentUser?: IUserAccountGeneral;
-};
+interface IOptions {
+  value: string;
+  label: string;
+}
 
-export default function UserNewEditForm({ isEdit = false, currentUser }: Props) {
-  const { push } = useRouter();
+export default function UserNewEditForm() {
+  const { push, query: { id } } = useRouter();
+  const { user } = useAuth()
 
   const { enqueueSnackbar } = useSnackbar();
+  const [active, setActive] = useState<boolean>(false);
+  const [franqueados, setFranqueados] = useState<IOptions[]>([])
+  const [dataUser, setDataUser] = useState<FormValuesProps | null>(null)
 
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email(),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().test('required', 'Avatar is required', (value) => value !== ''),
+    descricaoFuncionario: Yup.string().required('Nome é obrigatório'),
+    email: Yup.string().email('Email inválido').required('Email é obrigatório'),
+    idFranqueado: Yup.string().required('Franqueado é obrigatório'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || '',
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || '',
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser]
-  );
-
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewUserSchema),
-    defaultValues,
+    resolver: yupResolver(NewUserSchema)
   });
 
   const {
+    register,
     reset,
     watch,
-    control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
 
-  useEffect(() => {
-    if (isEdit && currentUser) {
-      reset(defaultValues);
+  const handleGetFranqueados = useCallback(async () => {
+    const { collection } = await getFranqueados()
+    const options = collection.map((item: IFranqueados) => ({
+      value: item.idFranqueado,
+      label: item.descricaoFranqueado
+    }))
+    setFranqueados(options)
+  }, []);
+
+  const onSubmitAdd = async (data: FormValuesProps) => {
+    if (!data.avatarUrl) {
+      enqueueSnackbar('Avatar é obrigatório', { variant: 'error' });
+      return
     }
-    if (!isEdit) {
-      reset(defaultValues);
+    try {
+      const image = await convertBase64(data.avatarUrl)
+      await createColaborador({
+        descricaoFuncionario: data.descricaoFuncionario,
+        email: data.email,
+        dataCadastro: new Date(),
+        foneCelular: data.phoneNumber,
+        imagem: String(image),
+        senha: data.senha || '123456',
+        idSituacao: active ? 1 : 2,
+        idFranqueado: Number(data?.idFranqueado),
+      })
+      enqueueSnackbar('Colaborador criado com sucesso', { variant: 'success' });
+      push('/admin/colaboradores')
+    } catch (error: any) {
+      console.log('error', error)
+      enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentUser]);
+
+  };
+
+  const onSubmitEdit = async (data: FormValuesProps) => {
+    const image = typeof data.avatarUrl === 'string' ? data.avatarUrl : await convertBase64(data.avatarUrl)
+    try {
+      await updateColaborador({
+        descricaoFuncionario: data.descricaoFuncionario,
+        email: data.email,
+        dataCadastro: dataUser?.dataCadastro,
+        foneCelular: data.phoneNumber,
+        senha: dataUser?.senha,
+        imagem: String(image),
+        idSituacao: active ? 1 : 2,
+        idFranqueado: Number(data?.idFranqueado),
+        idFuncionario: Number(id),
+      })
+      reset();
+      enqueueSnackbar('Atualizado com Sucesso');
+      push('/admin/colaboradores');
+    } catch (error: any) {
+      enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
+    }
+  }
+
+
+  const loadData = useCallback(async () => {
+    if (id) {
+      const response = await getColaborador(Number(id), user?.idfranqueado)
+      if (response) {
+        setValue('avatarUrl', response.imagem)
+        setValue('descricaoFuncionario', response.descricaoFuncionario)
+        setValue('email', response.email)
+        setValue('phoneNumber', response.foneCelular)
+        setValue('idFranqueado', response.idFranqueado)
+        setActive(response.idSituacao === 1 ? true : false)
+        setDataUser(response)
+      }
+    }
+
+  }, [id])
 
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(!isEdit ? 'Criado com Sucesso!' : 'Atualizado com Sucesso');
-      push('/admin/colaboradores');
-    } catch (error) {
-      console.error(error);
+    if (!id) {
+      await onSubmitAdd(data)
+    } else {
+      await onSubmitEdit(data)
     }
-  };
+  }
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
@@ -125,19 +168,26 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
     [setValue]
   );
 
+  useEffect(() => {
+    handleGetFranqueados()
+  }, []);
+
+  useEffect(() => {
+    loadData()
+  }, [id]);
+
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            {isEdit && (
-              <Label
-                color={values.status === 'active' ? 'success' : 'error'}
-                sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
+            <Label
+              color={active ? 'success' : 'error'}
+              sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+            >
+              {active ? 'Ativo' : 'Inativo'}
+            </Label>
 
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
@@ -155,67 +205,43 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                       color: 'text.secondary',
                     }}
                   >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
+                    Permitidos *.jpeg, *.jpg, *.png, *.gif
+                    <br /> Máximo {fData(3145728)}
                   </Typography>
                 }
               />
             </Box>
 
-            {isEdit && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) =>
-                          field.onChange(event.target.checked ? 'banned' : 'active')
-                        }
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
-
-            <RHFSwitch
-              name="isVerified"
+            <FormControlLabel
               labelPlacement="start"
+              control={<Switch
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'primary.main',
+                  }
+                }}
+                checked={active}
+                onChange={(event) =>
+                  setActive(event.target.checked)
+                }
+              />
+              }
               label={
                 <>
                   <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
+                    Status
                   </Typography>
                 </>
               }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
+              sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
             />
           </Card>
         </Grid>
 
         <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ py: 6.5, px: 4 }}>
             <Box
-              rowGap={3}
+              rowGap={4}
               columnGap={2}
               display="grid"
               gridTemplateColumns={{
@@ -223,30 +249,57 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
+              <RHFTextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                name="descricaoFuncionario" label="Nome do Colaborador" />
+              <RHFTextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                name="email" label="Email" />
+              <RHFTextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                inputProps={{
+                  maxLength: 15,
+                }}
+                name="phoneNumber" label="Celular" value={normalizePhone(values.phoneNumber)} />
 
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
+              <Box>
+                <RHFTextField
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  name="senha" label="Senha" type="password" />
+                <Typography variant="caption" sx={{ mb: 0.5, color: colors?.grey[500] }}>
+                  senha padrao: 123456
+                </Typography>
+              </Box>
+
+
+              <TextField
+                value={values.idFranqueado || ''}
+                size="medium"
+                select
+                label="Franqueado"
+                error={!!errors.idFranqueado}
+                helperText={errors.idFranqueado?.message}
+                {...register('idFranqueado', { required: true })}
+              >
+                {franqueados.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
                     {option.label}
-                  </option>
+                  </MenuItem>
                 ))}
-              </RHFSelect>
-
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
+              </TextField>
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!isEdit ? 'Create User' : 'Save Changes'}
+                {!id ? 'Criar Colaborador' : 'Salvar Mudanças'}
               </LoadingButton>
             </Stack>
           </Card>

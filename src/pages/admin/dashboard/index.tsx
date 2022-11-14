@@ -5,7 +5,6 @@ import Head from 'next/head';
 import Image from '@/components/image';
 
 import DashboardLayout from '@/layouts/AdminLayout';
-import { StyledSection, StyledSectionBg } from '@/layouts/login/styles';
 import { Container, Typography } from '@mui/material';
 
 DashboardPage.getLayout = (page: React.ReactElement) => (
@@ -13,7 +12,6 @@ DashboardPage.getLayout = (page: React.ReactElement) => (
 );
 
 export default function DashboardPage() {
-  console.log('dashboard')
   return (
     <>
       <Head>
