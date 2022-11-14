@@ -24,36 +24,6 @@ export const normalizeCurrency = (value: any, styled = false): string => {
     })
 }
 
-export const normalizeDecimal = (value: any, precision?: number): string => {
-  if (!value) {
-    return value
-  }
-
-  const stringOfNumber = String(Number(normalizeNumber(value)))
-
-  if (stringOfNumber === '0') {
-    return '0'
-  }
-
-  if (stringOfNumber.length <= (precision || 4)) {
-    let result = '0.'
-    const reversed = stringOfNumber.split('').reverse().join('')
-    for (let index = precision - 1 || 3; index >= 0; index -= 1) {
-      result += reversed[index] || '0'
-    }
-    return result
-  }
-  const cents = stringOfNumber.slice(
-    stringOfNumber.length - (precision || 4),
-    stringOfNumber.length
-  )
-  const reals = stringOfNumber.slice(
-    0,
-    stringOfNumber.length - (precision || 4)
-  )
-
-  return `${reals}.${cents}`
-}
 
 export const subString = (value: string, max = 100): string => {
   if (String(value).length > max) {
