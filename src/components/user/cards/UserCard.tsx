@@ -1,18 +1,14 @@
-// @mui
-import { alpha, styled } from '@mui/material/styles';
-import { Box, Card, Avatar, Divider, Typography, Stack, IconButton } from '@mui/material';
-// utils
-import { fShortenNumber } from '../../../../utils/formatNumber';
-// @types
-import { IUserCard } from '../../../../@types/user';
-// _mock
-import { _socials } from '../../../../_mock/arrays';
-// components
-import Image from '../../../../components/image';
-import Iconify from '../../../../components/iconify';
-import SvgColor from '../../../../components/svg-color';
 
-// ----------------------------------------------------------------------
+import Iconify from '@/components/iconify';
+import Image from '@/components/image';
+import SvgColor from '@/components/svg-color';
+
+import { fShortenNumber } from '@/utils/formatNumber';
+
+import { _socials } from '@/_mock/arrays';
+import { IUserCard } from '@/@types/user';
+import { Box, Card, Avatar, Divider, Typography, Stack, IconButton } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 
 const StyledOverlay = styled('div')(({ theme }) => ({
   top: 0,
