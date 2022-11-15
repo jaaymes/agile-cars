@@ -9,6 +9,7 @@ import { isBrowser } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
+import { FranqueadoCustomTable } from '@/components/FranqueadoCustomTable';
 import Iconify from '@/components/iconify';
 import Scrollbar from '@/components/scrollbar';
 import {
@@ -19,9 +20,8 @@ import {
   TableHeadCustom,
   TablePaginationCustom,
 } from '@/components/table';
-import { UserTableRow } from '@/components/userTable';
 
-import { deleteColaborador, getColaboradores } from '@/services/colaboradores';
+import { deleteFranqueado, getFranqueados } from '@/services/franqueados';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
@@ -33,15 +33,14 @@ import {
 } from '@mui/material';
 
 const TABLE_HEAD = [
-  { id: 'descricaoFuncionario', label: 'Nome', align: 'left' },
-  { id: 'descricaoFranqueado', label: 'Franqueadora', align: 'left' },
-  { id: 'idSituacao', label: 'Status', align: 'left' },
+  { id: 'name', label: 'Nome', align: 'left' },
+  { id: 'status', label: 'Status', align: 'left' },
   { id: 'actions', label: 'Ações', align: 'center' },
 ];
 
-ColaboladoresPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+FranqueadosPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default function ColaboladoresPage() {
+export default function FranqueadosPage() {
   const {
     page,
     order,
@@ -59,29 +58,27 @@ export default function ColaboladoresPage() {
 
   const [isSSR, setIsSSR] = useState(true);
 
-  const [colaboradores, setColaboradores] = useState<IColaboradores[]>([])
+  const [franqueados, setFranqueados] = useState<IFranqueados[]>([])
 
-  const dataInPage = colaboradores.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = franqueados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleDeleteRow = async (id: number) => {
-    await deleteColaborador(id, user.idfranqueado)
-    const newColaboradores = colaboradores.filter((colaborador) => colaborador.idFuncionario !== id)
-    setColaboradores(newColaboradores)
+    await deleteFranqueado(id, user.idfranqueado)
+    const newFranqueados = franqueados.filter((colaborador) => colaborador.idFranqueado !== id)
+    setFranqueados(newFranqueados)
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/colaboradores/create?id=${id}`);
+    push(`/admin/franqueados/create?id=${id}`);
   };
 
-  const handleGetAllColaboradores = async () => {
-    const colaboradores = await getColaboradores({
-      idFranqueado: user?.idfranqueado
-    })
-    setColaboradores(colaboradores.collection)
+  const handleGetAllFranqueados = async () => {
+    const franqueados = await getFranqueados()
+    setFranqueados(franqueados.collection)
   }
 
   useEffect(() => {
-    handleGetAllColaboradores()
+    handleGetAllFranqueados()
   }, []);
 
   useEffect(() => {
@@ -90,25 +87,24 @@ export default function ColaboladoresPage() {
     }
   }, [isSSR]);
 
-
   return (
     <>
       <Head>
-        <title> Colaboradores: Lista</title>
+        <title> Franqueados: Lista</title>
       </Head>
 
       <Container maxWidth={false}>
         <CustomBreadcrumbs
-          heading="Lista de Colaboradores"
+          heading="Lista de Franqueados"
           links={[
             { name: 'Inicio', href: '/admin/dashboard' },
-            { name: 'Colaboradores', href: '/admin/colaboradores' },
+            { name: 'Franqueados', href: '/admin/franqueados' },
             { name: 'Lista' },
           ]}
           action={
-            <NextLink href={'/admin/colaboradores/create'} passHref>
+            <NextLink href={'/admin/franqueados/create'} passHref>
               <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                Novo Colaborador
+                Novo Franqueado
               </Button>
             </NextLink>
           }
@@ -123,7 +119,7 @@ export default function ColaboladoresPage() {
                 order={order}
                 orderBy={orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={colaboradores.length}
+                rowCount={franqueados.length}
                 numSelected={selected.length}
                 onSort={onSort}
               />
@@ -133,16 +129,16 @@ export default function ColaboladoresPage() {
                     {dataInPage
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => (
-                        <UserTableRow
-                          key={row.idFuncionario}
+                        <FranqueadoCustomTable
+                          key={row.idFranqueado}
                           row={row}
-                          onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
-                          onEditRow={() => handleEditRow(row.idFuncionario)}
+                          onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
+                          onEditRow={() => handleEditRow(row.idFranqueado)}
                         />
                       ))}
 
                     <TableEmptyRows
-                      emptyRows={emptyRows(page, rowsPerPage, colaboradores.length)}
+                      emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
                     />
 
                     <TableNoData isNotFound={!dataInPage.length} />

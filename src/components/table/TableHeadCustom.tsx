@@ -1,5 +1,3 @@
-// @mui
-import { Theme } from '@mui/material/styles';
 import {
   Box,
   SxProps,
@@ -9,8 +7,7 @@ import {
   TableHead,
   TableSortLabel,
 } from '@mui/material';
-
-// ----------------------------------------------------------------------
+import { Theme } from '@mui/material/styles';
 
 const visuallyHidden = {
   border: 0,
@@ -23,8 +20,6 @@ const visuallyHidden = {
   whiteSpace: 'nowrap',
   clip: 'rect(0 0 0 0)',
 } as const;
-
-// ----------------------------------------------------------------------
 
 type Props = {
   order?: 'asc' | 'desc';

@@ -21,7 +21,7 @@ const navConfig = [
       // franqueadores
       {
         title: 'Franqueadores',
-        path: '/admin/franqueadores',
+        path: '/admin/franqueados',
         icon: <AiOutlineApartment width={30} height={30} />,
       },
 

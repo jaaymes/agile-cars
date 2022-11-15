@@ -1,8 +1,6 @@
 // @mui
 import { TableRow, TableCell, Skeleton, Stack, TableRowProps } from '@mui/material';
 
-// ----------------------------------------------------------------------
-
 export default function TableSkeleton({ ...other }: TableRowProps) {
   return (
     <TableRow {...other}>

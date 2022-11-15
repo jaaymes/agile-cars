@@ -1,5 +1,3 @@
-// ----------------------------------------------------------------------
-
 export type TableProps = {
   page: number;
   rowsPerPage: number;

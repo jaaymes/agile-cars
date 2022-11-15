@@ -112,6 +112,25 @@ export const normalizeCpf = (value: string): string => {
   )}-${onlyNums.slice(9, 11)}`
 }
 
+// normalize whatsapp number
+export const normalizeWhatsapp = (value: string): string => { 
+  if (!value) {
+    return value
+  }
+
+  const onlyNums = value.replace(/\D/g, '')
+  if (onlyNums.length <= 2) {
+    return onlyNums
+  }
+  if (onlyNums.length <= 7) {
+    return `(${onlyNums.slice(0, 2)}) ${onlyNums.slice(2, 7)}`
+  }
+  return `(${onlyNums.slice(0, 2)}) ${onlyNums.slice(2, 7)}-${onlyNums.slice(
+    7,
+    11
+  )}`
+}
+
 export const normalizeCpfCnpj = (value: string): string => {
   if (!value) {
     return value
