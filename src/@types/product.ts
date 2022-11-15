@@ -12,6 +12,7 @@ export type IProduct = {
   descricaoModelo: string
   descricaoModeloVersao: string
   descricaoCategoria: string
+  descricaoFranqueado: string
   placa: string
   fab: number
   mod: number

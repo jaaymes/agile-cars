@@ -169,7 +169,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
               <Image
                 key={img}
                 alt="product"
-                src={`data:image/png;base64,${img}`}
+                src={`${img}`}
                 ratio="1/1"
                 onClick={() => handleOpenLightbox(img)}
                 sx={{ cursor: 'zoom-in' }}
@@ -211,7 +211,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
             key={img}
             disabledEffect
             alt="thumbnail"
-            src={`data:image/png;base64,${img}`}
+            src={`${img}`}
             sx={{
               width: THUMB_SIZE,
               height: THUMB_SIZE,
@@ -244,7 +244,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
       <Lightbox
         animationDuration={SPEED}
         images={imagesLightbox}
-        mainSrc={`data:image/png;base64,${imagesLightbox[selectedImage]}`}
+        mainSrc={`${imagesLightbox[selectedImage]}`}
         photoIndex={selectedImage}
         setPhotoIndex={setSelectedImage}
         open={openLightbox}

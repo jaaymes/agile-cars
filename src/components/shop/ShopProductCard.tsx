@@ -40,7 +40,7 @@ export default function ShopProductCard({ product }: Props) {
     >
 
       <Box sx={{ position: 'relative', p: 1 }}>
-        <Image alt={product.chassi} src={product?.images.length > 0 ? `data:image/png;base64,${product?.images[0] || product?.images[1]}` : '/sem-imagem.png'} ratio="1/1" sx={{ borderRadius: 1.5 }} />
+        <Image alt={product.chassi} src={product?.images.length > 0 ? `${product?.images[0] || product?.images[1]}` : '/sem-imagem.png'} ratio="1/1" sx={{ borderRadius: 1.5 }} />
       </Box>
       <Stack spacing={1} sx={{ px: 2, display: 'flex', height: '100%' }} justifyContent="space-between" direction="column">
         <Stack direction="column" spacing={0.5}>

@@ -123,7 +123,7 @@ export default function Upload({
           <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
             {onRemoveAll && (
               <Button color="inherit" variant="outlined" size="small" onClick={onRemoveAll}>
-                Remove all
+                Remover todos
               </Button>
             )}
 
@@ -167,11 +167,11 @@ function Placeholder({ sx, ...other }: StackProps) {
 
       <Box sx={{ p: 3 }}>
         <Typography gutterBottom variant="h5">
-          Drop or Select file
+          Solte ou selecione as Fotos
         </Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Drop files here or click
+          Solte os arquivos aqui ou clique
           <Typography
             variant="body2"
             component="span"
@@ -181,9 +181,9 @@ function Placeholder({ sx, ...other }: StackProps) {
               textDecoration: 'underline',
             }}
           >
-            browse
+            em navegar
           </Typography>
-          thorough your machine
+          em sua máquina
         </Typography>
       </Box>
     </Stack>

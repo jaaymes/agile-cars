@@ -42,6 +42,10 @@ export default function ProductDetails() {
     }
   }
 
+  // useEffect(() => {
+  //   console.log('product', product)
+  // }, [product]);
+
 
   useEffect(() => {
     if (id && idFranqueado) {
@@ -52,7 +56,7 @@ export default function ProductDetails() {
   return (
     <>
       <Head>
-        <title>{`Agile Motors: ${product?.descricaoMarca || ''}`}</title>
+        <title>{`Agile Motors: Detalhe`}</title>
       </Head>
 
       <Container maxWidth="lg">

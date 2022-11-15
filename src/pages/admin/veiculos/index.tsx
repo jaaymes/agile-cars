@@ -9,7 +9,6 @@ import { isBrowser } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
-import { FranqueadoCustomTable } from '@/components/FranqueadoCustomTable';
 import Iconify from '@/components/iconify';
 import Scrollbar from '@/components/scrollbar';
 import {
@@ -20,9 +19,12 @@ import {
   TableHeadCustom,
   TablePaginationCustom,
 } from '@/components/table';
+import { VeiculosCustomTable } from '@/components/VeiculosCustomTable';
 
-import { deleteFranqueado, getFranqueados } from '@/services/franqueados';
+import { deleteFranqueado } from '@/services/franqueados';
+import { deleteVeiculo, getProducts } from '@/services/products';
 
+import { IProduct } from '@/@types/product';
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
   Table,
@@ -33,14 +35,16 @@ import {
 } from '@mui/material';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nome', align: 'left' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'marca', label: 'Marca', align: 'left' },
+  { id: 'modelo', label: 'Modelo', align: 'left' },
+  { id: 'modeloVersao', label: 'Modelo Versão', align: 'left' },
+  { id: 'franqueado', label: 'Franqueado', align: 'left' },
   { id: 'actions', label: 'Ações', align: 'center' },
 ];
 
-FranqueadosPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+VeiculosPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default function FranqueadosPage() {
+export default function VeiculosPage() {
   const {
     page,
     order,
@@ -52,33 +56,33 @@ export default function FranqueadosPage() {
     onChangeRowsPerPage,
   } = useTable();
 
-  const { user } = useAuth()
-
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
 
-  const [franqueados, setFranqueados] = useState<IFranqueados[]>([])
+  const { user } = useAuth()
 
-  const dataInPage = franqueados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const [veiculos, setVeiculos] = useState<IProduct[]>([])
+
+  const dataInPage = veiculos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleDeleteRow = async (id: number) => {
-    await deleteFranqueado(id)
-    const newFranqueados = franqueados.filter((colaborador) => colaborador.idFranqueado !== id)
-    setFranqueados(newFranqueados)
+    await deleteVeiculo(id, user?.idfranqueado)
+    const newVeiculos = veiculos.filter((veiculo) => veiculo.idVeiculo !== id)
+    setVeiculos(newVeiculos)
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/franqueados/create?id=${id}`);
+    push(`/admin/veiculos/create?id=${id}`);
   };
 
-  const handleGetAllFranqueados = async () => {
-    const franqueados = await getFranqueados()
-    setFranqueados(franqueados.collection)
+  const handleGetAllVeiculos = async () => {
+    const veiculosResponse = await getProducts({})
+    setVeiculos(veiculosResponse.collection)
   }
 
   useEffect(() => {
-    handleGetAllFranqueados()
+    handleGetAllVeiculos()
   }, []);
 
   useEffect(() => {
@@ -95,16 +99,16 @@ export default function FranqueadosPage() {
 
       <Container maxWidth={false}>
         <CustomBreadcrumbs
-          heading="Lista de Franqueados"
+          heading="Lista de Veiculos"
           links={[
             { name: 'Inicio', href: '/admin/dashboard' },
-            { name: 'Franqueados', href: '/admin/franqueados' },
+            { name: 'Veiculos', href: '/admin/veiculos' },
             { name: 'Lista' },
           ]}
           action={
-            <NextLink href={'/admin/franqueados/create'} passHref>
+            <NextLink href={'/admin/veiculos/create'} passHref>
               <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                Novo Franqueado
+                Novo Veiculo
               </Button>
             </NextLink>
           }
@@ -119,7 +123,7 @@ export default function FranqueadosPage() {
                 order={order}
                 orderBy={orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={franqueados.length}
+                rowCount={veiculos.length}
                 numSelected={selected.length}
                 onSort={onSort}
               />
@@ -129,16 +133,16 @@ export default function FranqueadosPage() {
                     {dataInPage
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => (
-                        <FranqueadoCustomTable
-                          key={row.idFranqueado}
+                        <VeiculosCustomTable
+                          key={row.idVeiculo}
                           row={row}
-                          onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
-                          onEditRow={() => handleEditRow(row.idFranqueado)}
+                          onDeleteRow={() => handleDeleteRow(row.idVeiculo)}
+                          onEditRow={() => handleEditRow(row.idVeiculo)}
                         />
                       ))}
 
                     <TableEmptyRows
-                      emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
+                      emptyRows={emptyRows(page, rowsPerPage, veiculos.length)}
                     />
 
                     <TableNoData isNotFound={!dataInPage.length} />

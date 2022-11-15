@@ -23,3 +23,18 @@ export const convertBase64ToFile = (url: any, filename: string) => {
   }
   return new File([u8arr], filename, { type: mime })
 }
+
+
+// convert File image to base64
+export const convertFileToBase64 = (file: any) => new Promise((resolve, reject) => { 
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+
+  reader.onload = () => {
+    resolve(reader.result)
+  }
+
+  reader.onerror = error => {
+    reject(error)
+  }
+})

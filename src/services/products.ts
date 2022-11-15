@@ -53,15 +53,18 @@ export const getProducts = async ({
         kmInicial,
         kmFinal,
       });
+      console.log("🚀 ~ file: products.ts ~ line 56 ~ response", response.data)
       return response.data
     } catch (error) {
       console.error(error);
       // toast.error(error)
     }
 }
-  
 
-export const getProduct = async (id: number, idFranqueado: number) => {
+export const getProduct = async ({
+  id,
+  idFranqueado
+}: {id: string, idFranqueado: string}) => {
     try {
       const response = await api.get(`/veiculo/obter?id=${id}&idFranqueado=${idFranqueado}`);
       return response.data
@@ -94,6 +97,52 @@ export const getModelos = async (id: number) => {
 export const getModelosVersao = async (id: number) => { 
     try {
       const response = await api.get(`/modeloversao/PesquisarSemPaginacao?idModelo=${id}`);
+      return response.data
+    } catch (error) {
+      console.error(error);
+      // toast.error(error)
+    }
+}
+
+interface ICreateVeiculo { 
+  idFranqueado: number;
+  idModelo: number;
+  idMarca: number;
+  idCategoria: number;
+  idModeloVersao: number;
+  opcionais: string | undefined;
+  valor: number;
+  fab: number;
+  mod: number;
+  km: number;
+  obs: string;
+  chassi: string;
+  placa: string;
+  cor: string;
+  renavam: string;
+  foto1?: string | undefined;
+  foto2?: string | undefined;
+  foto3?: string | undefined;
+  foto4?: string | undefined;
+  foto5?: string | undefined;
+  foto6?: string | undefined;
+  foto7?: string | undefined;
+  foto8?: string | undefined;
+}
+
+export const createVeiculos = async (data: ICreateVeiculo) => { 
+    try {
+      const response = await api.post(`/veiculo/detalhe`, data);
+      return response.data
+    } catch (error) {
+      console.error(error);
+      // toast.error(error)
+    }
+}
+
+export const deleteVeiculo = async (id: number, idFranqueado: number) => { 
+    try {
+      const response = await api.delete(`/veiculo/excluir?id=${id}&idFranqueado=${idFranqueado}`);
       return response.data
     } catch (error) {
       console.error(error);
