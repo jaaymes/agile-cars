@@ -1,7 +1,7 @@
 import { AiFillCar, AiOutlineApartment, AiOutlineDashboard } from 'react-icons/ai';
+import { CgOptions } from 'react-icons/cg'
 import { FaCarSide, FaUserCog } from 'react-icons/fa';
 import { IoCarSharp } from 'react-icons/io5';
-
 const navConfig = [
   {
     items: [
@@ -51,6 +51,12 @@ const navConfig = [
         title: 'modelo versão',
         path: '/admin/modelo-versao',
         icon: <IoCarSharp width={30} height={30} />,
+      },
+      // opcionais
+      {
+        title: 'opcionais',
+        path: '/admin/opcionais',
+        icon: <CgOptions width={30} height={30} />,
       },
     ],
   },

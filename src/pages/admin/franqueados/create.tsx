@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Head from 'next/head';
@@ -7,8 +7,6 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 
-import { useAuth } from '@/hooks/useAuth';
-
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
@@ -16,18 +14,17 @@ import FormProvider, {
   RHFTextField,
 } from '@/components/hook-form';
 import Label from '@/components/label';
+import LoadingScreen from '@/components/loading-screen';
 
-import { convertBase64 } from '@/utils/convertBase64';
-import { normalizeCep, normalizeCEP, normalizeCnpj, normalizeCpf, normalizeNumber, normalizeWhatsapp } from '@/utils/normalize';
+import { normalizeCep, normalizeCnpj, normalizeCpf, normalizeNumber, normalizeWhatsapp } from '@/utils/normalize';
 import { states } from '@/utils/states';
 
-import { createColaborador, getColaborador, updateColaborador } from '@/services/colaboradores';
 import { consultCep } from '@/services/consultCep';
-import { createFranqueado, getFranqueado, getFranqueados } from '@/services/franqueados';
+import { createFranqueado, getFranqueado } from '@/services/franqueados';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, colors, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, TextFieldProps, Typography } from '@mui/material';
+import { Box, Card, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
 
 
 interface FormValuesProps {
@@ -46,16 +43,10 @@ interface FormValuesProps {
   dataCadastro?: string | Date
 }
 
-interface IOptions {
-  value: string;
-  label: string;
-}
-
 FranqueadosCreatePage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default function FranqueadosCreatePage() {
   const { push, query: { id } } = useRouter();
-  const { user } = useAuth()
 
   const { enqueueSnackbar } = useSnackbar();
   const [active, setActive] = useState<boolean>(false);
@@ -138,8 +129,8 @@ export default function FranqueadosCreatePage() {
     }
   }
 
-
   const loadData = useCallback(async () => {
+    setIsLoading(true)
     if (id) {
       const response = await getFranqueado(Number(id))
       console.log("🚀 ~ file: create.tsx ~ line 142 ~ loadData ~ response", response)
@@ -158,6 +149,7 @@ export default function FranqueadosCreatePage() {
         setActive(response.idSituacao === 1 ? true : false)
         setDataFranqueador(response)
       }
+      setIsLoading(false)
     }
 
   }, [id])
@@ -202,163 +194,169 @@ export default function FranqueadosCreatePage() {
       <Head>
         <title>Criar novo Franqueado</title>
       </Head>
-      <Container maxWidth={false}>
-        <CustomBreadcrumbs
-          heading="Criar novo Franqueado"
-          links={[
-            {
-              name: 'Início',
-              href: '/',
-            },
-            {
-              name: 'Franqueados',
-              href: '/admin/franqueados',
-            },
-            { name: 'Novo Franqueador' },
-          ]}
-        />
+      {
+        isLoading ? (
+          <LoadingScreen />
+        ) :
+          <Container maxWidth={false}>
+            <CustomBreadcrumbs
+              heading="Criar novo Franqueado"
+              links={[
+                {
+                  name: 'Início',
+                  href: '/',
+                },
+                {
+                  name: 'Franqueados',
+                  href: '/admin/franqueados',
+                },
+                { name: 'Novo Franqueador' },
+              ]}
+            />
 
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Card sx={{ py: 6.5, px: 4 }}>
-                <Box
-                  sx={{
-                    p: 1
-                  }}
-                  rowGap={4}
-                  columnGap={2}
-                  display="grid"
-                  gridTemplateColumns={{
-                    xs: 'repeat(1, 1fr)',
-                    sm: 'repeat(2, 1fr)',
-                  }}
-                >
-                  <RHFTextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    name="descricaoFranqueado" label="Nome do Franqueador" />
-
-                  <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCnpj(values.cnpj)} name="cnpj" label="CNPJ da Empresa" />
-                  <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCpf(values.cpf)} name="cpf" label="CPF do Responsável" />
-                  <RHFTextField InputLabelProps={{ shrink: true }}
-                    inputProps={{
-                      maxLength: 15,
-                    }}
-                    value={normalizeWhatsapp(values.whatsapp)} name="whatsapp" label="WhatsApp" />
-
-
-                  <TextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    inputProps={{
-                      maxLength: 9,
-                    }}
-                    fullWidth
-                    variant="outlined"
-                    margin="none"
-                    label="CEP"
-                    value={normalizeCep(watch('cep'))}
-                    helperText={errors?.cep?.message}
-                    {...register('cep', {
-                      onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleCep(event.target.value),
-                      required: true
-                    })}
-                    error={!!errors.cep}
-                  />
-
-                  <TextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    fullWidth
-                    variant="outlined"
-                    margin="none"
-                    label="Endereço"
-                    error={!!errors.endereco}
-                    helperText={errors?.endereco?.message}
-                    {...register('endereco', { required: true })}
-                  />
-
-                  <TextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    fullWidth
-                    variant="outlined"
-                    margin="none"
-                    label="Número"
-                    error={!!errors.nroEndereco}
-                    helperText={errors?.nroEndereco?.message}
-                    {...register('nroEndereco', { required: true })}
-                  />
-
-
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="complemento" label="Complemento" />
-
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="bairro" label="Bairro" />
-
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="cidade" label="Cidade" />
-
-                  <TextField
-                    select
-                    fullWidth
-                    label="Estado"
-                    value={values.uf ? values.uf : ''}
-                    {...register('uf', { required: true })}
-                    error={!!errors.uf}
-                    helperText={errors.uf?.message}
-                  >
-                    {states.map((state) => (
-                      <MenuItem key={state.value} value={state.value}>
-                        {state.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-
-                  <FormControlLabel
-                    labelPlacement="start"
-                    control={<Switch
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Card sx={{ py: 6.5, px: 4 }}>
+                    <Box
                       sx={{
-                        '&.Mui-checked': {
-                          color: 'primary.main',
-                        }
+                        p: 1
                       }}
-                      checked={active}
-                      onChange={(event) =>
-                        setActive(event.target.checked)
-                      }
-                    />
-                    }
-                    label={
-                      <>
-                        <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                          Status
-                        </Typography>
-                      </>
-                    }
-                    sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'center', alignContent: 'center' }}
-                  />
-                  <Label
-                    color={active ? 'success' : 'error'}
-                    sx={{ textTransform: 'uppercase', position: 'absolute', top: 23, right: 24 }}
-                  >
-                    {active ? 'Ativo' : 'Cancelado'}
-                  </Label>
-                </Box>
+                      rowGap={4}
+                      columnGap={2}
+                      display="grid"
+                      gridTemplateColumns={{
+                        xs: 'repeat(1, 1fr)',
+                        sm: 'repeat(2, 1fr)',
+                      }}
+                    >
+                      <RHFTextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        name="descricaoFranqueado" label="Nome do Franqueador" />
 
-                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    {!id ? 'Criar Franqueado' : 'Salvar Mudanças'}
-                  </LoadingButton>
-                </Stack>
-              </Card>
-            </Grid>
-          </Grid>
-        </FormProvider>
-      </Container>
+                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCnpj(values.cnpj)} name="cnpj" label="CNPJ da Empresa" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCpf(values.cpf)} name="cpf" label="CPF do Responsável" />
+                      <RHFTextField InputLabelProps={{ shrink: true }}
+                        inputProps={{
+                          maxLength: 15,
+                        }}
+                        value={normalizeWhatsapp(values.whatsapp)} name="whatsapp" label="WhatsApp" />
+
+
+                      <TextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          maxLength: 9,
+                        }}
+                        fullWidth
+                        variant="outlined"
+                        margin="none"
+                        label="CEP"
+                        value={normalizeCep(watch('cep'))}
+                        helperText={errors?.cep?.message}
+                        {...register('cep', {
+                          onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleCep(event.target.value),
+                          required: true
+                        })}
+                        error={!!errors.cep}
+                      />
+
+                      <TextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        fullWidth
+                        variant="outlined"
+                        margin="none"
+                        label="Endereço"
+                        error={!!errors.endereco}
+                        helperText={errors?.endereco?.message}
+                        {...register('endereco', { required: true })}
+                      />
+
+                      <TextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        fullWidth
+                        variant="outlined"
+                        margin="none"
+                        label="Número"
+                        error={!!errors.nroEndereco}
+                        helperText={errors?.nroEndereco?.message}
+                        {...register('nroEndereco', { required: true })}
+                      />
+
+
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="complemento" label="Complemento" />
+
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="bairro" label="Bairro" />
+
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="cidade" label="Cidade" />
+
+                      <TextField
+                        select
+                        fullWidth
+                        label="Estado"
+                        value={values.uf ? values.uf : ''}
+                        {...register('uf', { required: true })}
+                        error={!!errors.uf}
+                        helperText={errors.uf?.message}
+                      >
+                        {states.map((state) => (
+                          <MenuItem key={state.value} value={state.value}>
+                            {state.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+
+                      <FormControlLabel
+                        labelPlacement="start"
+                        control={<Switch
+                          sx={{
+                            '&.Mui-checked': {
+                              color: 'primary.main',
+                            }
+                          }}
+                          checked={active}
+                          onChange={(event) =>
+                            setActive(event.target.checked)
+                          }
+                        />
+                        }
+                        label={
+                          <>
+                            <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                              Status
+                            </Typography>
+                          </>
+                        }
+                        sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'center', alignContent: 'center' }}
+                      />
+                      <Label
+                        color={active ? 'success' : 'error'}
+                        sx={{ textTransform: 'uppercase', position: 'absolute', top: 23, right: 24 }}
+                      >
+                        {active ? 'Ativo' : 'Cancelado'}
+                      </Label>
+                    </Box>
+
+                    <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                        {!id ? 'Criar Franqueado' : 'Salvar Mudanças'}
+                      </LoadingButton>
+                    </Stack>
+                  </Card>
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Container>
+      }
+
     </>
   );
 }

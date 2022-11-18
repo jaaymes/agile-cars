@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 
 import { m } from 'framer-motion';
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-
-import Logo from '../logo';
-
 
 const StyledRoot = styled('div')(({ theme }) => ({
   right: 0,
@@ -21,7 +18,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
 }));
 
-// ----------------------------------------------------------------------
+
 
 export default function LoadingScreen() {
   const [mounted, setMounted] = useState(false);
@@ -46,7 +43,9 @@ export default function LoadingScreen() {
           repeat: Infinity,
         }}
       >
-        <Logo disabledLink sx={{ width: 64, height: 64 }} />
+        <Typography variant='h4'>
+          Carregando...
+        </Typography>
       </m.div>
 
       <Box

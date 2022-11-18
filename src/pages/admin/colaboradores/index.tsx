@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
 import Iconify from '@/components/iconify';
+import LoadingScreen from '@/components/loading-screen';
 import Scrollbar from '@/components/scrollbar';
 import {
   useTable,
@@ -47,7 +48,6 @@ export default function ColaboladoresPage() {
     order,
     orderBy,
     rowsPerPage,
-    selected,
     onSort,
     onChangePage,
     onChangeRowsPerPage,
@@ -60,6 +60,7 @@ export default function ColaboladoresPage() {
   const [isSSR, setIsSSR] = useState(true);
 
   const [colaboradores, setColaboradores] = useState<IColaboradores[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const dataInPage = colaboradores.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -74,10 +75,14 @@ export default function ColaboladoresPage() {
   };
 
   const handleGetAllColaboradores = async () => {
+    setIsLoading(true)
     const colaboradores = await getColaboradores({
       idFranqueado: user?.idfranqueado
     })
-    setColaboradores(colaboradores.collection)
+    if (colaboradores) {
+      setColaboradores(colaboradores.collection)
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -90,78 +95,81 @@ export default function ColaboladoresPage() {
     }
   }, [isSSR]);
 
-
   return (
     <>
       <Head>
         <title> Colaboradores: Lista</title>
       </Head>
-
-      <Container maxWidth={false}>
-        <CustomBreadcrumbs
-          heading="Lista de Colaboradores"
-          links={[
-            { name: 'Inicio', href: '/admin/dashboard' },
-            { name: 'Colaboradores', href: '/admin/colaboradores' },
-            { name: 'Lista' },
-          ]}
-          action={
-            <NextLink href={'/admin/colaboradores/create'} passHref>
-              <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                Novo Colaborador
-              </Button>
-            </NextLink>
-          }
-        />
-
-
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Scrollbar>
-
-            <Table size={'medium'} sx={{ minWidth: 800 }}>
-              <TableHeadCustom
-                order={order}
-                orderBy={orderBy}
-                headLabel={TABLE_HEAD}
-                rowCount={colaboradores.length}
-                numSelected={selected.length}
-                onSort={onSort}
-              />
-              {
-                !isSSR && (
-                  <TableBody>
-                    {dataInPage
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => (
-                        <UserTableRow
-                          key={row.idFuncionario}
-                          row={row}
-                          onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
-                          onEditRow={() => handleEditRow(row.idFuncionario)}
-                        />
-                      ))}
-
-                    <TableEmptyRows
-                      emptyRows={emptyRows(page, rowsPerPage, colaboradores.length)}
-                    />
-
-                    <TableNoData isNotFound={!dataInPage.length} />
-                  </TableBody>
-                )
+      {
+        isLoading ? (
+          <LoadingScreen />
+        ) :
+          <Container maxWidth={false}>
+            <CustomBreadcrumbs
+              heading="Lista de Colaboradores"
+              links={[
+                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Colaboradores', href: '/admin/colaboradores' },
+                { name: 'Lista' },
+              ]}
+              action={
+                <NextLink href={'/admin/colaboradores/create'} passHref>
+                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                    Novo Colaborador
+                  </Button>
+                </NextLink>
               }
+            />
 
-            </Table>
-          </Scrollbar>
-        </TableContainer>
 
-        <TablePaginationCustom
-          count={dataInPage.length}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={onChangePage}
-          onRowsPerPageChange={onChangeRowsPerPage}
-        />
-      </Container>
+            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+              <Scrollbar>
+
+                <Table size={'medium'} sx={{ minWidth: 800 }}>
+                  <TableHeadCustom
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={colaboradores.length}
+                    onSort={onSort}
+                  />
+                  {
+                    !isSSR && (
+                      <TableBody>
+                        {dataInPage
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row) => (
+                            <UserTableRow
+                              key={row.idFuncionario}
+                              row={row}
+                              onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
+                              onEditRow={() => handleEditRow(row.idFuncionario)}
+                            />
+                          ))}
+
+                        <TableEmptyRows
+                          emptyRows={emptyRows(page, rowsPerPage, colaboradores.length)}
+                        />
+
+                        <TableNoData isNotFound={!dataInPage.length} />
+                      </TableBody>
+                    )
+                  }
+
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+
+            <TablePaginationCustom
+              count={dataInPage.length}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={onChangePage}
+              onRowsPerPageChange={onChangeRowsPerPage}
+            />
+          </Container>
+      }
+
     </>
   );
 }

@@ -11,13 +11,16 @@ type Props = {
 };
 
 export default function TablePaginationCustom({
-  rowsPerPageOptions = [5, 10, 25],
+  rowsPerPageOptions = [5, 10, 20, 30, 50],
   sx,
   ...other
 }: Props & TablePaginationProps) {
   return (
     <Box sx={{ position: 'relative', ...sx }}>
-      <TablePagination rowsPerPageOptions={rowsPerPageOptions} component="div" {...other} />
+      <TablePagination
+        labelRowsPerPage="Veiculos por página"
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`}
+        rowsPerPageOptions={rowsPerPageOptions} component="div" {...other} />
     </Box>
   );
 }

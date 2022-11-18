@@ -18,6 +18,7 @@ import FormProvider, {
   RHFUploadAvatar,
 } from '@/components/hook-form';
 import Label from '@/components/label';
+import LoadingScreen from '@/components/loading-screen';
 import { CustomFile } from '@/components/upload';
 
 import { convertBase64 } from '@/utils/convertBase64';
@@ -57,6 +58,7 @@ export default function UserCreatePage() {
   const [active, setActive] = useState<boolean>(false);
   const [franqueados, setFranqueados] = useState<IOptions[]>([])
   const [dataUser, setDataUser] = useState<FormValuesProps | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const NewUserSchema = Yup.object().shape({
     descricaoFuncionario: Yup.string().required('Nome é obrigatório'),
@@ -136,8 +138,8 @@ export default function UserCreatePage() {
     }
   }
 
-
   const loadData = useCallback(async () => {
+    setIsLoading(true)
     if (id) {
       const response = await getColaborador(Number(id), user?.idfranqueado)
       if (response) {
@@ -149,6 +151,7 @@ export default function UserCreatePage() {
         setActive(response.idSituacao === 1 ? true : false)
         setDataUser(response)
       }
+      setIsLoading(false)
     }
 
   }, [id])
@@ -187,151 +190,157 @@ export default function UserCreatePage() {
       <Head>
         <title>Criar novo Colaborador</title>
       </Head>
-      <Container maxWidth={false}>
-        <CustomBreadcrumbs
-          heading="Criar novo colaborador"
-          links={[
-            {
-              name: 'Início',
-              href: '/',
-            },
-            {
-              name: 'Colaboradores',
-              href: '/admin/colaboradores',
-            },
-            { name: 'Novo Colaborador' },
-          ]}
-        />
+      {
+        isLoading ? (
+          <LoadingScreen />
+        ) :
+          <Container maxWidth={false}>
+            <CustomBreadcrumbs
+              heading="Criar novo colaborador"
+              links={[
+                {
+                  name: 'Início',
+                  href: '/',
+                },
+                {
+                  name: 'Colaboradores',
+                  href: '/admin/colaboradores',
+                },
+                { name: 'Novo Colaborador' },
+              ]}
+            />
 
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-                <Label
-                  color={active ? 'success' : 'error'}
-                  sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                >
-                  {active ? 'Ativo' : 'Inativo'}
-                </Label>
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={4}>
+                  <Card sx={{ pt: 10, pb: 5, px: 3 }}>
+                    <Label
+                      color={active ? 'success' : 'error'}
+                      sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+                    >
+                      {active ? 'Ativo' : 'Inativo'}
+                    </Label>
 
-                <Box sx={{ mb: 5 }}>
-                  <RHFUploadAvatar
-                    name="avatarUrl"
-                    maxSize={3145728}
-                    onDrop={handleDrop}
-                    helperText={
-                      <Typography
-                        variant="caption"
+                    <Box sx={{ mb: 5 }}>
+                      <RHFUploadAvatar
+                        name="avatarUrl"
+                        maxSize={3145728}
+                        onDrop={handleDrop}
+                        helperText={
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              mt: 2,
+                              mx: 'auto',
+                              display: 'block',
+                              textAlign: 'center',
+                              color: 'text.secondary',
+                            }}
+                          >
+                            Permitidos *.jpeg, *.jpg, *.png, *.gif
+                            <br /> Máximo {fData(3145728)}
+                          </Typography>
+                        }
+                      />
+                    </Box>
+
+                    <FormControlLabel
+                      labelPlacement="start"
+                      control={<Switch
                         sx={{
-                          mt: 2,
-                          mx: 'auto',
-                          display: 'block',
-                          textAlign: 'center',
-                          color: 'text.secondary',
+                          '&.Mui-checked': {
+                            color: 'primary.main',
+                          }
                         }}
-                      >
-                        Permitidos *.jpeg, *.jpg, *.png, *.gif
-                        <br /> Máximo {fData(3145728)}
-                      </Typography>
-                    }
-                  />
-                </Box>
-
-                <FormControlLabel
-                  labelPlacement="start"
-                  control={<Switch
-                    sx={{
-                      '&.Mui-checked': {
-                        color: 'primary.main',
+                        checked={active}
+                        onChange={(event) =>
+                          setActive(event.target.checked)
+                        }
+                      />
                       }
-                    }}
-                    checked={active}
-                    onChange={(event) =>
-                      setActive(event.target.checked)
-                    }
-                  />
-                  }
-                  label={
-                    <>
-                      <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                        Status
-                      </Typography>
-                    </>
-                  }
-                  sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-                />
-              </Card>
-            </Grid>
+                      label={
+                        <>
+                          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                            Status
+                          </Typography>
+                        </>
+                      }
+                      sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
+                    />
+                  </Card>
+                </Grid>
 
-            <Grid item xs={12} md={8}>
-              <Card sx={{ py: 6.5, px: 4 }}>
-                <Box
-                  rowGap={4}
-                  columnGap={2}
-                  display="grid"
-                  gridTemplateColumns={{
-                    xs: 'repeat(1, 1fr)',
-                    sm: 'repeat(2, 1fr)',
-                  }}
-                >
-                  <RHFTextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    name="descricaoFuncionario" label="Nome do Colaborador" />
-                  <RHFTextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    name="email" label="Email" />
-                  <RHFTextField
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    inputProps={{
-                      maxLength: 15,
-                    }}
-                    name="phoneNumber" label="Celular" value={normalizePhone(values.phoneNumber)} />
-
-                  <Box>
-                    <RHFTextField
-                      InputLabelProps={{
-                        shrink: true
+                <Grid item xs={12} md={8}>
+                  <Card sx={{ py: 6.5, px: 4 }}>
+                    <Box
+                      rowGap={4}
+                      columnGap={2}
+                      display="grid"
+                      gridTemplateColumns={{
+                        xs: 'repeat(1, 1fr)',
+                        sm: 'repeat(2, 1fr)',
                       }}
-                      name="senha" label="Senha" type="password" />
-                    <Typography variant="caption" sx={{ mb: 0.5, color: colors?.grey[500] }}>
-                      senha padrao: 123456
-                    </Typography>
-                  </Box>
+                    >
+                      <RHFTextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        name="descricaoFuncionario" label="Nome do Colaborador" />
+                      <RHFTextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        name="email" label="Email" />
+                      <RHFTextField
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          maxLength: 15,
+                        }}
+                        name="phoneNumber" label="Celular" value={normalizePhone(values.phoneNumber)} />
+
+                      <Box>
+                        <RHFTextField
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          name="senha" label="Senha" type="password" />
+                        <Typography variant="caption" sx={{ mb: 0.5, color: colors?.grey[500] }}>
+                          senha padrao: 123456
+                        </Typography>
+                      </Box>
 
 
-                  <TextField
-                    value={values.idFranqueado || ''}
-                    size="medium"
-                    select
-                    label="Franqueado"
-                    error={!!errors.idFranqueado}
-                    helperText={errors.idFranqueado?.message}
-                    {...register('idFranqueado', { required: true })}
-                  >
-                    {franqueados.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
+                      <TextField
+                        value={values.idFranqueado || ''}
+                        size="medium"
+                        select
+                        label="Franqueado"
+                        error={!!errors.idFranqueado}
+                        helperText={errors.idFranqueado?.message}
+                        {...register('idFranqueado', { required: true })}
+                      >
+                        {franqueados.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Box>
 
-                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    {!id ? 'Criar Colaborador' : 'Salvar Mudanças'}
-                  </LoadingButton>
-                </Stack>
-              </Card>
-            </Grid>
-          </Grid>
-        </FormProvider>
-      </Container>
+                    <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                        {!id ? 'Criar Colaborador' : 'Salvar Mudanças'}
+                      </LoadingButton>
+                    </Stack>
+                  </Card>
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Container>
+      }
+
     </>
   );
 }

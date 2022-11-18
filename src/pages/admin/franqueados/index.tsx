@@ -6,11 +6,10 @@ import { useRouter } from 'next/router';
 
 import { isBrowser } from 'framer-motion';
 
-import { useAuth } from '@/hooks/useAuth';
-
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
 import { FranqueadoCustomTable } from '@/components/FranqueadoCustomTable';
 import Iconify from '@/components/iconify';
+import LoadingScreen from '@/components/loading-screen';
 import Scrollbar from '@/components/scrollbar';
 import {
   useTable,
@@ -46,19 +45,17 @@ export default function FranqueadosPage() {
     order,
     orderBy,
     rowsPerPage,
-    selected,
     onSort,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
-
-  const { user } = useAuth()
 
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
 
   const [franqueados, setFranqueados] = useState<IFranqueados[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const dataInPage = franqueados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -73,8 +70,10 @@ export default function FranqueadosPage() {
   };
 
   const handleGetAllFranqueados = async () => {
+    setIsLoading(true)
     const franqueados = await getFranqueados()
     setFranqueados(franqueados.collection)
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -92,72 +91,75 @@ export default function FranqueadosPage() {
       <Head>
         <title> Franqueados: Lista</title>
       </Head>
-
-      <Container maxWidth={false}>
-        <CustomBreadcrumbs
-          heading="Lista de Franqueados"
-          links={[
-            { name: 'Inicio', href: '/admin/dashboard' },
-            { name: 'Franqueados', href: '/admin/franqueados' },
-            { name: 'Lista' },
-          ]}
-          action={
-            <NextLink href={'/admin/franqueados/create'} passHref>
-              <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                Novo Franqueado
-              </Button>
-            </NextLink>
-          }
-        />
-
-
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Scrollbar>
-
-            <Table size={'medium'} sx={{ minWidth: 800 }}>
-              <TableHeadCustom
-                order={order}
-                orderBy={orderBy}
-                headLabel={TABLE_HEAD}
-                rowCount={franqueados.length}
-                numSelected={selected.length}
-                onSort={onSort}
-              />
-              {
-                !isSSR && (
-                  <TableBody>
-                    {dataInPage
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => (
-                        <FranqueadoCustomTable
-                          key={row.idFranqueado}
-                          row={row}
-                          onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
-                          onEditRow={() => handleEditRow(row.idFranqueado)}
-                        />
-                      ))}
-
-                    <TableEmptyRows
-                      emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
-                    />
-
-                    <TableNoData isNotFound={!dataInPage.length} />
-                  </TableBody>
-                )
+      {
+        isLoading ? (
+          <LoadingScreen />
+        ) :
+          <Container maxWidth={false}>
+            <CustomBreadcrumbs
+              heading="Lista de Franqueados"
+              links={[
+                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Franqueados', href: '/admin/franqueados' },
+                { name: 'Lista' },
+              ]}
+              action={
+                <NextLink href={'/admin/franqueados/create'} passHref>
+                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                    Novo Franqueado
+                  </Button>
+                </NextLink>
               }
+            />
 
-            </Table>
-          </Scrollbar>
-        </TableContainer>
 
-        <TablePaginationCustom
-          count={dataInPage.length}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={onChangePage}
-          onRowsPerPageChange={onChangeRowsPerPage}
-        />
-      </Container>
+            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+              <Scrollbar>
+
+                <Table size={'medium'} sx={{ minWidth: 800 }}>
+                  <TableHeadCustom
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={franqueados.length}
+                    onSort={onSort}
+                  />
+                  {
+                    !isSSR && (
+                      <TableBody>
+                        {dataInPage
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row) => (
+                            <FranqueadoCustomTable
+                              key={row.idFranqueado}
+                              row={row}
+                              onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
+                              onEditRow={() => handleEditRow(row.idFranqueado)}
+                            />
+                          ))}
+
+                        <TableEmptyRows
+                          emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
+                        />
+
+                        <TableNoData isNotFound={!dataInPage.length} />
+                      </TableBody>
+                    )
+                  }
+
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+
+            <TablePaginationCustom
+              count={dataInPage.length}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={onChangePage}
+              onRowsPerPageChange={onChangeRowsPerPage}
+            />
+          </Container>
+      }
     </>
   );
 }

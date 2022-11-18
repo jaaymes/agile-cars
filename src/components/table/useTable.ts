@@ -7,7 +7,6 @@ type ReturnType = TableProps;
 export type UseTableProps = {
   defaultOrder?: 'asc' | 'desc';
   defaultOrderBy?: string;
-  defaultSelected?: string[];
   defaultRowsPerPage?: number;
   defaultCurrentPage?: number;
 };
@@ -20,9 +19,9 @@ export default function useTable(props?: UseTableProps): ReturnType {
 
   const [page, setPage] = useState(props?.defaultCurrentPage || 0);
 
-  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
+  const [totalPage, setTotalPage] = useState(0);
 
-  const [selected, setSelected] = useState<string[]>(props?.defaultSelected || []);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const onSort = useCallback(
     (id: string) => {
@@ -34,37 +33,6 @@ export default function useTable(props?: UseTableProps): ReturnType {
     },
     [order, orderBy]
   );
-
-  const onSelectRow = useCallback(
-    (id: string) => {
-      const selectedIndex = selected.indexOf(id);
-
-      let newSelected: string[] = [];
-
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, id);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-      } else if (selectedIndex === selected.length - 1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selected.slice(0, selectedIndex),
-          selected.slice(selectedIndex + 1)
-        );
-      }
-      setSelected(newSelected);
-    },
-    [selected]
-  );
-
-  const onSelectAllRows = useCallback((checked: boolean, newSelecteds: string[]) => {
-    if (checked) {
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }, []);
 
   const onChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage);
@@ -81,19 +49,14 @@ export default function useTable(props?: UseTableProps): ReturnType {
     page,
     orderBy,
     rowsPerPage,
-    //
-    selected,
-    onSelectRow,
-    onSelectAllRows,
-    //
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-    //
     setPage,
     setOrder,
     setOrderBy,
-    setSelected,
     setRowsPerPage,
+    setTotalPage,
+    totalPage
   };
 }
