@@ -26,8 +26,6 @@ export async function consultCep(cep: string): Promise<IReturnCEP | boolean> {
   const { data } = await axios.get<IReturnCEP>(
     `https://viacep.com.br/ws/${cep.replace(/\D/g, '')}/json`
     )
-    console.log("🚀 ~ file: consultCep.ts ~ line 27 ~ consultCep ~ data", data)
-  
 
   if (data.erro) {
     return false

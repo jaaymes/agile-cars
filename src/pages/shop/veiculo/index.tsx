@@ -42,11 +42,6 @@ export default function ProductDetails() {
     }
   }
 
-  // useEffect(() => {
-  //   console.log('product', product)
-  // }, [product]);
-
-
   useEffect(() => {
     if (id && idFranqueado) {
       handleGetProduct(Number(id), Number(idFranqueado));

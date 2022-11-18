@@ -155,7 +155,6 @@ export default function FranqueadosCreatePage() {
     const foto8 = data?.images[7] && await convertBase64(data?.images[7]);
 
     const opcionaisId = data?.opcionais.map((item) => item.idOpcional);
-    console.log("🚀 ~ file: create.tsx ~ line 158 ~ onSubmitEdit ~ opcionaisId", opcionaisId)
     try {
       await updateVeiculos({
         idVeiculo: Number(id),
@@ -206,7 +205,6 @@ export default function FranqueadosCreatePage() {
         idOpcional: item.idOpcional,
         descricaoOpcional: item.descricaoOpcional,
       }))
-      console.log("🚀 ~ file: create.tsx ~ line 201 ~ loadData ~ opcionais", opcionais)
       if (response) {
         setValue('idMarca', response.idMarca)
         setValue('idModelo', response.idModelo)
@@ -307,9 +305,6 @@ export default function FranqueadosCreatePage() {
       const newFilesBase64 = acceptedFiles.map(async (file) =>
         await convertBase64(file)
       );
-
-      console.log('newFilesBase64', newFiles)
-
 
       setValue('images', [...files, ...newFiles]);
       setValue('imagesBase64', [...filesBase64, ...newFilesBase64]);
