@@ -1,12 +1,11 @@
-import merge from 'lodash/merge';
 import { useMemo } from 'react';
-// @mui
-import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
-//
-import { useSettingsContext } from './SettingsContext';
 
-// ----------------------------------------------------------------------
+import merge from 'lodash/merge';
+
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
+
+import { useSettingsContext } from './SettingsContext';
 
 type Props = {
   children: React.ReactNode;

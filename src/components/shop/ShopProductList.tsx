@@ -3,7 +3,7 @@ import { useProduct } from '@/hooks/useProduct';
 import { SkeletonProductItem } from '@/components/skeleton';
 
 import { IProduct } from '@/@types/product';
-import { Box, BoxProps, Button, Pagination, Typography } from '@mui/material';
+import { Box, BoxProps, Pagination } from '@mui/material';
 
 import ShopProductCard from './ShopProductCard';
 

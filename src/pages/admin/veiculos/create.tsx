@@ -124,7 +124,7 @@ export default function FranqueadosCreatePage() {
         km: Number(data.km),
         valor: Number(data.valor),
         obs: data.obs,
-        renavam: data.renavam,
+        renavam: Number(data.renavam),
         opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
@@ -136,7 +136,7 @@ export default function FranqueadosCreatePage() {
         foto8: foto8 ? String(foto8) : undefined,
       })
       enqueueSnackbar('Franqueado criado com sucesso', { variant: 'success' });
-      // push('/admin/franqueados')
+      // push('/admin/veiculos')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -171,7 +171,7 @@ export default function FranqueadosCreatePage() {
         km: Number(data.km),
         valor: Number(data.valor),
         obs: data.obs,
-        renavam: data.renavam,
+        renavam: Number(data.renavam),
         opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
@@ -296,10 +296,9 @@ export default function FranqueadosCreatePage() {
       const files = values.images || [];
       const filesBase64 = values.imagesBase64 || [];
 
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
+      const newFiles = acceptedFiles.map((file) => Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      })
       );
 
       const newFilesBase64 = acceptedFiles.map(async (file) =>
@@ -477,9 +476,9 @@ export default function FranqueadosCreatePage() {
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam" type="text" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam" type="number" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="valor" label="Valor" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="valor" label="Valor" type="number" />
 
                       <RHFAutocomplete
                         name="Opcionais"
@@ -532,7 +531,8 @@ export default function FranqueadosCreatePage() {
                         multiple
                         thumbnail
                         name="images"
-                        maxSize={3145728}
+                        // maxSize 1MB
+                        maxSize={1000000}
                         onDrop={handleDrop}
                         onRemove={handleRemoveFile}
                         onRemoveAll={handleRemoveAllFiles}

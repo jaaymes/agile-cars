@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { RadioGroup } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 

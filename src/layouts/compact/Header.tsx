@@ -1,12 +1,10 @@
-import NextLink from 'next/link';
-
 import Logo from '@/components/logo';
 
 import { bgBlur } from '@/utils/cssStyles';
 
 import { HEADER } from '@/config';
 
-import { AppBar, Toolbar, Box, BoxProps, Link } from '@mui/material';
+import { AppBar, Toolbar, Box, BoxProps } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 type Props = {

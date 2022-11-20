@@ -1,10 +1,9 @@
 import { forwardRef } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { Badge, Avatar } from '@mui/material';
-//
-import { CustomAvatarProps } from './types';
 
-// ----------------------------------------------------------------------
+import { Badge, Avatar } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
+import { CustomAvatarProps } from './types';
 
 const CustomAvatar = forwardRef<HTMLDivElement, CustomAvatarProps>(
   ({ color, name = '', BadgeProps, children, sx, ...other }, ref) => {

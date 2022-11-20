@@ -4,7 +4,7 @@ import { BsFillGearFill } from 'react-icons/bs';
 import { bgBlur } from '@/utils/cssStyles';
 
 import { Tooltip, Box } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { IconButtonAnimate } from '../../animate';
 import BadgeDot from './BadgeDot';

@@ -11,7 +11,6 @@ export const InstallPWA = () => {
   const delay = (ms: any) => new Promise(res => setTimeout(res, ms));
   const [isOpen, setIsOpen] = useState(false)
 
-  const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState<any>(null);
 
   const [processando, setProcessando] = useState(false);
@@ -38,7 +37,6 @@ export const InstallPWA = () => {
     const handlerInstall = (e: any) => {
       e.preventDefault();
       localStorage.removeItem('APP_INSTALLED')
-      setSupportsPWA(true);
       setAppInstalado(false);
       setPromptInstall(e);
     };

@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 
 import { useAuth } from '@/hooks/useAuth';
 
-
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
@@ -32,7 +31,6 @@ import { IUserAccountGeneral } from '@/@types/user';
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, colors, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
-
 
 interface FormValuesProps extends Omit<IUserAccountGeneral, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
@@ -188,7 +186,7 @@ export default function UserCreatePage() {
   return (
     <>
       <Head>
-        <title>Criar novo Colaborador</title>
+        <title>{id ? "Editar Colaborador" : "Criar novo Colaborador"}</title>
       </Head>
       {
         isLoading ? (
@@ -196,7 +194,7 @@ export default function UserCreatePage() {
         ) :
           <Container maxWidth={false}>
             <CustomBreadcrumbs
-              heading="Criar novo colaborador"
+              heading={id ? "Editar Colaborador" : "Criar novo Colaborador"}
               links={[
                 {
                   name: 'Início',
@@ -310,7 +308,6 @@ export default function UserCreatePage() {
                           senha padrao: 123456
                         </Typography>
                       </Box>
-
 
                       <TextField
                         value={values.idFranqueado || ''}

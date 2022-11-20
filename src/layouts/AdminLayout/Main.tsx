@@ -1,7 +1,6 @@
 import useResponsive from '@/hooks/useResponsive';
 
 import { useSettingsContext } from '@/components/settings';
-import SettingsDrawer from '@/components/settings/drawer';
 
 import { HEADER, NAV } from '@/config';
 

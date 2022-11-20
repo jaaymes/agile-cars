@@ -1,7 +1,4 @@
-import { toast } from "react-toastify";
-
 import api from "./api";
-
 
 interface IColaboradorGet { 
   idFranqueado?: number | null;
@@ -12,17 +9,6 @@ interface IColaboradorPost {
   idSituacao?: number | null;
   idFuncionario?: number | null;
   dataCadastro?: Date | string | number;
-  descricaoFuncionario: string;
-  imagem: string;
-  senha?: string;
-  email: string;
-  foneCelular: string;
-}
-
-interface IColaboradorUpdate {
-  idFranqueado?: number | null;
-  idSituacao?: number | null;
-  idFuncionario?: number | null;
   descricaoFuncionario: string;
   imagem: string;
   senha?: string;

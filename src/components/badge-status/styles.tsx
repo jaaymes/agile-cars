@@ -1,9 +1,6 @@
-// @mui
 import { Theme, styled } from '@mui/material/styles';
-//
-import { BadgeStatusValue, BadgeSizeValue } from './types';
 
-// ----------------------------------------------------------------------
+import { BadgeStatusValue, BadgeSizeValue } from './types';
 
 export const StyledBadgeStatus = styled('span')(
   ({

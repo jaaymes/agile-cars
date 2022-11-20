@@ -26,7 +26,6 @@ import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
 
-
 interface FormValuesProps {
   descricaoFranqueado: string
   cnpj: string
@@ -192,7 +191,7 @@ export default function FranqueadosCreatePage() {
   return (
     <>
       <Head>
-        <title>Criar novo Franqueado</title>
+        <title>{id ? "Editar Franqueado" : "Criar novo Franqueado"}</title>
       </Head>
       {
         isLoading ? (
@@ -200,7 +199,7 @@ export default function FranqueadosCreatePage() {
         ) :
           <Container maxWidth={false}>
             <CustomBreadcrumbs
-              heading="Criar novo Franqueado"
+              heading={id ? "Editar Franqueado" : "Criar novo Franqueado"}
               links={[
                 {
                   name: 'Início',

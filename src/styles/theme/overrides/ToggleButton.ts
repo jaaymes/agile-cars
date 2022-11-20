@@ -1,7 +1,5 @@
-import { Theme, alpha } from '@mui/material/styles';
 import { ToggleButtonProps } from '@mui/material';
-
-// ----------------------------------------------------------------------
+import { Theme, alpha } from '@mui/material/styles';
 
 const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] as const;
 

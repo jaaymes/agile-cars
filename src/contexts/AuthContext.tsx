@@ -58,7 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
 
-  }, [router]);
+  }, []);
 
 
   const login = useCallback(async ({

@@ -169,7 +169,6 @@ export default function ColaboladoresPage() {
             />
           </Container>
       }
-
     </>
   );
 }

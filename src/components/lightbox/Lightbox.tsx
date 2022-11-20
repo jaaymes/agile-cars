@@ -41,7 +41,7 @@ export default function Lightbox({
 
       {open && (
         <ReactLightbox
-          animationDuration={160}
+          // animationDuration={160}
           nextSrc={images[(photoIndex + 1) % images.length]}
           prevSrc={images[(photoIndex + images.length - 1) % images.length]}
           onMovePrevRequest={() => setPhotoIndex((photoIndex + images.length - 1) % images.length)}

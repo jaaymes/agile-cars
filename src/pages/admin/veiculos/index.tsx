@@ -22,7 +22,7 @@ import {
 } from '@/components/table';
 import { VeiculosCustomTable } from '@/components/VeiculosCustomTable';
 
-import { deleteVeiculo, getProducts, getProductsList } from '@/services/products';
+import { deleteVeiculo, getProductsList } from '@/services/products';
 
 import { IProduct } from '@/@types/product';
 import DashboardLayout from '@/layouts/AdminLayout';

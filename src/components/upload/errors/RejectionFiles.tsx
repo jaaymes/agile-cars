@@ -1,13 +1,11 @@
 import { FileRejection } from 'react-dropzone';
-// @mui
-import { alpha } from '@mui/material/styles';
-import { Box, Paper, Typography } from '@mui/material';
-// utils
-import { fData } from '../../../utils/formatNumber';
-//
-import { fileData } from '../../file-thumbnail';
 
-// ----------------------------------------------------------------------
+import { fileData } from '@/components/file-thumbnail';
+
+import { fData } from '@/utils/formatNumber';
+
+import { Box, Paper, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
 type Props = {
   fileRejections: FileRejection[];
@@ -40,7 +38,7 @@ export default function RejectionFiles({ fileRejections }: Props) {
 
             {errors.map((error) => (
               <Box key={error.code} component="span" sx={{ typography: 'caption' }}>
-                - {error.message}
+                - Arquivo maior que 1 MB
               </Box>
             ))}
           </Box>

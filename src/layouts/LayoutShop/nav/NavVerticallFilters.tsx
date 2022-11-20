@@ -17,7 +17,7 @@ import { NAV } from '@/config';
 import { IProductFilter } from '@/@types/product';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreOutlined';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Slider, Button, TextField } from '@mui/material';
+import { Box, Stack, Drawer, Typography, FormGroup, FormControlLabel, Checkbox, Accordion, AccordionSummary, AccordionDetails, FormControl, RadioGroup, Radio, Button, TextField } from '@mui/material';
 
 
 type Props = {
@@ -59,7 +59,7 @@ interface ICategories {
 }
 
 export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
-  const { setProduct, page, setCountPage, setPage, order, direction } = useProduct()
+  const { setProduct, page, setCountPage, setPage, order, direction, setIsLoading } = useProduct()
 
   const [filters, setFilters] = useState<IProductFilter>(defaultValues);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
@@ -117,6 +117,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }
 
   const handleProducts = async () => {
+    setIsLoading(true);
     const products = await getProducts({
       page,
       idModelo: filters.modelos.value === 'todos' ? undefined : Number(filters.modelos.value),
@@ -143,6 +144,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
         opcionaisArray: product?.opcionais?.split(',')
       }))
       setProduct(productWithImages)
+      setIsLoading(false);
     }
   }
 

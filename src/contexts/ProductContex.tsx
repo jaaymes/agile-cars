@@ -13,6 +13,8 @@ export interface IProductContext {
   setOrder: React.Dispatch<React.SetStateAction<'valor' | 'fab' | 'km' | '' | null>>
   direction: 'asc' | 'desc' | '' | null
   setDirection: React.Dispatch<React.SetStateAction<'asc' | 'desc' | '' | null>>
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  isLoading: boolean
 }
 
 interface IContextProvider {
@@ -27,6 +29,7 @@ export const ProductProvider: React.FC<IContextProvider> = ({ children }) => {
   const [countPage, setCountPage] = useState(1)
   const [order, setOrder] = useState<'valor' | 'fab' | 'km' | '' | null>(null)
   const [direction, setDirection] = useState<'asc' | 'desc' | '' | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <ProductContext.Provider value={{
@@ -39,7 +42,9 @@ export const ProductProvider: React.FC<IContextProvider> = ({ children }) => {
       order,
       setOrder,
       direction,
-      setDirection
+      setDirection,
+      isLoading,
+      setIsLoading
     }}>
       {children}
     </ProductContext.Provider>

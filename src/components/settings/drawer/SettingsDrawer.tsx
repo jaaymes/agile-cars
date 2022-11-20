@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-// @mui
 import { bgBlur } from '@/utils/cssStyles';
 
 import { NAV } from '@/config';
@@ -15,12 +14,8 @@ import { useSettingsContext } from '../SettingsContext';
 import BadgeDot from './BadgeDot';
 import Block from './Block';
 import ColorPresetsOptions from './ColorPresetsOptions';
-import DirectionOptions from './DirectionOptions';
-import LayoutOptions from './LayoutOptions';
 import ModeOptions from './ModeOptions';
 import ToggleButton from './ToggleButton';
-
-// ----------------------------------------------------------------------
 
 const SPACING = 2.5;
 

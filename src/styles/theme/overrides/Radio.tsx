@@ -1,9 +1,7 @@
-import { Theme } from '@mui/material/styles';
 import { RadioProps } from '@mui/material';
-//
-import { RadioIcon, RadioCheckedIcon } from './CustomIcons';
+import { Theme } from '@mui/material/styles';
 
-// ----------------------------------------------------------------------
+import { RadioIcon, RadioCheckedIcon } from './CustomIcons';
 
 export default function Radio(theme: Theme) {
   return {

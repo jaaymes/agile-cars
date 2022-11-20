@@ -1,7 +1,3 @@
-import useOffSetTop from '@/hooks/useOffSetTop';
-
-import { HEADER } from '@/config';
-
 import { Box } from '@mui/material';
 
 import Header from '../LayoutShop/header';

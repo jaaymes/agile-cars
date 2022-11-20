@@ -1,10 +1,7 @@
-// @mui
 import { alpha } from '@mui/material/styles';
 import { Shadows } from '@mui/material/styles/shadows';
-//
-import palette from './palette';
 
-// ----------------------------------------------------------------------
+import palette from './palette';
 
 const themeColor = palette('light');
 

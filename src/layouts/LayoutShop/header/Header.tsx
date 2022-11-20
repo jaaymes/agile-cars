@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import useOffSetTop from '@/hooks/useOffSetTop';
 import useResponsive from '@/hooks/useResponsive';
 
@@ -14,21 +12,12 @@ import { HEADER, NAV } from '@/config';
 import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-
 type Props = {
   onOpenNav?: VoidFunction;
 };
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const isDesktop = useResponsive('up', 'lg');
 

@@ -1,9 +1,7 @@
-// @mui
 import { styled, alpha } from '@mui/material/styles';
-//
+
 import { MenuPopoverArrowValue } from './types';
 
-// ----------------------------------------------------------------------
 
 export const StyledArrow = styled('span')<{ arrow: MenuPopoverArrowValue }>(({ arrow, theme }) => {
   const SIZE = 12;

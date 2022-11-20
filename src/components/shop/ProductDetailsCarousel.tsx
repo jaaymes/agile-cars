@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 import Carousel, { CarouselArrowIndex } from '@/components/carousel';
 import Image from '@/components/image';
@@ -8,9 +8,7 @@ import { bgGradient } from '@/utils/cssStyles';
 
 import { IProduct } from '@/@types/product';
 import { Box } from '@mui/material';
-import { alpha, useTheme, styled } from '@mui/material/styles';
-
-// ----------------------------------------------------------------------
+import { alpha, styled } from '@mui/material/styles';
 
 const SPEED = 160;
 
@@ -108,17 +106,22 @@ export default function ProductDetailsCarousel({ product }: Props) {
   const [selectedImage, setSelectedImage] = useState<number>(0);
 
   const imagesLightbox = product.images.map((_image) => _image);
+  const [key, setKey] = useState(0);
 
-  const handleOpenLightbox = (url: string) => {
+
+  const handleOpenLightbox = useCallback((url: string) => {
     const selectedImage = imagesLightbox.findIndex((index) => index === url);
     setOpenLightbox(true);
 
+
     setSelectedImage(selectedImage);
-  };
+  }, [openLightbox])
 
   const handleCloseLightbox = () => {
     setOpenLightbox(false);
   };
+
+  useEffect(() => { setTimeout(() => setKey(key + 1)); }, [openLightbox]);
 
   const carouselSettings1 = {
     speed: SPEED,
@@ -242,9 +245,10 @@ export default function ProductDetailsCarousel({ product }: Props) {
       </Box>
 
       <Lightbox
+        key={key}
         animationDuration={SPEED}
         images={imagesLightbox}
-        mainSrc={`${imagesLightbox[selectedImage]}`}
+        mainSrc={imagesLightbox[selectedImage]}
         photoIndex={selectedImage}
         setPhotoIndex={setSelectedImage}
         open={openLightbox}
