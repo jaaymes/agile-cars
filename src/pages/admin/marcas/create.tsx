@@ -70,7 +70,7 @@ export default function MarcasCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/franqueados');
+      push('/admin/marcas');
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -114,7 +114,7 @@ export default function MarcasCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/',
+                  href: '/admin',
                 },
                 {
                   name: 'Marcas',

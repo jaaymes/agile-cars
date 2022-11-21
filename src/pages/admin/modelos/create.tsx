@@ -74,8 +74,6 @@ export default function MarcasCreatePage() {
   };
 
   const onSubmitEdit = async (data: FormValuesProps) => {
-    console.log("🚀 ~ file: create.tsx ~ line 76 ~ onSubmitEdit ~ data", data)
-    console.log('selectIdMarca', selectIdMarca)
     try {
       await createModelo({
         descricaoModelo: data.descricaoModelo,
@@ -103,15 +101,17 @@ export default function MarcasCreatePage() {
       setIsLoading(true)
       const response = await getModelo(Number(id))
       if (response) {
-        setValue('descricaoModelo', response.descricaoModelo)
-        setSelectIdMarca(response.idMarca)
-        const options = marcas.find((option) => option.id === response.idMarca)
-        setSelectOptions(options)
+        setValue('descricaoModelo', response[0].descricaoModelo)
+        setSelectIdMarca(response[0].idMarca)
+        setSelectOptions({
+          label: response[0].descricaoMarca,
+          id: response[0].idMarca
+        })
       }
       setIsLoading(false)
     }
 
-  }, [id, marcas])
+  }, [id])
 
   const onSubmit = async (data: FormValuesProps) => {
     if (!id) {
@@ -123,7 +123,7 @@ export default function MarcasCreatePage() {
 
   useEffect(() => {
     loadData()
-  }, [id, marcas]);
+  }, [id]);
 
   useEffect(() => {
     handleGetAllMarcas()
@@ -146,7 +146,7 @@ export default function MarcasCreatePage() {
                   href: '/',
                 },
                 {
-                  name: 'Marcas',
+                  name: 'Modelos',
                   href: '/admin/modelos',
                 },
                 { name: 'Novo Modelo' },
@@ -170,7 +170,7 @@ export default function MarcasCreatePage() {
                       }}
                     >
                       <Autocomplete
-                        value={selectOptions}
+                        value={selectOptions || null}
                         onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
                         options={marcas}
                         renderInput={(params) => <TextField sx={{ zIndex: 9999 }}  {...params} label="Marcas" />}
@@ -183,7 +183,7 @@ export default function MarcasCreatePage() {
                     <Stack alignItems="flex-end" sx={{ mt: 3 }}>
                       <LoadingButton
                         type="submit" variant="contained" loading={isSubmitting}>
-                        {!id ? 'Criar Marca' : 'Salvar Mudanças'}
+                        {!id ? 'Criar Modelo' : 'Salvar Mudanças'}
                       </LoadingButton>
                     </Stack>
                   </Card>

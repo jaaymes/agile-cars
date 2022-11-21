@@ -135,8 +135,8 @@ export default function FranqueadosCreatePage() {
         foto7: foto7 ? String(foto7) : undefined,
         foto8: foto8 ? String(foto8) : undefined,
       })
-      enqueueSnackbar('Franqueado criado com sucesso', { variant: 'success' });
-      // push('/admin/veiculos')
+      enqueueSnackbar('Veiculo criado com sucesso', { variant: 'success' });
+      push('/admin/veiculos')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -466,15 +466,21 @@ export default function FranqueadosCreatePage() {
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="chassi" label="Chassi" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="placa" label="Placa" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="placa" label="Placa"
+                        inputProps={{
+                          style: {
+                            textTransform: 'uppercase'
+                          }
+                        }}
+                      />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" label="Ano Fabricação" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" label="Ano Fabricação" type="number" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" label="Ano Modelo" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" label="Ano Modelo" type="number" />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="cor" label="Cor" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" type="number" />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam" type="number" />
 

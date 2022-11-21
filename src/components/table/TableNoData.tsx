@@ -4,15 +4,16 @@ import EmptyContent from '../empty-content';
 
 type Props = {
   isNotFound: boolean;
+  text?: string;
 };
 
-export default function TableNoData({ isNotFound }: Props) {
+export default function TableNoData({ isNotFound, text }: Props) {
   return (
     <TableRow>
       {isNotFound ? (
         <TableCell colSpan={12}>
           <EmptyContent
-            title="Sem Registros"
+            title={text ? text : "Sem Registros"}
             sx={{
               '& span.MuiBox-root': { height: 160 },
             }}

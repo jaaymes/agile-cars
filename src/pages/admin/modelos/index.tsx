@@ -134,7 +134,7 @@ export default function MarcasPage() {
               heading="Lista de Modelos por Marca"
               links={[
                 { name: 'Inicio', href: '/admin/dashboard' },
-                { name: 'Franqueados', href: '/admin/modelos' },
+                { name: 'Modelos', href: '/admin/modelos' },
                 { name: 'Lista' },
               ]}
               action={
@@ -156,6 +156,8 @@ export default function MarcasPage() {
             >
               <FormControl fullWidth>
                 <Autocomplete
+                  noOptionsText="Nenhuma marca encontrada"
+                  clearIcon={null}
                   disablePortal
                   value={marcas.find((marca) => marca.id === selectIdMarca)}
                   onChange={(event, value) => setSelectIdMarca(Number(value?.id))}

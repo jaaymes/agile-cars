@@ -9,7 +9,7 @@ import { isBrowser } from 'framer-motion';
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
 import Iconify from '@/components/iconify';
 import LoadingScreen from '@/components/loading-screen';
-import { ModelosCustomTable } from '@/components/ModelosCustomTable';
+import { ModelosVersaoCustomTable } from '@/components/ModelosVersaoCustomTable';
 import Scrollbar from '@/components/scrollbar';
 import {
   useTable,
@@ -20,7 +20,7 @@ import {
   TablePaginationCustom,
 } from '@/components/table';
 
-import { deleteMarca, getMarcas, getModelos } from '@/services/products';
+import { deleteMarca, getMarcas, getModelos, getModelosVersao } from '@/services/products';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
@@ -47,9 +47,9 @@ export interface IMarcas {
   descricaoMarca: string;
 }
 
-export interface IModelos {
-  idModelo: number;
-  descricaoModelo: string;
+export interface IModelosVersao {
+  idModeloVersao: number;
+  descricaoModeloVersao: string;
 }
 
 interface IOptions {
@@ -74,34 +74,45 @@ export default function MarcasPage() {
   const [isSSR, setIsSSR] = useState(true);
 
   const [marcas, setMarcas] = useState<IOptions[]>([])
-  const [modelos, setModelos] = useState<IModelos[]>([])
+  const [modelos, setModelos] = useState<IOptions[]>([])
+  const [modelosVersao, setModelosVersao] = useState<IModelosVersao[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [selectIdMarca, setSelectIdMarca] = useState<number | null>(1);
+  const [selectIdMarca, setSelectIdMarca] = useState<number | null>(null);
+  const [selectIdModelo, setSelectIdModelo] = useState<number | null>(null);
 
-  const dataInPage = modelos?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  const dataInPage = modelosVersao?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleDeleteRow = async (id: number) => {
     await deleteMarca(id)
-    const newFranqueados = modelos.filter((colaborador) => colaborador.idModelo !== id)
-    setModelos(newFranqueados)
+    const newFranqueados = modelosVersao.filter((colaborador) => colaborador.idModeloVersao !== id)
+    setModelosVersao(newFranqueados)
   };
 
 
   const handleEditRow = (id: number) => {
-    push(`/admin/modelos/create?id=${id}`);
+    push(`/admin/modelo-versao/create?id=${id}`);
   };
 
   const handleGetAllMarcas = async () => {
     setIsLoading(true)
     const marcas = await getMarcas()
-    setMarcas(marcas.map((marca: { descricaoMarca: any; idMarca: any; }) => ({ label: marca.descricaoMarca, id: marca.idMarca })))
+    setMarcas(marcas?.map((marca: { descricaoMarca: any; idMarca: any; }) => ({ label: marca.descricaoMarca, id: marca.idMarca })))
     setIsLoading(false)
   }
 
-  const handleGetModelos = async () => {
+  const handleGetAllModelos = async () => {
     setIsLoading(true)
     const modelos = await getModelos(Number(selectIdMarca))
-    setModelos(modelos)
+    setModelos(modelos?.map((modelo: { descricaoModelo: any; idModelo: any; }) => ({ label: modelo.descricaoModelo, id: modelo.idModelo })))
+    setIsLoading(false)
+  }
+
+  const handleGetModelosVersao = async () => {
+    setIsLoading(true)
+    const modelos = await getModelosVersao(Number(selectIdModelo))
+    console.log("🚀 ~ file: index.tsx ~ line 114 ~ handleGetModelosVersao ~ modelos", modelos)
+    setModelosVersao(modelos.collection)
     setIsLoading(false)
     setPage(0)
   }
@@ -111,8 +122,12 @@ export default function MarcasPage() {
   }, []);
 
   useEffect(() => {
-    handleGetModelos()
+    handleGetAllModelos()
   }, [selectIdMarca]);
+
+  useEffect(() => {
+    handleGetModelosVersao()
+  }, [selectIdModelo]);
 
   useEffect(() => {
     if (isBrowser) {
@@ -123,7 +138,7 @@ export default function MarcasPage() {
   return (
     <>
       <Head>
-        <title> Marcas: Lista</title>
+        <title> Modelo Versão: Lista</title>
       </Head>
       {
         isLoading ? (
@@ -131,16 +146,16 @@ export default function MarcasPage() {
         ) :
           <Container maxWidth={false}>
             <CustomBreadcrumbs
-              heading="Lista de Modelos por Marca"
+              heading="Lista de Modelo Versão"
               links={[
                 { name: 'Inicio', href: '/admin/dashboard' },
-                { name: 'Franqueados', href: '/admin/modelos' },
+                { name: 'Modelo Versão', href: '/admin/modelo-versao' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/modelos/create'} passHref>
+                <NextLink href={'/admin/modelo-versao/create'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Modelo
+                    Nova Modelo Versão
                   </Button>
                 </NextLink>
               }
@@ -156,15 +171,30 @@ export default function MarcasPage() {
             >
               <FormControl fullWidth>
                 <Autocomplete
+                  noOptionsText="Nenhuma marca encontrada"
                   disablePortal
-                  value={marcas.find((marca) => marca.id === selectIdMarca)}
-                  onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
+                  clearIcon={null}
+                  value={marcas?.find((marca) => marca.id === selectIdMarca)}
+                  onChange={(event, value) => {
+                    setSelectIdModelo(null)
+                    setSelectIdMarca(Number(value?.id))
+                  }}
                   options={marcas}
                   renderInput={(params) => <TextField  {...params} label="Marcas" />}
                 />
               </FormControl>
+              <FormControl fullWidth>
+                <Autocomplete
+                  noOptionsText="Nenhum modelo encontrado"
+                  clearIcon={null}
+                  disablePortal
+                  value={modelos?.find((modelos) => modelos.id === selectIdModelo)}
+                  onChange={(event, value) => setSelectIdModelo(Number(value?.id))}
+                  options={modelos}
+                  renderInput={(params) => <TextField  {...params} label="Modelos" />}
+                />
+              </FormControl>
             </Stack>
-
 
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
               <Scrollbar>
@@ -180,11 +210,11 @@ export default function MarcasPage() {
                     !isSSR && (
                       <TableBody>
                         {dataInPage.map((row) => (
-                          <ModelosCustomTable
-                            key={row.idModelo}
+                          <ModelosVersaoCustomTable
+                            key={row.idModeloVersao}
                             row={row}
-                            onDeleteRow={() => handleDeleteRow(row.idModelo)}
-                            onEditRow={() => handleEditRow(row.idModelo)}
+                            onDeleteRow={() => handleDeleteRow(row.idModeloVersao)}
+                            onEditRow={() => handleEditRow(row.idModeloVersao)}
                           />
                         ))}
 
@@ -192,7 +222,8 @@ export default function MarcasPage() {
                           emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
                         />
 
-                        <TableNoData isNotFound={!dataInPage?.length} />
+                        <TableNoData isNotFound={!dataInPage?.length} text="Escolha Marca e Modelo" />
+
                       </TableBody>
                     )
                   }

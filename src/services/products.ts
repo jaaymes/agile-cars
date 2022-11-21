@@ -177,6 +177,41 @@ export const getModelosVersao = async (id: number) => {
   }
 }
 
+export const getModeloVersao = async (id: number) => { 
+  try {
+    const response = await api.get(`/modeloversao/obter?id=${id}`);
+    return response.data
+  } catch (error) {
+    console.error(error);
+    // toast.error(error)
+  }
+}
+
+export const createModeloVersao = async ({
+  descricaoModeloVersao,
+  idModelo,
+  idModeloVersao,
+  idMarca
+}: {
+  descricaoModeloVersao: string
+    idModelo: number
+  idMarca: number
+  idModeloVersao?: number
+  }) => { 
+  try {
+    const response = await api.post(`/modeloversao/detalhe`, {
+      descricaoModeloVersao,
+      idModelo,
+      idModeloVersao,
+      idMarca
+     });
+    return response.data
+  } catch (error) {
+    console.error(error);
+    // toast.error(error)
+  }
+}
+
 interface ICreateVeiculo {
   idVeiculo?: number;
   idFranqueado: number;
