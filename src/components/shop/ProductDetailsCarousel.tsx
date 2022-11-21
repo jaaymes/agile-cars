@@ -6,7 +6,6 @@ import Lightbox from '@/components/lightbox';
 
 import { bgGradient } from '@/utils/cssStyles';
 
-import { IProduct } from '@/@types/product';
 import { Box } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 
@@ -83,13 +82,11 @@ const StyledThumbnailsContainer = styled('div', {
   }),
 }));
 
-// ----------------------------------------------------------------------
+interface IProps {
+  images: string[];
+}
 
-type Props = {
-  product: IProduct;
-};
-
-export default function ProductDetailsCarousel({ product }: Props) {
+export default function ProductDetailsCarousel({ images }: IProps) {
 
   const carousel1 = useRef<Carousel | null>(null);
 
@@ -105,7 +102,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
 
   const [selectedImage, setSelectedImage] = useState<number>(0);
 
-  const imagesLightbox = product.images.map((_image) => _image);
+  const imagesLightbox = images.map((_image) => _image);
   const [key, setKey] = useState(0);
 
 
@@ -143,7 +140,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
     focusOnSelect: true,
     variableWidth: true,
     centerPadding: '0px',
-    slidesToShow: product.images.length > 3 ? 3 : product.images.length,
+    slidesToShow: images.length > 3 ? 3 : images.length,
   };
 
   useEffect(() => {
@@ -167,8 +164,8 @@ export default function ProductDetailsCarousel({ product }: Props) {
     <Box sx={{ mb: 3, borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
       <Carousel {...carouselSettings1} asNavFor={nav2} ref={carousel1}>
         {
-          product.images.length > 0 && (
-            product.images.map((img) => (
+          images.length > 0 && (
+            images.map((img) => (
               <Image
                 key={img}
                 alt="product"
@@ -182,7 +179,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
           )
         }
         {
-          product.images.length === 0 && (
+          images.length === 0 && (
             <Image
               alt="product"
               src={`/sem-imagem.png`}
@@ -194,10 +191,10 @@ export default function ProductDetailsCarousel({ product }: Props) {
       </Carousel>
 
       {
-        product.images.length > 0 && (
+        images.length > 0 && (
           <CarouselArrowIndex
             index={currentIndex}
-            total={product.images.length}
+            total={images.length}
             onNext={handleNext}
             onPrevious={handlePrev}
           />
@@ -207,9 +204,9 @@ export default function ProductDetailsCarousel({ product }: Props) {
   );
 
   const renderThumbnails = (
-    <StyledThumbnailsContainer length={product.images.length}>
+    <StyledThumbnailsContainer length={images.length}>
       <Carousel {...carouselSettings2} asNavFor={nav1} ref={carousel2}>
-        {product.images.map((img, index) => (
+        {images.map((img, index) => (
           <Image
             key={img}
             disabledEffect

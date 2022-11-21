@@ -90,7 +90,7 @@ export default function MarcasCreatePage() {
 
   const handleGetAllMarcas = async () => {
     setIsLoading(true)
-    const marcas = await getMarcas()
+    const marcas = await getMarcas({})
     const options = marcas.map((marca: IMarcas) => ({ label: marca.descricaoMarca, id: marca.idMarca }))
     setMarcas(options)
     setIsLoading(false)

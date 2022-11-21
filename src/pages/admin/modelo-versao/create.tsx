@@ -98,7 +98,7 @@ export default function MarcasCreatePage() {
   }
 
   const handleGetAllMarcas = async () => {
-    const marcas = await getMarcas()
+    const marcas = await getMarcas({})
     const options = marcas.map((marca: IMarcas) => ({ label: marca.descricaoMarca, id: marca.idMarca }))
     setMarcas(options)
   }

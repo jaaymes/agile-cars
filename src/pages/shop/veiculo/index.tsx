@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -25,7 +25,7 @@ export default function ProductDetails() {
 
   const [product, setProduct] = useState<IProduct | null>(null);
 
-  const handleGetProduct = async (id: number, idFranqueado: number) => {
+  const handleGetProduct = useCallback(async (id: number, idFranqueado: number) => {
 
     try {
       const { collection } = await getProducts({
@@ -40,13 +40,13 @@ export default function ProductDetails() {
     } catch (error: any) {
       enqueueSnackbar('Erro ao buscar produto', { variant: 'error' });
     }
-  }
+  }, [id])
 
   useEffect(() => {
-    if (id && idFranqueado) {
+    if (id) {
       handleGetProduct(Number(id), Number(idFranqueado));
     }
-  }, [idFranqueado, id]);
+  }, [id]);
 
   return (
     <>
@@ -67,7 +67,8 @@ export default function ProductDetails() {
           <>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6} lg={7}>
-                <ProductDetailsCarousel product={product} />
+                {/* @ts-ignore */}
+                <ProductDetailsCarousel images={product.images} />
               </Grid>
 
               <Grid item xs={12} md={6} lg={5}>

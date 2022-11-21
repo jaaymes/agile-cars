@@ -245,7 +245,7 @@ export default function FranqueadosCreatePage() {
   }, [id])
 
   const handleGetMarcas = async () => {
-    const response = await getMarcas()
+    const response = await getMarcas({})
     const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
       label: item.descricaoMarca.toUpperCase(),
       value: item.idMarca
@@ -287,7 +287,7 @@ export default function FranqueadosCreatePage() {
   }
 
   const handleGetOptional = async () => {
-    const optional = await getOptionais()
+    const optional = await getOptionais({})
     setOptionals(optional.collection)
   }
 

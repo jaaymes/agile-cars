@@ -10,7 +10,7 @@ import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
 
 import { getCategory, getOptionais } from '@/services/filters';
-import { getMarcas, getModelos, getModelosVersao, getProducts, getProducts2 } from '@/services/products';
+import { getMarcas, getModelos, getModelosVersao, getProducts2 } from '@/services/products';
 
 import { NAV } from '@/config';
 
@@ -148,7 +148,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }, [filters, page, order, direction, setCountPage])
 
   const handleGetOptional = useCallback(async () => {
-    const optional = await getOptionais()
+    const optional = await getOptionais({})
     setOptionals(optional.collection)
   }, [])
 
@@ -163,7 +163,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
   }, [])
 
   const handleGetMarcas = useCallback(async () => {
-    const response = await getMarcas()
+    const response = await getMarcas({})
     const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
       label: item.descricaoMarca.toUpperCase(),
       value: item.idMarca
