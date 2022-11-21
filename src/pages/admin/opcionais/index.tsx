@@ -6,11 +6,10 @@ import { useRouter } from 'next/router';
 
 import { isBrowser } from 'framer-motion';
 
-import { useAuth } from '@/hooks/useAuth';
-
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
 import Iconify from '@/components/iconify';
 import LoadingScreen from '@/components/loading-screen';
+import { OpcionaisCustomTable } from '@/components/OpcionaisCustomTable';
 import Scrollbar from '@/components/scrollbar';
 import {
   useTable,
@@ -20,11 +19,9 @@ import {
   TableHeadCustom,
   TablePaginationCustom,
 } from '@/components/table';
-import { VeiculosCustomTable } from '@/components/VeiculosCustomTable';
 
-import { deleteVeiculo, getProductsList } from '@/services/products';
+import { deleteOptional, getOptionais } from '@/services/filters';
 
-import { IProduct } from '@/@types/product';
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
   Table,
@@ -35,16 +32,18 @@ import {
 } from '@mui/material';
 
 const TABLE_HEAD = [
-  { id: 'descricaoMarca', label: 'Marca', align: 'left' },
-  { id: 'descricaoModelo', label: 'Modelo', align: 'left' },
-  { id: 'descricaoModeloVersao', label: 'Modelo Versão', align: 'left' },
-  { id: 'franqueado', label: 'Franqueado', align: 'left' },
+  { id: 'descricaoOpcional', label: 'Nome', align: 'left' },
   { id: 'actions', label: 'Ações', align: 'center' },
 ];
 
-VeiculosPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+MarcasPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default function VeiculosPage() {
+interface IOptionals {
+  idOpcional: number;
+  descricaoOpcional: string;
+}
+
+export default function MarcasPage() {
   const {
     page,
     order,
@@ -53,55 +52,41 @@ export default function VeiculosPage() {
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-    setTotalPage,
-    totalPage
   } = useTable();
-
-  useEffect(() => {
-    console.log('order', order)
-  }, [order]);
 
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
 
-  const { user } = useAuth()
-
-  const [veiculos, setVeiculos] = useState<IProduct[]>([])
+  const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleDeleteRow = async (id: number) => {
-    await deleteVeiculo(id, user?.idfranqueado)
-    const newVeiculos = veiculos.filter((veiculo) => veiculo.idVeiculo !== id)
-    setVeiculos(newVeiculos)
-  };
+  const dataInPage = optionals?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  useEffect(() => {
-    console.log('orderBy', orderBy)
-  }, [orderBy]);
+  const handleDeleteRow = async (id: number) => {
+    await deleteOptional(id)
+    const newFranqueados = optionals.filter((colaborador) => colaborador.idOpcional !== id)
+    setOptionals(newFranqueados)
+  };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/veiculos/create?id=${id}`);
+    push(`/admin/opcionais/create?id=${id}`);
   };
 
-
-  const handleGetAllVeiculos = async () => {
+  const handleGetAllOpcionais = async () => {
     setIsLoading(true)
-    await getProductsList({
-      page: page + 1,
-      pageSize: rowsPerPage,
-      direction: order,
-      order: orderBy
-    }).then(response => {
-      setVeiculos(response.collection)
-      setTotalPage(response.pagination.totalResults)
-      setIsLoading(false)
-    }).catch(error => console.log(error))
+    const opcionais = await getOptionais({
+      ordenar: orderBy,
+      direcao: order,
+    })
+    console.log("🚀 ~ file: index.tsx ~ line 79 ~ handleGetAllOpcionais ~ opcionais", opcionais)
+    setOptionals(opcionais.collection)
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    handleGetAllVeiculos()
-  }, [page, rowsPerPage, order]);
+    handleGetAllOpcionais()
+  }, [orderBy, order]);
 
   useEffect(() => {
     if (isBrowser) {
@@ -112,7 +97,7 @@ export default function VeiculosPage() {
   return (
     <>
       <Head>
-        <title> Franqueados: Lista</title>
+        <title> Opcionais: Lista</title>
       </Head>
       {
         isLoading ? (
@@ -120,21 +105,20 @@ export default function VeiculosPage() {
         ) :
           <Container maxWidth={false}>
             <CustomBreadcrumbs
-              heading="Lista de Veiculos"
+              heading="Lista de Marcas"
               links={[
                 { name: 'Inicio', href: '/admin/dashboard' },
-                { name: 'Veiculos', href: '/admin/veiculos' },
+                { name: 'Opcionais', href: '/admin/opcionais' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/veiculos/create'} passHref>
+                <NextLink href={'/admin/opcionais/create'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Novo Veiculo
+                    Novo Opcional
                   </Button>
                 </NextLink>
               }
             />
-
 
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
               <Scrollbar>
@@ -144,43 +128,35 @@ export default function VeiculosPage() {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={veiculos.length}
+                    rowCount={optionals?.length}
                     onSort={onSort}
                   />
                   {
                     !isSSR && (
                       <TableBody>
-                        {veiculos
-                          .map((row) => (
-                            <VeiculosCustomTable
-                              key={row.idVeiculo}
-                              row={row}
-                              onDeleteRow={() => handleDeleteRow(row.idVeiculo)}
-                              onEditRow={() => handleEditRow(row.idVeiculo)}
-                            />
-                          ))}
+                        {dataInPage.map((row) => (
+                          <OpcionaisCustomTable
+                            key={row.idOpcional}
+                            row={row}
+                            onDeleteRow={() => handleDeleteRow(row.idOpcional)}
+                            onEditRow={() => handleEditRow(row.idOpcional)}
+                          />
+                        ))}
 
                         <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, veiculos.length)}
+                          emptyRows={emptyRows(page, rowsPerPage, optionals?.length)}
                         />
 
-                        <TableNoData isNotFound={!veiculos.length} />
+                        <TableNoData isNotFound={!dataInPage?.length} />
                       </TableBody>
                     )
                   }
-
                 </Table>
               </Scrollbar>
             </TableContainer>
 
             <TablePaginationCustom
-              nextIconButtonProps={{
-                disabled: isLoading ? true : false
-              }}
-              backIconButtonProps={{
-                disabled: isLoading ? true : false
-              }}
-              count={totalPage}
+              count={optionals?.length}
               page={page}
               rowsPerPage={rowsPerPage}
               onPageChange={onChangePage}
@@ -188,7 +164,6 @@ export default function VeiculosPage() {
             />
           </Container>
       }
-
     </>
   );
 }

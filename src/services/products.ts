@@ -18,6 +18,8 @@ interface IGetProducts {
   ordenar?: string | null;
   direcao?: string | null;
   pageSize?: number;
+  direction?: string;
+  order?: string;
 }
 
 export const getProducts = async ({
@@ -63,6 +65,51 @@ export const getProducts = async ({
   }
 }
 
+export const getProducts2 = async ({
+  id,
+  idFranqueado,
+  page = 1,
+  idModelo,
+  idMarca,
+  idCategoria,
+  idModeloVersao,
+  opcionais,
+  valorInicial,
+  valorFinal,
+  fabInicial,
+  fabFinal,
+  kmInicial,
+  kmFinal,
+  ordenar,
+  direcao,
+  pageSize = 10,
+}: IGetProducts) => {
+  try {
+    const response = await api.post(`/veiculo/pesquisar2?page=${page}&pagesize=${pageSize}`,{
+      idVeiculo: id,
+      idFranqueado: idFranqueado,
+      idModelo,
+      idMarca,
+      idCategoria,
+      idModeloVersao,
+      opcionais,
+      valorInicial,
+      valorFinal,
+      fabInicial,
+      fabFinal,
+      kmInicial,
+      kmFinal,
+      ordenar,
+      direcao,
+    }
+    );
+    return response.data
+  } catch (error) {
+    console.error(error);
+    // toast.error(error)
+  }
+}
+
 export const getProduct = async ({
   id,
   idFranqueado
@@ -76,9 +123,17 @@ export const getProduct = async ({
   }
 }
 
-export const getMarcas = async () => {
+interface IGetMarcas {
+  ordenar?: string | null;
+  direcao?: string | null;
+}
+
+export const getMarcas = async ({
+  ordenar,
+  direcao,
+}: IGetMarcas) => {
   try {
-    const response = await api.get(`/marca/PesquisarSemPaginacao`);
+    const response = await api.get(`/marca/PesquisarSemPaginacao?ordenar=${ordenar || 'descricaoMarca'}&direcao=${direcao || 'asc'}`, );
     return response.data
   } catch (error) {
     console.error(error);
@@ -187,6 +242,16 @@ export const getModeloVersao = async (id: number) => {
   }
 }
 
+export const deleteModeloVersao = async (id: number) => { 
+  try {
+    const response = await api.delete(`/modeloversao/excluir?id=${id}`);
+    return response.data
+  } catch (error) {
+    console.error(error);
+    // toast.error(error)
+  }
+}
+
 export const createModeloVersao = async ({
   descricaoModeloVersao,
   idModelo,
@@ -285,9 +350,14 @@ export const getOpcionais = async ({
 export const getProductsList = async ({
   page = 1,
   pageSize = 10,
+  direction,
+  order
 }: IGetProducts) => {
   try {
-    const response = await api.post(`/veiculo/listar?page=${page}&pagesize=${pageSize}`, {});
+    const response = await api.post(`/veiculo/listar?page=${page}&pagesize=${pageSize}`, {
+      direcao: direction,
+      ordenar: order
+    });
     return response.data
   } catch (error) {
     console.error(error);

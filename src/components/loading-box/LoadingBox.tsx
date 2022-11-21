@@ -18,10 +18,11 @@ export default function LoadingBox() {
     <Box sx={{
       width: '100%',
       height: '100%',
-      alignItems: 'center',
+      alignSelf: 'center',
       justifyContent: 'center',
       alignContent: 'center',
       display: 'flex',
+      mt: 20,
     }}>
       <m.div
         animate={{
@@ -35,7 +36,7 @@ export default function LoadingBox() {
           repeat: Infinity,
         }}
       >
-        <Typography variant='h4'>
+        <Typography variant='h4' sx={{ mt: 4 }}>
           Carregando...
         </Typography>
       </m.div>

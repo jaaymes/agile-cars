@@ -13,7 +13,7 @@ export type UseTableProps = {
 
 export default function useTable(props?: UseTableProps): ReturnType {
 
-  const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
+  const [orderBy, setOrderBy] = useState<string | undefined>(undefined);
 
   const [order, setOrder] = useState<'asc' | 'desc'>(props?.defaultOrder || 'asc');
 

@@ -93,7 +93,7 @@ export default function MarcasPage() {
 
   const handleGetAllMarcas = async () => {
     setIsLoading(true)
-    const marcas = await getMarcas()
+    const marcas = await getMarcas({})
     setMarcas(marcas.map((marca: { descricaoMarca: any; idMarca: any; }) => ({ label: marca.descricaoMarca, id: marca.idMarca })))
     setIsLoading(false)
   }
@@ -181,7 +181,7 @@ export default function MarcasPage() {
                   {
                     !isSSR && (
                       <TableBody>
-                        {dataInPage.map((row) => (
+                        {dataInPage?.map((row) => (
                           <ModelosCustomTable
                             key={row.idModelo}
                             row={row}

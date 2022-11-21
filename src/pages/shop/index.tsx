@@ -20,24 +20,28 @@ export default function EcommerceShopPage() {
       <Head>
         <title> Agile Motors | Store</title>
       </Head>
-      {
-        isLoading ? (
-          <LoadingBox />
-        ) :
-          <Box sx={{ p: 2 }}>
-            <ShopProductSort />
-            <Stack sx={{ mb: 3 }}>
-              {!product?.length && (
-                <>
-                  <Typography variant="h2" gutterBottom alignSelf={"center"}>
-                    &nbsp;Nenhum Produto
-                  </Typography>
-                </>
-              )}
-            </Stack>
-            <ShopProductList products={product} loading={!product?.length} />
-          </Box>
-      }
+
+
+      <Box sx={{ p: 2, alignContent: 'center' }}>
+        <ShopProductSort />
+        {
+          isLoading ?
+            <LoadingBox />
+            :
+            <>
+              <Stack sx={{ mb: 3 }}>
+                {!product?.length && (
+                  <>
+                    <Typography variant="h2" gutterBottom alignSelf={"center"}>
+                      &nbsp;Nenhum Produto
+                    </Typography>
+                  </>
+                )}
+              </Stack>
+              <ShopProductList products={product} loading={!product?.length} />
+            </>
+        }
+      </Box>
 
     </>
   );

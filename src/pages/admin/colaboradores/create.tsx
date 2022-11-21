@@ -79,14 +79,14 @@ export default function UserCreatePage() {
 
   const values = watch();
 
-  const handleGetFranqueados = useCallback(async () => {
+  const handleGetFranqueados = async () => {
     const { collection } = await getFranqueados()
     const options = collection.map((item: IFranqueados) => ({
       value: item.idFranqueado,
       label: item.descricaoFranqueado
     }))
     setFranqueados(options)
-  }, []);
+  }
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     if (!data.avatarUrl) {
@@ -137,8 +137,8 @@ export default function UserCreatePage() {
   }
 
   const loadData = useCallback(async () => {
-    setIsLoading(true)
     if (id) {
+      setIsLoading(true)
       const response = await getColaborador(Number(id), user?.idfranqueado)
       if (response) {
         setValue('avatarUrl', response.imagem)
@@ -151,7 +151,6 @@ export default function UserCreatePage() {
       }
       setIsLoading(false)
     }
-
   }, [id])
 
   const onSubmit = async (data: FormValuesProps) => {

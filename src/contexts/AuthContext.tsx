@@ -99,6 +99,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     router.push('/admin')
   }, [])
 
+  useEffect(() => {
+    api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          logout()
+        }
+        if (error.response.status === 403) {
+          logout()
+        }
+        if (error.response.status === 500) {
+          logout()
+        }
+        return Promise.reject(error)
+      }
+    )
+  }, [router]);
+
   return (
     <AuthContext.Provider
       value={{

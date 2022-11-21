@@ -32,7 +32,7 @@ import {
 } from '@mui/material';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nome', align: 'left' },
+  { id: 'descricaoMarca', label: 'Nome', align: 'left' },
   { id: 'actions', label: 'Ações', align: 'center' },
 ];
 
@@ -76,14 +76,17 @@ export default function MarcasPage() {
 
   const handleGetAllMarcas = async () => {
     setIsLoading(true)
-    const marcas = await getMarcas()
+    const marcas = await getMarcas({
+      ordenar: orderBy,
+      direcao: order,
+    })
     setMarcas(marcas)
     setIsLoading(false)
   }
 
   useEffect(() => {
     handleGetAllMarcas()
-  }, []);
+  }, [order, orderBy]);
 
   useEffect(() => {
     if (isBrowser) {

@@ -4,13 +4,13 @@ export type TableProps = {
   page: number;
   rowsPerPage: number;
   order: 'asc' | 'desc';
-  orderBy: string;
+  orderBy: string | undefined;
   onSort: (id: string) => void;
   onChangePage: (event: unknown, newPage: number) => void;
   onChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void;
   //
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setOrder: React.Dispatch<React.SetStateAction<'desc' | 'asc'>>;
-  setOrderBy: React.Dispatch<React.SetStateAction<string>>;
+  setOrderBy: React.Dispatch<React.SetStateAction<string | undefined>>;
   setRowsPerPage: React.Dispatch<React.SetStateAction<number>>;
 };

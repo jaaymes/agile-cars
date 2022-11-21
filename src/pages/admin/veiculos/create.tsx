@@ -17,7 +17,7 @@ import LoadingScreen from '@/components/loading-screen';
 
 import { convertBase64, convertBase64ToFile } from '@/utils/convertBase64';
 
-import { getCategory, getOptional } from '@/services/filters';
+import { getCategory, getOptionais } from '@/services/filters';
 import { createVeiculos, getMarcas, getModelos, getModelosVersao, getOpcionais, getProduct, updateVeiculos } from '@/services/products';
 
 import DashboardLayout from '@/layouts/AdminLayout';
@@ -287,7 +287,7 @@ export default function FranqueadosCreatePage() {
   }
 
   const handleGetOptional = async () => {
-    const optional = await getOptional()
+    const optional = await getOptionais()
     setOptionals(optional.collection)
   }
 

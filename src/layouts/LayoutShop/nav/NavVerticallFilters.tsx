@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GoDiffRemoved } from 'react-icons/go';
 import { IoAddOutline } from 'react-icons/io5';
 
@@ -9,8 +9,8 @@ import InputRange from '@/components/InputRange';
 import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
 
-import { getCategory, getOptional } from '@/services/filters';
-import { getMarcas, getModelos, getModelosVersao, getProducts } from '@/services/products';
+import { getCategory, getOptionais } from '@/services/filters';
+import { getMarcas, getModelos, getModelosVersao, getProducts, getProducts2 } from '@/services/products';
 
 import { NAV } from '@/config';
 
@@ -116,9 +116,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }
   }
 
-  const handleProducts = async () => {
+  const handleProducts = useCallback(async () => {
     setIsLoading(true);
-    const products = await getProducts({
+    const products = await getProducts2({
       page,
       idModelo: filters.modelos.value === 'todos' ? undefined : Number(filters.modelos.value),
       idMarca: filters.marcas.value === 'todos' ? undefined : Number(filters.marcas.value),
@@ -138,22 +138,21 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
       setCountPage(products?.pagination?.totalPages)
       const productWithImages = products?.collection.map((product: any) => ({
         ...product,
-        images: [product?.foto1, product?.foto2, product?.foto3, product?.foto4, product?.foto5, product?.foto6, product?.foto7, product?.foto8].filter(index =>
-          index !== undefined
-        ),
         opcionaisArray: product?.opcionais?.split(',')
       }))
-      setProduct(productWithImages)
-      setIsLoading(false);
+      if (productWithImages) {
+        setProduct(productWithImages)
+        setIsLoading(false);
+      }
     }
-  }
+  }, [filters, page, order, direction, setCountPage])
 
-  const handleGetOptional = async () => {
-    const optional = await getOptional()
+  const handleGetOptional = useCallback(async () => {
+    const optional = await getOptionais()
     setOptionals(optional.collection)
-  }
+  }, [])
 
-  const handleGetCategory = async () => {
+  const handleGetCategory = useCallback(async () => {
     const category = await getCategory()
     const categorysReturn = category.collection.map((item: { descricaoCategoria: any; idCategoria: any; }) => ({
       label: item.descricaoCategoria,
@@ -161,9 +160,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }))
     categorysReturn.unshift({ label: 'Todos', value: 'todos' })
     setCategories(categorysReturn)
-  }
+  }, [])
 
-  const handleGetMarcas = async () => {
+  const handleGetMarcas = useCallback(async () => {
     const response = await getMarcas()
     const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
       label: item.descricaoMarca.toUpperCase(),
@@ -171,9 +170,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }))
     marcasReturn.unshift({ label: 'Todos', value: 'todos' })
     setMarcas(marcasReturn)
-  }
+  }, [])
 
-  const handleGetModelos = async () => {
+  const handleGetModelos = useCallback(async () => {
     const response = await getModelos(Number(filters.marcas.value))
     const modelosReturn = response.map((item: { descricaoModelo: any; idModelo: any; }) => ({
       label: item.descricaoModelo,
@@ -181,9 +180,9 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }))
     modelosReturn.unshift({ label: 'Todos', value: 'todos' })
     setModelos(modelosReturn)
-  }
+  }, [filters.marcas.value])
 
-  const handleGetModeloVersao = async () => {
+  const handleGetModeloVersao = useCallback(async () => {
     const { collection: responseModeloVersao } = await getModelosVersao(Number(filters.modelos.value))
     const modeloVersaoReturn = responseModeloVersao.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
       label: item.descricaoModeloVersao,
@@ -191,7 +190,7 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
     }))
     modeloVersaoReturn.unshift({ label: 'Todos', value: 'todos' })
     setModelosVersao(modeloVersaoReturn)
-  }
+  }, [filters.modelosVersao.value])
 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {

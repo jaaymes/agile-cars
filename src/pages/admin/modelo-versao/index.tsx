@@ -20,7 +20,7 @@ import {
   TablePaginationCustom,
 } from '@/components/table';
 
-import { deleteMarca, getMarcas, getModelos, getModelosVersao } from '@/services/products';
+import { deleteModeloVersao, getMarcas, getModelos, getModelosVersao } from '@/services/products';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import {
@@ -84,7 +84,7 @@ export default function MarcasPage() {
   const dataInPage = modelosVersao?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleDeleteRow = async (id: number) => {
-    await deleteMarca(id)
+    await deleteModeloVersao(id)
     const newFranqueados = modelosVersao.filter((colaborador) => colaborador.idModeloVersao !== id)
     setModelosVersao(newFranqueados)
   };
@@ -96,7 +96,7 @@ export default function MarcasPage() {
 
   const handleGetAllMarcas = async () => {
     setIsLoading(true)
-    const marcas = await getMarcas()
+    const marcas = await getMarcas({})
     setMarcas(marcas?.map((marca: { descricaoMarca: any; idMarca: any; }) => ({ label: marca.descricaoMarca, id: marca.idMarca })))
     setIsLoading(false)
   }

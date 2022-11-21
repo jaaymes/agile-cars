@@ -23,7 +23,15 @@ export type IProduct = {
   franqueado: string
   whatsapp: string
   renavam: number
-  images: string[]
+  images?: string[]
+  foto1?: string
+  foto2?: string
+  foto3?: string
+  foto4?: string
+  foto5?: string
+  foto6?: string
+  foto7?: string
+  foto8?: string
 };
 
 export type IProductFilter = {
@@ -48,8 +56,6 @@ export type IProductFilter = {
     value: string;
   }
 };
-
-// ----------------------------------------------------------------------
 
 export type ICheckoutCartItem = {
   id: string;

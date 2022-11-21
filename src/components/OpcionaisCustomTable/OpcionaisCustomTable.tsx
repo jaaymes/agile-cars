@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
-import { useAuth } from '@/hooks/useAuth';
-
 import ConfirmDialog from '@/components/confirm-dialog';
 import Iconify from '@/components/iconify';
-import Label from '@/components/label';
 
 import {
   Stack,
-  Avatar,
   Button,
   TableRow,
   TableCell,
@@ -17,18 +13,20 @@ import {
 } from '@mui/material';
 
 type Props = {
-  row: IColaboradores;
+  row: {
+    idOpcional: number;
+    descricaoOpcional: string;
+  };
   onEditRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
 
-export default function UserTableRow({
+export default function FranqueadoCustomTable({
   row,
   onEditRow,
   onDeleteRow,
 }: Props) {
   const [openConfirm, setOpenConfirm] = useState(false);
-  const { user } = useAuth()
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -43,24 +41,10 @@ export default function UserTableRow({
       <TableRow hover>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={row.descricaoFuncionario} src={row.imagem} />
-
             <Typography variant="subtitle2" noWrap>
-              {row.descricaoFuncionario}
+              {row.descricaoOpcional}
             </Typography>
           </Stack>
-        </TableCell>
-
-        <TableCell align="left">{row.descricaoFranqueado}</TableCell>
-
-        <TableCell align="left">
-          <Label
-            variant="soft"
-            color={(row.idSituacao === 2 && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
-          >
-            {row.idSituacao === 1 ? 'Ativo' : 'Inativo'}
-          </Label>
         </TableCell>
 
         <TableCell align="center">
@@ -70,7 +54,6 @@ export default function UserTableRow({
             <Iconify icon="eva:edit-fill" />
           </IconButton>
           <IconButton
-            disabled={user?.idfuncionario === row.idFuncionario}
             sx={{ color: 'error.main' }}
             onClick={() => {
               handleOpenConfirm();
