@@ -149,47 +149,68 @@ export default function NavVerticalFilters({ openNav, onCloseNav }: Props) {
 
   const handleGetOptional = useCallback(async () => {
     const optional = await getOptionais({})
-    setOptionals(optional.collection)
-  }, [])
+    if (optional) {
+      setOptionals(optional.collection)
+    }
+  }, [filters.optional])
 
   const handleGetCategory = useCallback(async () => {
     const category = await getCategory()
-    const categorysReturn = category.collection.map((item: { descricaoCategoria: any; idCategoria: any; }) => ({
-      label: item.descricaoCategoria,
-      value: item.idCategoria
-    }))
-    categorysReturn.unshift({ label: 'Todos', value: 'todos' })
-    setCategories(categorysReturn)
-  }, [])
+    if (category) {
+      const categorysReturn = category.collection.map((item: { descricaoCategoria: any; idCategoria: any; }) => ({
+        label: item.descricaoCategoria,
+        value: item.idCategoria
+      }))
+      if (categorysReturn) {
+        categorysReturn.unshift({ label: 'Todos', value: 'todos' })
+        setCategories(categorysReturn)
+      }
+    }
+  }, [filters.category.value])
 
   const handleGetMarcas = useCallback(async () => {
     const response = await getMarcas({})
-    const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
-      label: item.descricaoMarca.toUpperCase(),
-      value: item.idMarca
-    }))
-    marcasReturn.unshift({ label: 'Todos', value: 'todos' })
-    setMarcas(marcasReturn)
+    if (response) {
+      const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
+        label: item.descricaoMarca.toUpperCase(),
+        value: item.idMarca
+      }))
+      if (marcasReturn) {
+        marcasReturn.unshift({ label: 'Todos', value: 'todos' })
+        setMarcas(marcasReturn)
+      }
+    }
+
   }, [])
 
   const handleGetModelos = useCallback(async () => {
     const response = await getModelos(Number(filters.marcas.value))
-    const modelosReturn = response.map((item: { descricaoModelo: any; idModelo: any; }) => ({
-      label: item.descricaoModelo,
-      value: item.idModelo
-    }))
-    modelosReturn.unshift({ label: 'Todos', value: 'todos' })
-    setModelos(modelosReturn)
+    if (response) {
+      const modelosReturn = response.map((item: { descricaoModelo: any; idModelo: any; }) => ({
+        label: item.descricaoModelo,
+        value: item.idModelo
+      }))
+      if (modelosReturn) {
+        modelosReturn.unshift({ label: 'Todos', value: 'todos' })
+        setModelos(modelosReturn)
+      }
+    }
+
   }, [filters.marcas.value])
 
   const handleGetModeloVersao = useCallback(async () => {
     const { collection: responseModeloVersao } = await getModelosVersao(Number(filters.modelos.value))
-    const modeloVersaoReturn = responseModeloVersao.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
-      label: item.descricaoModeloVersao,
-      value: item.idModeloVersao
-    }))
-    modeloVersaoReturn.unshift({ label: 'Todos', value: 'todos' })
-    setModelosVersao(modeloVersaoReturn)
+    if (responseModeloVersao) {
+      const modeloVersaoReturn = responseModeloVersao.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
+        label: item.descricaoModeloVersao,
+        value: item.idModeloVersao
+      }))
+      if (modeloVersaoReturn) {
+        modeloVersaoReturn.unshift({ label: 'Todos', value: 'todos' })
+        setModelosVersao(modeloVersaoReturn)
+      }
+    }
+
   }, [filters.modelosVersao.value])
 
 
