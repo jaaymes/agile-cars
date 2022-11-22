@@ -108,7 +108,7 @@ export default function FranqueadosCreatePage() {
     const foto7 = data?.images && data?.images[6] ? await convertBase64(data?.images[6]) : undefined;
     const foto8 = data?.images && data?.images[7] ? await convertBase64(data?.images[7]) : undefined;
 
-    const opcionaisId = data?.opcionais.map((item) => item.idOpcional);
+    const opcionaisId = data?.opcionais ? data?.opcionais.map((item) => item.idOpcional) : undefined;
 
     try {
       await createVeiculos({
@@ -126,7 +126,7 @@ export default function FranqueadosCreatePage() {
         valor: Number(data.valor),
         obs: data.obs,
         renavam: data.renavam,
-        opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
+        opcionais: opcionaisId ? opcionaisId.toString()?.replaceAll(',', ';') : undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
         foto3: foto3 ? String(foto3) : undefined,
@@ -137,7 +137,7 @@ export default function FranqueadosCreatePage() {
         foto8: foto8 ? String(foto8) : undefined,
       })
       enqueueSnackbar('Veiculo criado com sucesso', { variant: 'success' });
-      // push('/admin/veiculos')
+      push('/admin/veiculos')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -155,7 +155,7 @@ export default function FranqueadosCreatePage() {
     const foto7 = data?.images[6] ? await convertBase64(data?.images[6]) : undefined;
     const foto8 = data?.images[7] ? await convertBase64(data?.images[7]) : undefined;
 
-    const opcionaisId = data?.opcionais.map((item) => item.idOpcional);
+    const opcionaisId = data?.opcionais ? data?.opcionais.map((item) => item.idOpcional) : undefined;
     try {
       await updateVeiculos({
         idVeiculo: Number(id),
@@ -173,7 +173,7 @@ export default function FranqueadosCreatePage() {
         valor: Number(data.valor),
         obs: data.obs,
         renavam: data.renavam,
-        opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
+        opcionais: opcionaisId ? opcionaisId.toString()?.replaceAll(',', ';') : undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
         foto3: foto3 ? String(foto3) : undefined,
@@ -247,11 +247,16 @@ export default function FranqueadosCreatePage() {
 
   const handleGetMarcas = async () => {
     const response = await getMarcas({})
-    const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
-      label: item.descricaoMarca.toUpperCase(),
-      value: item.idMarca
-    }))
-    setMarcas(marcasReturn)
+    if (response) {
+      const marcasReturn = response.map((item: { descricaoMarca: any; idMarca: any; }) => ({
+        label: item.descricaoMarca.toUpperCase(),
+        value: item.idMarca
+      }))
+      if (marcasReturn) {
+        setMarcas(marcasReturn)
+      }
+    }
+
   }
 
   const handleGetModelos = async () => {
@@ -261,7 +266,9 @@ export default function FranqueadosCreatePage() {
         label: item.descricaoModelo,
         value: item.idModelo
       }))
-      setModelos(modelosReturn)
+      if (modelosReturn) {
+        setModelos(modelosReturn)
+      }
     }
   }
 
@@ -272,7 +279,9 @@ export default function FranqueadosCreatePage() {
         label: item.descricaoModeloVersao,
         value: item.idModeloVersao
       }))
-      setModelosVersao(modeloVersaoReturn)
+      if (modeloVersaoReturn) {
+        setModelosVersao(modeloVersaoReturn)
+      }
     }
   }
 
@@ -283,13 +292,17 @@ export default function FranqueadosCreatePage() {
         label: item.descricaoCategoria,
         value: item.idCategoria
       }))
-      setCategories(categorysReturn)
+      if (categorysReturn) {
+        setCategories(categorysReturn)
+      }
     }
   }
 
   const handleGetOptional = async () => {
     const optional = await getOptionais({})
-    setOptionals(optional.collection)
+    if (optional) {
+      setOptionals(optional.collection)
+    }
   }
 
   const handleDrop = useCallback(
@@ -317,7 +330,6 @@ export default function FranqueadosCreatePage() {
     setValue('images', filtered);
   };
 
-
   const handleRemoveAllFiles = () => {
     setValue('images', []);
   };
@@ -329,7 +341,6 @@ export default function FranqueadosCreatePage() {
       await onSubmitEdit(data)
     }
   }
-
 
   useEffect(() => {
     loadData()

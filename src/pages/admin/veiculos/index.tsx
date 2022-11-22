@@ -85,9 +85,11 @@ export default function VeiculosPage() {
       direction: order,
       order: orderBy
     }).then(response => {
-      setVeiculos(response.collection)
-      setTotalPage(response.pagination.totalResults)
-      setIsLoading(false)
+      if (response) {
+        setVeiculos(response.collection)
+        setTotalPage(response.pagination.totalResults)
+        setIsLoading(false)
+      }
     }).catch(error => console.log(error))
   }
 

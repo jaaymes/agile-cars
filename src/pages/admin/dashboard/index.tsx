@@ -15,7 +15,7 @@ export default function DashboardPage() {
   return (
     <>
       <Head>
-        <title>Pagina Inicial</title>
+        <title>Agile Veículos | Inicio</title>
       </Head>
       <Container maxWidth={false}
         sx={{

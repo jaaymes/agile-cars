@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { parseCookies } from 'nookies';
@@ -18,11 +19,17 @@ export default function Login() {
     }
   }, []);
   return (
-    <LoginLayout>
-      <Stack spacing={2} sx={{ mb: 5, position: 'relative', alignItems: 'center' }}>
-        <Typography variant="h4">Entrar no Gestor</Typography>
-      </Stack>
-      <AuthLoginForm />
-    </LoginLayout>
+    <>
+      <Head>
+        <title>Agile Veículos | Login</title>
+      </Head>
+      <LoginLayout>
+        <Stack spacing={2} sx={{ mb: 5, position: 'relative', alignItems: 'center' }}>
+          <Typography variant="h4">Entrar no Gestor</Typography>
+        </Stack>
+        <AuthLoginForm />
+      </LoginLayout>
+    </>
   );
+
 }
