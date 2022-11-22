@@ -80,7 +80,6 @@ export default function MarcasPage() {
   const [selectIdMarca, setSelectIdMarca] = useState<number | null>(null);
   const [selectIdModelo, setSelectIdModelo] = useState<number | null>(null);
 
-
   const dataInPage = modelosVersao?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleDeleteRow = async (id: number) => {

@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/router';
+
 import { useAuth } from '@/hooks/useAuth';
+
+import { getCookie } from '@/utils/cookie';
 
 import { Box } from '@mui/material';
 
@@ -14,7 +18,8 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth()
+  const { logout } = useAuth()
+  const router = useRouter()
 
   const handleOpen = () => {
     setOpen(true);
@@ -25,10 +30,11 @@ export default function DashboardLayout({ children }: Props) {
   };
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    const IsAuthenticated = getCookie('IsAuthenticated')
+    if (!Boolean(IsAuthenticated)) {
       logout()
     }
-  }, []);
+  }, [router]);
 
   return (
     <>

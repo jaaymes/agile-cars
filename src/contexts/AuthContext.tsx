@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/router';
 
-import { createCookie, eraseAllCookies } from '@/utils/cookie';
+import { createCookie, eraseAllCookies, getCookie } from '@/utils/cookie';
 
 import api from '@/services/api';
 import accountService from '@/services/login';
@@ -28,6 +28,7 @@ interface AuthContextData {
   logout: () => void
   user: IUser
   isAuthenticated: boolean
+  token: string
 }
 
 export const AuthContext = createContext<AuthContextData | null>(null);
@@ -41,23 +42,29 @@ function setApiAuthHeader(token: string | null) {
 }
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string>('');
 
   const [user, setUser] = useState<any>(null)
   const router = useRouter()
-  setApiAuthHeader(user?.token)
+
 
   useEffect(() => {
-    if (window) {
-      const loggedUser = sessionStorage.getItem('user')
-      const IsAuthenticated = sessionStorage.getItem('IsAuthenticated')
-      if (loggedUser) {
-        setUser(loggedUser ? JSON.parse(loggedUser) : null)
+    if (window !== undefined) {
+      const user = localStorage.getItem('user')
+      const token = getCookie('token')
+      const IsAuthenticated = getCookie('IsAuthenticated')
+      if (user) {
+        setUser(JSON.parse(user))
+        setApiAuthHeader(JSON.parse(user).token)
       }
-      if (IsAuthenticated) {
-        setIsAuthenticated(IsAuthenticated ? JSON.parse(IsAuthenticated) : false)
+      if (Boolean(IsAuthenticated)) {
+        setIsAuthenticated(true)
+      }
+      if (token) {
+        setToken(token)
       }
     }
-  }, []);
+  }, [router]);
 
 
   const login = useCallback(async ({
@@ -78,10 +85,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         path: '/'
       })
 
-      setIsAuthenticated(true)
+      createCookie('IsAuthenticated', true, undefined, {
+        maxAge: 60 * 60 * 24, // 24 Hour
+        path: '/'
+      })
 
-      sessionStorage.setItem('IsAuthenticated', JSON.stringify(true))
-      sessionStorage.setItem('user', JSON.stringify(newUser))
+      localStorage.setItem('user', JSON.stringify(newUser))
+
+      setIsAuthenticated(true)
 
       router.push('/admin/dashboard')
     } catch (error: any) {
@@ -122,7 +133,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         login,
         logout,
         user,
-        isAuthenticated
+        isAuthenticated,
+        token
       }}
     >
       {children}
