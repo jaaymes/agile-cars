@@ -16,6 +16,7 @@ import FormProvider, { RHFAutocomplete, RHFTextField, RHFUpload } from '@/compon
 import LoadingScreen from '@/components/loading-screen';
 
 import { convertBase64, convertBase64ToFile } from '@/utils/convertBase64';
+import { normalizePlaca, normalizeRenavam, normalizeYear } from '@/utils/normalize';
 
 import { getCategory, getOptionais } from '@/services/filters';
 import { createVeiculos, getMarcas, getModelos, getModelosVersao, getOpcionais, getProduct, updateVeiculos } from '@/services/products';
@@ -39,7 +40,7 @@ interface FormValuesProps {
   obs: string;
   renavam: string;
   opcionais: IOptionals[];
-  images: (Blob | string)[];
+  images: (Blob | string | undefined)[];
   imagesBase64: string[] | unknown[];
 }
 
@@ -98,14 +99,14 @@ export default function FranqueadosCreatePage() {
   const values = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
-    const foto1 = data?.images[0] && await convertBase64(data?.images[0]);
-    const foto2 = data?.images[1] && await convertBase64(data?.images[1]);
-    const foto3 = data?.images[2] && await convertBase64(data?.images[2]);
-    const foto4 = data?.images[3] && await convertBase64(data?.images[3]);
-    const foto5 = data?.images[4] && await convertBase64(data?.images[4]);
-    const foto6 = data?.images[5] && await convertBase64(data?.images[5]);
-    const foto7 = data?.images[6] && await convertBase64(data?.images[6]);
-    const foto8 = data?.images[7] && await convertBase64(data?.images[7]);
+    const foto1 = data?.images && data?.images[0] ? await convertBase64(data?.images[0]) : undefined;
+    const foto2 = data?.images && data?.images[1] ? await convertBase64(data?.images[1]) : undefined;
+    const foto3 = data?.images && data?.images[2] ? await convertBase64(data?.images[2]) : undefined;
+    const foto4 = data?.images && data?.images[3] ? await convertBase64(data?.images[3]) : undefined;
+    const foto5 = data?.images && data?.images[4] ? await convertBase64(data?.images[4]) : undefined;
+    const foto6 = data?.images && data?.images[5] ? await convertBase64(data?.images[5]) : undefined;
+    const foto7 = data?.images && data?.images[6] ? await convertBase64(data?.images[6]) : undefined;
+    const foto8 = data?.images && data?.images[7] ? await convertBase64(data?.images[7]) : undefined;
 
     const opcionaisId = data?.opcionais.map((item) => item.idOpcional);
 
@@ -124,7 +125,7 @@ export default function FranqueadosCreatePage() {
         km: Number(data.km),
         valor: Number(data.valor),
         obs: data.obs,
-        renavam: Number(data.renavam),
+        renavam: data.renavam,
         opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
@@ -136,7 +137,7 @@ export default function FranqueadosCreatePage() {
         foto8: foto8 ? String(foto8) : undefined,
       })
       enqueueSnackbar('Veiculo criado com sucesso', { variant: 'success' });
-      push('/admin/veiculos')
+      // push('/admin/veiculos')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -145,14 +146,14 @@ export default function FranqueadosCreatePage() {
   };
 
   const onSubmitEdit = async (data: FormValuesProps) => {
-    const foto1 = data?.images[0] && await convertBase64(data?.images[0]);
-    const foto2 = data?.images[1] && await convertBase64(data?.images[1]);
-    const foto3 = data?.images[2] && await convertBase64(data?.images[2]);
-    const foto4 = data?.images[3] && await convertBase64(data?.images[3]);
-    const foto5 = data?.images[4] && await convertBase64(data?.images[4]);
-    const foto6 = data?.images[5] && await convertBase64(data?.images[5]);
-    const foto7 = data?.images[6] && await convertBase64(data?.images[6]);
-    const foto8 = data?.images[7] && await convertBase64(data?.images[7]);
+    const foto1 = data?.images[0] ? await convertBase64(data?.images[0]) : undefined;
+    const foto2 = data?.images[1] ? await convertBase64(data?.images[1]) : undefined;
+    const foto3 = data?.images[2] ? await convertBase64(data?.images[2]) : undefined;
+    const foto4 = data?.images[3] ? await convertBase64(data?.images[3]) : undefined;
+    const foto5 = data?.images[4] ? await convertBase64(data?.images[4]) : undefined;
+    const foto6 = data?.images[5] ? await convertBase64(data?.images[5]) : undefined;
+    const foto7 = data?.images[6] ? await convertBase64(data?.images[6]) : undefined;
+    const foto8 = data?.images[7] ? await convertBase64(data?.images[7]) : undefined;
 
     const opcionaisId = data?.opcionais.map((item) => item.idOpcional);
     try {
@@ -171,7 +172,7 @@ export default function FranqueadosCreatePage() {
         km: Number(data.km),
         valor: Number(data.valor),
         obs: data.obs,
-        renavam: Number(data.renavam),
+        renavam: data.renavam,
         opcionais: opcionaisId.toString()?.replaceAll(',', ';') || undefined,
         foto1: foto1 ? String(foto1) : undefined,
         foto2: foto2 ? String(foto2) : undefined,
@@ -467,22 +468,41 @@ export default function FranqueadosCreatePage() {
                       <RHFTextField InputLabelProps={{ shrink: true }} name="chassi" label="Chassi" />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="placa" label="Placa"
+                        value={normalizePlaca(values.placa)}
                         inputProps={{
+                          maxLength: 8,
                           style: {
                             textTransform: 'uppercase'
                           }
                         }}
                       />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" label="Ano Fabricação" type="number" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" value={normalizeYear(values.fab)} label="Ano Fabricação"
+                        inputProps={{
+                          maxLength: 4,
+                        }}
+                      />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" label="Ano Modelo" type="number" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" value={normalizeYear(values.mod)} label="Ano Modelo"
+                        inputProps={{
+                          maxLength: 4,
+                        }}
+                      />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="cor" label="Cor" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" type="number" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" inputProps={{
+                        maxLength: 4,
+                        type: 'number'
+                      }}
+                      />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam" type="number" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam"
+                        value={normalizeRenavam(values.renavam)}
+                        inputProps={{
+                          maxLength: 11,
+                        }}
+                      />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="valor" label="Valor" type="number" />
 

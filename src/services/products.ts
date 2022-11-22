@@ -293,7 +293,7 @@ interface ICreateVeiculo {
   chassi: string;
   placa: string;
   cor: string;
-  renavam: number;
+  renavam: string;
   foto1?: string | undefined;
   foto2?: string | undefined;
   foto3?: string | undefined;

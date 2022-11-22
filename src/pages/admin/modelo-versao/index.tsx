@@ -111,7 +111,6 @@ export default function MarcasPage() {
   const handleGetModelosVersao = async () => {
     setIsLoading(true)
     const modelos = await getModelosVersao(Number(selectIdModelo))
-    console.log("🚀 ~ file: index.tsx ~ line 114 ~ handleGetModelosVersao ~ modelos", modelos)
     setModelosVersao(modelos.collection)
     setIsLoading(false)
     setPage(0)
@@ -203,7 +202,7 @@ export default function MarcasPage() {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={marcas?.length}
+                    rowCount={modelosVersao?.length}
                     onSort={onSort}
                   />
                   {
@@ -219,7 +218,7 @@ export default function MarcasPage() {
                         ))}
 
                         <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+                          emptyRows={emptyRows(page, rowsPerPage, modelosVersao?.length)}
                         />
 
                         <TableNoData isNotFound={!dataInPage?.length} text="Escolha Marca e Modelo" />
@@ -232,7 +231,7 @@ export default function MarcasPage() {
             </TableContainer>
 
             <TablePaginationCustom
-              count={modelos?.length}
+              count={modelosVersao?.length}
               page={page}
               rowsPerPage={rowsPerPage}
               onPageChange={onChangePage}

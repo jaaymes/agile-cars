@@ -117,7 +117,6 @@ export default function MarcasCreatePage() {
   const loadData = useCallback(async () => {
     if (id) {
       const response = await getModeloVersao(Number(id))
-      console.log("🚀 ~ file: create.tsx ~ line 122 ~ loadData ~ response", response[0])
       if (response) {
         setValue('descricaoModeloVersao', response[0].descricaoModeloVersao)
         setSelectIdMarca(response[0].idMarca)
@@ -156,10 +155,6 @@ export default function MarcasCreatePage() {
     handleGetAllModelos()
   }, [selectIdMarca]);
 
-  useEffect(() => {
-    console.log('selectOptionsMarca', selectOptionsMarca)
-    console.log('selectOptionsModelo', selectOptionsModelo)
-  }, [selectOptionsMarca, selectOptionsModelo]);
   return (
     <>
       <Head>

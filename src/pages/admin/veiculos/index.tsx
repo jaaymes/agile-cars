@@ -57,10 +57,6 @@ export default function VeiculosPage() {
     totalPage
   } = useTable();
 
-  useEffect(() => {
-    console.log('order', order)
-  }, [order]);
-
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
@@ -75,10 +71,6 @@ export default function VeiculosPage() {
     const newVeiculos = veiculos.filter((veiculo) => veiculo.idVeiculo !== id)
     setVeiculos(newVeiculos)
   };
-
-  useEffect(() => {
-    console.log('orderBy', orderBy)
-  }, [orderBy]);
 
   const handleEditRow = (id: number) => {
     push(`/admin/veiculos/create?id=${id}`);

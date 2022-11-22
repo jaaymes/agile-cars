@@ -79,7 +79,6 @@ export default function MarcasPage() {
       ordenar: orderBy,
       direcao: order,
     })
-    console.log("🚀 ~ file: index.tsx ~ line 79 ~ handleGetAllOpcionais ~ opcionais", opcionais)
     setOptionals(opcionais.collection)
     setIsLoading(false)
   }

@@ -1,5 +1,27 @@
 import { isValid, addHours, isDate } from 'date-fns'
 
+// normalize Placa de Carro com 3 letras
+export const normalizePlaca = (value: string) => value
+    ?.replace(/[^a-zA-Z0-9]/g, '')
+    ?.replace(/(\w{3})(\w)/, '$1-$2')
+    ?.toUpperCase()
+
+
+// normalize Renavam to 11 digits only number
+export const normalizeRenavam = (value: string) => { 
+  const onlyNums = value?.replace(/[^\d]/g, '')
+  return onlyNums?.slice(0, 11)
+}
+
+
+// normalize Year only number 
+export const normalizeYear = (value: string) => { 
+  const year = parseInt(value, 10) 
+  if (Number.isNaN(year)) return '' 
+  return year 
+}
+
+
 export const normalizeCurrency = (value: any, styled = false): string => {
   if (!value) {
     return value

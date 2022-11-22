@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { useAuth } from '@/hooks/useAuth';
 
 import { Box } from '@mui/material';
 
@@ -12,6 +14,7 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth()
 
   const handleOpen = () => {
     setOpen(true);
@@ -20,6 +23,12 @@ export default function DashboardLayout({ children }: Props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      logout()
+    }
+  }, []);
 
   return (
     <>

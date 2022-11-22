@@ -57,7 +57,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(IsAuthenticated ? JSON.parse(IsAuthenticated) : false)
       }
     }
-
   }, []);
 
 

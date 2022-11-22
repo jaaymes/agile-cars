@@ -92,10 +92,6 @@ export const InstallPWA = () => {
 
           if (choiceResult.outcome === 'accepted') {
             setProcessando(true);
-            console.log('aceito ');
-
-            //await delay(70000);
-            //toast.success('Instalando app', { autoClose: 70000 });
 
             await delay(60000);
 
@@ -103,10 +99,6 @@ export const InstallPWA = () => {
 
           } else {
             setProcessando(false);
-            console.log('cancelado ');
-
-            //await delay(3000);
-
           }
         });
     } else {

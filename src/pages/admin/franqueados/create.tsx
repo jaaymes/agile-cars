@@ -132,7 +132,6 @@ export default function FranqueadosCreatePage() {
     setIsLoading(true)
     if (id) {
       const response = await getFranqueado(Number(id))
-      console.log("🚀 ~ file: create.tsx ~ line 142 ~ loadData ~ response", response)
       if (response) {
         setValue('descricaoFranqueado', response.descricaoFranqueado)
         setValue('cnpj', response.cnpj)
@@ -156,7 +155,6 @@ export default function FranqueadosCreatePage() {
   async function handleCep(zipcode: string) {
     setIsLoading(true)
     const data = await consultCep(normalizeNumber(zipcode))
-    // console.log("🚀 ~ file: create.tsx ~ line 124 ~ handleCep ~ data", data)
 
     if (typeof data !== 'boolean') {
       setValue('endereco', data.logradouro)
