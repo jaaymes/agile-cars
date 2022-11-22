@@ -11,6 +11,7 @@ const withPWA = require('next-pwa')({
 module.exports = withPWA({
   reactStrictMode: true,
   swcMinify: true,
+  useFileSystemPublicRoutes: false,
   images: {
     minimumCacheTTL: 86400,
     unoptimized: true,
