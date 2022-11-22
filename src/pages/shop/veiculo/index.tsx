@@ -51,7 +51,7 @@ export default function ProductDetails() {
   return (
     <>
       <Head>
-        <title>{`Agile Motors: Detalhe`}</title>
+        <title>{`Agile Veículos: Detalhe`}</title>
       </Head>
 
       <Container maxWidth="lg">

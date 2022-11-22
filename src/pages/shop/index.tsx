@@ -18,12 +18,20 @@ export default function EcommerceShopPage() {
   return (
     <>
       <Head>
-        <title> Agile Motors | Store</title>
+        <title> Agile Veículos | Carros novos e usados</title>
       </Head>
 
-
       <Box sx={{ p: 2, alignContent: 'center' }}>
-        <ShopProductSort />
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'start',
+        }}>
+          <Typography variant="h4" sx={{ mt: 2, mb: 2 }}>Carros novos e usados</Typography>
+          <Typography variant="body2" sx={{ mb: 2 }}>Encontre o carro que você procura</Typography>
+          <Typography variant="body2" sx={{ mb: 2 }}>{product?.length ? `${product?.length} carros encontrados` : null}</Typography>
+          <ShopProductSort />
+        </Box>
         {
           isLoading ?
             <LoadingBox />
