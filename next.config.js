@@ -12,8 +12,8 @@ module.exports = withPWA({
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['*'],
-    minimumCacheTTL: 86400
+    minimumCacheTTL: 86400,
+    unoptimized: true,
   },
   headers: async () => [
       {

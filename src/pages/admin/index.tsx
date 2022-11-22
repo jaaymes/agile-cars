@@ -1,4 +1,6 @@
-import { GetServerSideProps } from 'next';
+import { useEffect } from 'react';
+
+import { useRouter } from 'next/router';
 
 import { parseCookies } from 'nookies';
 
@@ -8,6 +10,13 @@ import LoginLayout from '@/layouts/login';
 import { Stack, Typography } from '@mui/material';
 
 export default function Login() {
+  const { ['token']: token } = parseCookies();
+  const router = useRouter();
+  useEffect(() => {
+    if (token) {
+      router.push('/admin/dashboard');
+    }
+  }, []);
   return (
     <LoginLayout>
       <Stack spacing={2} sx={{ mb: 5, position: 'relative', alignItems: 'center' }}>
@@ -16,22 +25,4 @@ export default function Login() {
       <AuthLoginForm />
     </LoginLayout>
   );
-}
-
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { ['token']: token } = parseCookies(context);
-
-  if (token) {
-    return {
-      redirect: {
-        destination: '/admin/dashboard',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 }
