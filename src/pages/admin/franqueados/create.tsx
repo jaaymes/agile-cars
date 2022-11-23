@@ -24,7 +24,7 @@ import { createFranqueado, getFranqueado } from '@/services/franqueados';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
 
 interface FormValuesProps {
   descricaoFranqueado: string
@@ -129,8 +129,8 @@ export default function FranqueadosCreatePage() {
   }
 
   const loadData = useCallback(async () => {
-    setIsLoading(true)
     if (id) {
+      setIsLoading(true)
       const response = await getFranqueado(Number(id))
       if (response) {
         setValue('descricaoFranqueado', response.descricaoFranqueado)
@@ -342,10 +342,19 @@ export default function FranqueadosCreatePage() {
                       </Label>
                     </Box>
 
-                    <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                    <Stack alignItems="flex-end" sx={{
+                      flexDirection: 'row',
+                      display: 'flex',
+                      mt: 3,
+                      gap: 2,
+                      justifyContent: 'flex-end'
+                    }}>
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Franqueado' : 'Salvar Mudanças'}
                       </LoadingButton>
+                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/franqueados')}>
+                        Cancelar
+                      </Button>
                     </Stack>
                   </Card>
                 </Grid>

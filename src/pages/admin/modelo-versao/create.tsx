@@ -18,7 +18,7 @@ import { createModeloVersao, getMarcas, getModelos, getModeloVersao } from '@/se
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Box, Card, colors, Container, Grid, Stack, TextField, } from '@mui/material';
+import { Autocomplete, Box, Button, Card, colors, Container, Grid, Stack, TextField, } from '@mui/material';
 
 import { IMarcas } from '../marcas';
 
@@ -224,11 +224,20 @@ export default function MarcasCreatePage() {
 
 
                 </Box>
-                <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                <Stack sx={{
+                  flexDirection: 'row',
+                  display: 'flex',
+                  mt: 3,
+                  gap: 2,
+                  justifyContent: 'flex-end'
+                }}>
                   <LoadingButton
                     type="submit" variant="contained" loading={isSubmitting}>
                     {!id ? 'Criar Modelo' : 'Salvar Mudanças'}
                   </LoadingButton>
+                  <Button variant="outlined" color="inherit" onClick={() => push('/admin/modelo-versao')}>
+                    Cancelar
+                  </Button>
                 </Stack>
               </Card>
             </Grid>

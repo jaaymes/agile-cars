@@ -79,15 +79,13 @@ export default function MarcasPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectIdMarca, setSelectIdMarca] = useState<number | null>(null);
   const [selectIdModelo, setSelectIdModelo] = useState<number | null>(null);
-
-  const dataInPage = modelosVersao?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const [dataInPage, setDataInPage] = useState<IModelosVersao[]>([]);
 
   const handleDeleteRow = async (id: number) => {
     await deleteModeloVersao(id)
     const newFranqueados = modelosVersao.filter((colaborador) => colaborador.idModeloVersao !== id)
     setModelosVersao(newFranqueados)
   };
-
 
   const handleEditRow = (id: number) => {
     push(`/admin/modelo-versao/create?id=${id}`);
@@ -110,9 +108,12 @@ export default function MarcasPage() {
   const handleGetModelosVersao = async () => {
     setIsLoading(true)
     const modelos = await getModelosVersao(Number(selectIdModelo))
-    setModelosVersao(modelos.collection)
-    setIsLoading(false)
-    setPage(0)
+    if (modelos) {
+      setDataInPage(modelos?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
+      setModelosVersao(modelos.collection)
+      setIsLoading(false)
+      setPage(0)
+    }
   }
 
   useEffect(() => {
@@ -207,14 +208,16 @@ export default function MarcasPage() {
                   {
                     !isSSR && (
                       <TableBody>
-                        {dataInPage.map((row) => (
-                          <ModelosVersaoCustomTable
-                            key={row.idModeloVersao}
-                            row={row}
-                            onDeleteRow={() => handleDeleteRow(row.idModeloVersao)}
-                            onEditRow={() => handleEditRow(row.idModeloVersao)}
-                          />
-                        ))}
+                        {
+                          dataInPage.map((row) => (
+                            <ModelosVersaoCustomTable
+                              key={row.idModeloVersao}
+                              row={row}
+                              onDeleteRow={() => handleDeleteRow(row.idModeloVersao)}
+                              onEditRow={() => handleEditRow(row.idModeloVersao)}
+                            />
+                          )
+                          )}
 
                         <TableEmptyRows
                           emptyRows={emptyRows(page, rowsPerPage, modelosVersao?.length)}

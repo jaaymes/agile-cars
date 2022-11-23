@@ -18,7 +18,7 @@ import { createOptional, getOpcional } from '@/services/filters';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Container, Grid, } from '@mui/material';
+import { Box, Button, Card, Container, Grid, Stack, } from '@mui/material';
 
 interface FormValuesProps {
   descricaoOpcional: string
@@ -132,6 +132,16 @@ export default function MarcasCreatePage() {
                 >
                   <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoOpcional" label="Nome do Opcional" />
 
+
+                </Box>
+
+                <Stack sx={{
+                  flexDirection: 'row',
+                  display: 'flex',
+                  mt: 3,
+                  gap: 2,
+                  justifyContent: 'flex-end'
+                }}>
                   <LoadingButton
                     sx={{
                       width: '70%',
@@ -141,7 +151,10 @@ export default function MarcasCreatePage() {
                     type="submit" variant="contained" loading={isSubmitting}>
                     {!id ? 'Criar Opcional' : 'Salvar Mudanças'}
                   </LoadingButton>
-                </Box>
+                  <Button variant="outlined" color="inherit" onClick={() => push('/admin/opcionais')}>
+                    Cancelar
+                  </Button>
+                </Stack>
 
               </Card>
             </Grid>

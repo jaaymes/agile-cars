@@ -30,7 +30,7 @@ import { getFranqueados } from '@/services/franqueados';
 import { IUserAccountGeneral } from '@/@types/user';
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, colors, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, colors, Container, FormControlLabel, Grid, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
 
 interface FormValuesProps extends Omit<IUserAccountGeneral, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
@@ -325,10 +325,19 @@ export default function UserCreatePage() {
                       </TextField>
                     </Box>
 
-                    <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                    <Stack sx={{
+                      flexDirection: 'row',
+                      display: 'flex',
+                      mt: 3,
+                      gap: 2,
+                      justifyContent: 'flex-end'
+                    }}>
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Colaborador' : 'Salvar Mudanças'}
                       </LoadingButton>
+                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/colaboradores')}>
+                        Cancelar
+                      </Button>
                     </Stack>
                   </Card>
                 </Grid>

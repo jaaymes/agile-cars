@@ -19,7 +19,7 @@ import { createMarca, getMarca } from '@/services/products';
 
 import DashboardLayout from '@/layouts/AdminLayout';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Container, Grid, } from '@mui/material';
+import { Box, Button, Card, Container, Grid, Stack, } from '@mui/material';
 
 interface FormValuesProps {
   descricaoMarca: string
@@ -141,17 +141,27 @@ export default function MarcasCreatePage() {
                       }}
                     >
                       <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoMarca" label="Nome da Marca" />
+                    </Box>
 
+                    <Stack sx={{
+                      flexDirection: 'row',
+                      display: 'flex',
+                      mt: 3,
+                      gap: 2,
+                      justifyContent: 'flex-end'
+                    }}>
                       <LoadingButton
                         sx={{
-                          width: '70%',
                           display: 'flex',
                           justifySelf: 'center',
                         }}
                         type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Marca' : 'Salvar Mudanças'}
                       </LoadingButton>
-                    </Box>
+                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas')}>
+                        Cancelar
+                      </Button>
+                    </Stack>
 
                   </Card>
                 </Grid>
