@@ -15,7 +15,7 @@ export default function Login() {
   const router = useRouter();
   useEffect(() => {
     if (token) {
-      router.push('/admin/dashboard');
+      router.push('/admin/dashboard.html');
     }
   }, []);
   return (

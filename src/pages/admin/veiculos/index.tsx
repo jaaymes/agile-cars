@@ -73,7 +73,7 @@ export default function VeiculosPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/veiculos/create?id=${id}`);
+    push(`/admin/veiculos/create.html?id=${id}`);
   };
 
 
@@ -116,7 +116,7 @@ export default function VeiculosPage() {
             <CustomBreadcrumbs
               heading="Lista de Veiculos"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Inicio', href: '/admin/dashboard.html' },
                 { name: 'Veiculos', href: '/admin/veiculos' },
                 { name: 'Lista' },
               ]}

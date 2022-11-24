@@ -66,7 +66,7 @@ export default function FranqueadosPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/franqueados/create?id=${id}`);
+    push(`/admin/franqueados/create.html?id=${id}`);
   };
 
   const handleGetAllFranqueados = async () => {
@@ -99,12 +99,12 @@ export default function FranqueadosPage() {
             <CustomBreadcrumbs
               heading="Lista de Franqueados"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Inicio', href: '/admin/dashboard.html' },
                 { name: 'Franqueados', href: '/admin/franqueados' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/franqueados/create'} passHref>
+                <NextLink href={'/admin/franqueados/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Franqueado
                   </Button>

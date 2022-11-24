@@ -88,7 +88,7 @@ export default function MarcasPage() {
 
 
   const handleEditRow = (id: number) => {
-    push(`/admin/modelos/create?id=${id}`);
+    push(`/admin/modelos/create.html?id=${id}`);
   };
 
   const handleGetAllMarcas = async () => {
@@ -133,12 +133,12 @@ export default function MarcasPage() {
             <CustomBreadcrumbs
               heading="Lista de Modelos por Marca"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Inicio', href: '/admin/dashboard.html' },
                 { name: 'Modelos', href: '/admin/modelos' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/modelos/create'} passHref>
+                <NextLink href={'/admin/modelos/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Nova Modelo
                   </Button>

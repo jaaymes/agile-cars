@@ -143,7 +143,7 @@ export default function MarcasCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/',
+                  href: '/admin',
                 },
                 {
                   name: 'Modelos',

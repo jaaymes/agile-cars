@@ -71,7 +71,7 @@ export default function ColaboladoresPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/colaboradores/create?id=${id}`);
+    push(`/admin/colaboradores/create.html?id=${id}`);
   };
 
   const handleGetAllColaboradores = async () => {
@@ -108,12 +108,12 @@ export default function ColaboladoresPage() {
             <CustomBreadcrumbs
               heading="Lista de Colaboradores"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Inicio', href: '/admin/dashboard.html' },
                 { name: 'Colaboradores', href: '/admin/colaboradores' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/colaboradores/create'} passHref>
+                <NextLink href={'/admin/colaboradores/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Colaborador
                   </Button>

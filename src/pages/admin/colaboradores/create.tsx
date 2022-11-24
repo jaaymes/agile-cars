@@ -197,7 +197,7 @@ export default function UserCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/',
+                  href: '/admin',
                 },
                 {
                   name: 'Colaboradores',

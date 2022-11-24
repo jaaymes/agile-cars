@@ -70,7 +70,7 @@ export default function MarcasPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/opcionais/create?id=${id}`);
+    push(`/admin/opcionais/create.html?id=${id}`);
   };
 
   const handleGetAllOpcionais = async () => {
@@ -106,12 +106,12 @@ export default function MarcasPage() {
             <CustomBreadcrumbs
               heading="Lista de Marcas"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard' },
+                { name: 'Inicio', href: '/admin/dashboard.html' },
                 { name: 'Opcionais', href: '/admin/opcionais' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/opcionais/create'} passHref>
+                <NextLink href={'/admin/opcionais/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Opcional
                   </Button>

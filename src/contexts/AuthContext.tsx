@@ -94,7 +94,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setIsAuthenticated(true)
 
-      router.push('/admin/dashboard')
+      router.push('/admin/dashboard.html')
     } catch (error: any) {
       toast.error(error.response.data.message)
     }

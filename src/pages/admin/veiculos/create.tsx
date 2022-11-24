@@ -379,7 +379,7 @@ export default function FranqueadosCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/',
+                  href: '/admin',
                 },
                 {
                   name: 'Veículos',

@@ -5,7 +5,7 @@ import { IoCarSharp } from 'react-icons/io5';
 const navConfig = [
   {
     items: [
-      { title: 'início', path: '/admin/dashboard', icon: <AiOutlineDashboard /> },
+      { title: 'início', path: '/admin/dashboard.html', icon: <AiOutlineDashboard /> },
     ],
   },
 
