@@ -94,7 +94,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setIsAuthenticated(true)
 
-      router.push('/admin/dashboard.html')
+      let rodandoLocal = '';
+
+      if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+        //const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
+        rodandoLocal = '/admin/dashboard';
+      else
+        rodandoLocal = '/admin/dashboard.html';
+
+
+      router.push(rodandoLocal);
+
+      // if (rodandoLocal)
+      //   router.push('/admin/dashboard');
+      // else
+      //   router.push('/admin/dashboard.html');
+
     } catch (error: any) {
       toast.error(error.response.data.message)
     }

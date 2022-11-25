@@ -14,8 +14,14 @@ export default function Login() {
   const { ['token']: token } = parseCookies();
   const router = useRouter();
   useEffect(() => {
+    const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
+    //(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
+
     if (token) {
-      router.push('/admin/dashboard.html');
+      if (rodandoLocal)
+        router.push('/admin/dashboard');
+      else
+        router.push('/admin/dashboard.html');
     }
   }, []);
   return (

@@ -54,13 +54,34 @@ export default function MarcasCreatePage() {
         descricaoMarca: data.descricaoMarca,
       })
       enqueueSnackbar('Marca criada com sucesso', { variant: 'success' });
-      push('/admin/marcas')
+
+      if (rodandoLocal)
+        push('/admin/marcas')
+      else
+        push('/admin/marcas.html')
+
+
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
 
   };
+
+
+  //const rodandoLocal = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
+
+  const [rodandoLocal, setrodandoLocal] = useState(true);
+
+  useEffect(() => {
+
+    //if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setrodandoLocal(true);
+    else
+      setrodandoLocal(false);
+  });
+
 
   const onSubmitEdit = async (data: FormValuesProps) => {
     try {
@@ -70,7 +91,14 @@ export default function MarcasCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/marcas');
+
+      if (rodandoLocal)
+        push('/admin/marcas')
+      else
+        push('/admin/marcas.html')
+
+
+
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -109,20 +137,41 @@ export default function MarcasCreatePage() {
           <LoadingScreen />
         ) :
           <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading={id ? "Editar Marca" : "Criar nova Marca"}
-              links={[
-                {
-                  name: 'Início',
-                  href: '/admin',
-                },
-                {
-                  name: 'Marcas',
-                  href: '/admin/marcas',
-                },
-                { name: 'Nova Marca' },
-              ]}
-            />
+
+            {!rodandoLocal &&
+              <CustomBreadcrumbs
+                heading={id ? "Editar Marca" : "Criar nova Marca"}
+                links={[
+                  {
+                    name: 'Início',
+                    href: '/admin',
+                  },
+                  {
+                    name: 'Marcas',
+                    href: '/admin/marcas',
+                  },
+                  { name: 'Nova Marca' },
+                ]}
+              />
+            }
+
+            {!rodandoLocal &&
+              <CustomBreadcrumbs
+                heading={id ? "Editar Marca" : "Criar nova Marca"}
+                links={[
+                  {
+                    name: 'Início',
+                    href: '/admin.html',
+                  },
+                  {
+                    name: 'Marcas',
+                    href: '/admin/marcas.html',
+                  },
+                  { name: 'Nova Marca' },
+                ]}
+              />
+            }
+
 
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
@@ -158,9 +207,19 @@ export default function MarcasCreatePage() {
                         type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Marca' : 'Salvar Mudanças'}
                       </LoadingButton>
-                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas')}>
-                        Cancelar
-                      </Button>
+
+                      {rodandoLocal &&
+                        <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas')}>
+                          Cancelar
+                        </Button>
+                      }
+
+                      {!rodandoLocal &&
+                        <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas.html')}>
+                          Cancelar
+                        </Button>
+                      }
+
                     </Stack>
 
                   </Card>

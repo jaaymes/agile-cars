@@ -354,7 +354,7 @@ export const getProductsList = async ({
   order
 }: IGetProducts) => {
   try {
-    const response = await api.post(`/veiculo/listar?page=${page}&pagesize=${pageSize}`, {
+    const response = await api.post(`/veiculo/pesquisar?page=${page}&pagesize=${pageSize}`, {
       direcao: direction,
       ordenar: order
     });

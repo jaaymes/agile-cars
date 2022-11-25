@@ -58,7 +58,7 @@ export default function ProductDetails() {
         <CustomBreadcrumbs
           heading="Detalhes do Veículo"
           links={[
-            { name: 'Início', href: '/' },
+            { name: 'Início', href: '/veiculo.html' },
             { name: product?.descricaoModeloVersao },
           ]}
         />

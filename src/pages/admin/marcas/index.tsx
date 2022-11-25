@@ -69,9 +69,31 @@ export default function MarcasPage() {
     setMarcas(newFranqueados)
   };
 
+  //const rodandoLocal = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
+
+  const [rodandoLocal, setrodandoLocal] = useState(true);
+
+  useEffect(() => {
+
+    //if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setrodandoLocal(true);
+    else
+      setrodandoLocal(false);
+
+    console.log("rodandoLocal");
+    console.log(rodandoLocal);
+    console.log(window.location.hostname);
+
+  });
+
 
   const handleEditRow = (id: number) => {
-    push(`/admin/marcas/create.html?id=${id}`);
+
+    if (rodandoLocal)
+      push(`/admin/marcas/create?id=${id}`);
+    else
+      push(`/admin/marcas/create.html?id=${id}`);
   };
 
   const handleGetAllMarcas = async () => {
@@ -94,8 +116,9 @@ export default function MarcasPage() {
     }
   }, [isSSR]);
 
+
   return (
-    <>
+    < >
       <Head>
         <title> Marcas: Lista</title>
       </Head>
@@ -103,22 +126,44 @@ export default function MarcasPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
+
+
           <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Marcas"
-              links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Marcas', href: '/admin/marcas' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={'/admin/marcas/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Marca
-                  </Button>
-                </NextLink>
-              }
-            />
+            {rodandoLocal &&
+              <CustomBreadcrumbs
+                heading="Lista de Marcas"
+                links={[
+                  { name: 'Inicio', href: '/admin/dashboard' },
+                  { name: 'Marcas', href: '/admin/marcas' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={'/admin/marcas/create'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Nova Marca
+                    </Button>
+                  </NextLink>
+                }
+              />
+            }
+
+            {!rodandoLocal &&
+              <CustomBreadcrumbs
+                heading="Lista de Marcas"
+                links={[
+                  { name: 'Inicio', href: '/admin/dashboard.html' },
+                  { name: 'Marcas', href: '/admin/marcas' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={'/admin/marcas/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Nova Marca
+                    </Button>
+                  </NextLink>
+                }
+              />
+            }
 
 
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
@@ -167,4 +212,5 @@ export default function MarcasPage() {
       }
     </>
   );
+
 }
