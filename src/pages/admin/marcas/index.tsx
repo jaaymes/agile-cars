@@ -69,18 +69,14 @@ export default function MarcasPage() {
     setMarcas(newFranqueados)
   };
 
-  //const rodandoLocal = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
-
   const [rodandoLocal, setrodandoLocal] = useState(true);
 
   useEffect(() => {
-
-    //if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
     if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
       setrodandoLocal(true);
     else
       setrodandoLocal(false);
-  },)
+  }, [])
 
 
   const handleEditRow = (id: number) => {

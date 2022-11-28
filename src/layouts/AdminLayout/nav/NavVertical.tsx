@@ -26,6 +26,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
   const isDesktop = useResponsive('up', 'lg');
   const [rodandoLocal, setRodandoLocal] = useState(false);
+  const [config, setConfig] = useState(navConfig);
 
   useEffect(() => {
     if (openNav) {
@@ -35,10 +36,23 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   }, [pathname]);
 
   useEffect(() => {
-    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1) {
       setRodandoLocal(true);
-    else
+    }
+    else {
       setRodandoLocal(false);
+      const newConfig = navConfig.map((item) => {
+        const newItem = item.items.map(subitem => ({
+          ...subitem,
+          path: subitem.path + '.html'
+        }))
+        return {
+          ...item,
+          items: newItem
+        }
+      })
+      setConfig(newConfig)
+    }
   }, []);
 
   const renderContent = (
@@ -64,7 +78,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
         <Logo href={rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html'} />
 
       </Stack>
-      <NavSectionVertical sx={{ mt: 4 }} data={navConfig} />
+      <NavSectionVertical sx={{ mt: 4 }} data={config} />
 
       <Box sx={{ flexGrow: 1 }} />
 

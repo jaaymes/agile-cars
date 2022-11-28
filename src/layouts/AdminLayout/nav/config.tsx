@@ -2,6 +2,7 @@ import { AiFillCar, AiOutlineApartment, AiOutlineDashboard } from 'react-icons/a
 import { CgOptions } from 'react-icons/cg'
 import { FaCarSide, FaUserCog } from 'react-icons/fa';
 import { IoCarSharp } from 'react-icons/io5';
+
 const navConfig = [
   {
     items: [
