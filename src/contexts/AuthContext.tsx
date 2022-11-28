@@ -3,8 +3,6 @@ import { toast } from "react-toastify";
 
 import { useRouter } from "next/router";
 
-import { eraseAllCookies } from "@/utils/cookie";
-
 import api from "@/services/api";
 import accountService from "@/services/login";
 
@@ -95,7 +93,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = useCallback(async () => {
     sessionStorage.removeItem("user");
-    eraseAllCookies();
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("isAuthenticated");
     setApiAuthHeader(null);
     setUser(null);
     const rodandoLocal = window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= -1

@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { RiWhatsappLine } from 'react-icons/ri';
 
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import Image from '@/components/image';
 import Label from '@/components/label';
@@ -15,6 +17,8 @@ type Props = {
 };
 
 export default function ShopProductCard({ product }: Props) {
+  const router = useRouter();
+  const [rodandoLocal, setRodandoLocal] = useState(false);
   const message = `${process.env.NEXT_PUBLIC_SITE}shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`
 
   const whatsappMessage = encodeURIComponent(message)
@@ -26,8 +30,17 @@ export default function ShopProductCard({ product }: Props) {
     `, '_blank');
   }
 
-  const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") > - 1);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, [router, product]);
+
+  // useEffect(() => {
+  //   console.log('rodandoLocal', rodandoLocal)
+  // }, [rodandoLocal]);
 
   return (
     <Card
@@ -84,19 +97,16 @@ export default function ShopProductCard({ product }: Props) {
             <RiWhatsappLine />
           </IconButton>
 
-          {rodandoLocal &&
-            <Link href={`/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
-              {/* @ts-ignore */}
-              <Button target="_blank" rel="noopener noreferrer" > + Detalhes</Button>
-            </Link>
-          }
 
-          {!rodandoLocal &&
-            <Link href={`/shop/veiculo.html?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
-              {/* @ts-ignore */}
-              <Button target="_blank" rel="noopener noreferrer" variant='contained' > + Detalhes</Button>
-            </Link>
-          }
+          <Link href={
+            rodandoLocal ?
+              `/shop/veiculo?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`
+              :
+              `/shop/veiculo.html?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`
+          } passHref>
+            {/* @ts-ignore */}
+            <Button target="_blank" rel="noopener noreferrer" > + Detalhes</Button>
+          </Link>
 
 
         </Stack>

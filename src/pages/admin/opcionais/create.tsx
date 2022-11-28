@@ -142,8 +142,6 @@ export default function MarcasCreatePage() {
                   }}
                 >
                   <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoOpcional" label="Nome do Opcional" />
-
-
                 </Box>
 
                 <Stack sx={{
