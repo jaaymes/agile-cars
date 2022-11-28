@@ -14,6 +14,9 @@ export default function Login() {
   useEffect(() => {
     const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
     const token = sessionStorage.getItem("token");
+    if (!rodandoLocal) {
+      router.push("/admin.html");
+    }
     if (token) {
       if (rodandoLocal)
         router.push('/admin/dashboard');
