@@ -1,6 +1,6 @@
 import 'simplebar/src/simplebar.css';
 
-import 'react-image-lightbox/style.css';
+import "react-image-lightbox/style.css";
 import 'react-toastify/dist/ReactToastify.css'
 
 import 'mapbox-gl/dist/mapbox-gl.css';

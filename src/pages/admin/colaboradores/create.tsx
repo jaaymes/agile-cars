@@ -292,12 +292,12 @@ export default function UserCreatePage() {
                         InputLabelProps={{
                           shrink: true
                         }}
-                        name="descricaoFuncionario" label="Nome do Colaborador" />
+                        name="descricaoFuncionario" label="Nome do Colaborador" value={values.descricaoFuncionario || ''} />
                       <RHFTextField
                         InputLabelProps={{
                           shrink: true
                         }}
-                        name="email" label="Email" />
+                        name="email" label="Email" value={values.email || ''} />
                       <RHFTextField
                         InputLabelProps={{
                           shrink: true
@@ -305,14 +305,14 @@ export default function UserCreatePage() {
                         inputProps={{
                           maxLength: 15,
                         }}
-                        name="phoneNumber" label="Celular" value={normalizePhone(values.phoneNumber)} />
+                        name="phoneNumber" label="Celular" value={normalizePhone(values.phoneNumber) || ''} />
 
                       <Box>
                         <RHFTextField
                           InputLabelProps={{
                             shrink: true
                           }}
-                          name="senha" label="Senha" type="password" />
+                          name="senha" label="Senha" type="password" value={values.senha || ''} />
                         <Typography variant="caption" sx={{ mb: 0.5, color: colors?.grey[500] }}>
                           senha padrao: 123456
                         </Typography>

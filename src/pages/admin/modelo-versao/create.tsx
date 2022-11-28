@@ -59,8 +59,11 @@ export default function MarcasCreatePage() {
     reset,
     setValue,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const watchAllFields = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     try {
@@ -226,11 +229,7 @@ export default function MarcasCreatePage() {
                     options={modelos}
                     renderInput={(params) => <TextField sx={{ zIndex: 9999 }}  {...params} label="Modelos" />}
                   />
-
-
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoModeloVersao" label="Nome do Modelo Versão" />
-
-
+                  <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoModeloVersao" label="Nome do Modelo Versão" value={watchAllFields?.descricaoModeloVersao || ''} />
                 </Box>
                 <Stack sx={{
                   flexDirection: 'row',

@@ -245,6 +245,8 @@ export default function ProductDetailsCarousel({ images }: IProps) {
         key={key}
         animationDuration={SPEED}
         images={imagesLightbox}
+        nextSrc={imagesLightbox[(selectedImage + 1) % imagesLightbox.length]}
+        prevSrc={imagesLightbox[(selectedImage + imagesLightbox.length - 1) % imagesLightbox.length]}
         mainSrc={imagesLightbox[selectedImage]}
         photoIndex={selectedImage}
         setPhotoIndex={setSelectedImage}

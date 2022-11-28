@@ -46,8 +46,11 @@ export default function MarcasCreatePage() {
     reset,
     setValue,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const watchAllFields = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     try {
@@ -68,7 +71,6 @@ export default function MarcasCreatePage() {
     }
 
   };
-
 
   useEffect(() => {
     if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
@@ -163,7 +165,7 @@ export default function MarcasCreatePage() {
                         sm: 'repeat(2, 1fr)',
                       }}
                     >
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoMarca" label="Nome da Marca" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoMarca" label="Nome da Marca" value={watchAllFields.descricaoMarca || ''} />
                     </Box>
 
                     <Stack sx={{

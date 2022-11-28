@@ -36,7 +36,10 @@ export default function AuthLoginForm() {
   const {
     reset,
     handleSubmit,
+    watch,
   } = methods;
+
+  const allValues = watch();
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
@@ -57,11 +60,12 @@ export default function AuthLoginForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
 
-        <RHFTextField name="colaborador" label="Colaborador" />
+        <RHFTextField name="colaborador" label="Colaborador" value={allValues.colaborador || ''} />
 
         <RHFTextField
           name="senha"
           label="Senha"
+          value={allValues.senha || ''}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (

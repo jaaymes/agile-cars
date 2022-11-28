@@ -71,7 +71,7 @@ export default function FranqueadosCreatePage() {
     formState: { isSubmitting, errors },
   } = methods;
 
-  const values = watch();
+  const watchAllFields = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     try {
@@ -154,9 +154,7 @@ export default function FranqueadosCreatePage() {
   }, [id])
 
   async function handleCep(zipcode: string) {
-    setIsLoading(true)
     const data = await consultCep(normalizeNumber(zipcode))
-
     if (typeof data !== 'boolean') {
       setValue('endereco', data.logradouro)
       setValue('bairro', data.bairro)
@@ -173,7 +171,6 @@ export default function FranqueadosCreatePage() {
       setValue('cidade', '')
       setValue('complemento', '')
     }
-    setIsLoading(false)
   }
 
   const onSubmit = async (data: FormValuesProps) => {
@@ -242,18 +239,18 @@ export default function FranqueadosCreatePage() {
                         }}
                         name="descricaoFranqueado" label="Nome do Franqueador" />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCnpj(values.cnpj)} name="cnpj" label="CNPJ da Empresa" />
-                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCpf(values.cpf)} name="cpf" label="CPF do Responsável" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCnpj(watchAllFields.cnpj) || ''} name="cnpj" label="CNPJ da Empresa" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} value={normalizeCpf(watchAllFields.cpf) || ''} name="cpf" label="CPF do Responsável" />
                       <RHFTextField InputLabelProps={{ shrink: true }}
                         inputProps={{
                           maxLength: 15,
                         }}
-                        value={normalizeWhatsapp(values.whatsapp)} name="whatsapp" label="WhatsApp" />
+                        value={normalizeWhatsapp(watchAllFields.whatsapp) || ''} name="whatsapp" label="WhatsApp" />
 
 
                       <TextField
                         InputLabelProps={{
-                          shrink: true
+                          shrink: true,
                         }}
                         inputProps={{
                           maxLength: 9,
@@ -262,7 +259,7 @@ export default function FranqueadosCreatePage() {
                         variant="outlined"
                         margin="none"
                         label="CEP"
-                        value={normalizeCep(watch('cep'))}
+                        value={normalizeCep(watchAllFields.cep) || ''}
                         helperText={errors?.cep?.message}
                         {...register('cep', {
                           onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleCep(event.target.value),
@@ -308,7 +305,7 @@ export default function FranqueadosCreatePage() {
                         select
                         fullWidth
                         label="Estado"
-                        value={values.uf ? values.uf : ''}
+                        value={watchAllFields.uf ? watchAllFields.uf : ''}
                         {...register('uf', { required: true })}
                         error={!!errors.uf}
                         helperText={errors.uf?.message}

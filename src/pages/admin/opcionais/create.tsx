@@ -45,8 +45,11 @@ export default function MarcasCreatePage() {
     reset,
     setValue,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const allWatchedFields = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     try {
@@ -141,7 +144,7 @@ export default function MarcasCreatePage() {
                     sm: 'repeat(2, 1fr)',
                   }}
                 >
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoOpcional" label="Nome do Opcional" />
+                  <RHFTextField InputLabelProps={{ shrink: true }} value={allWatchedFields.descricaoOpcional || ''} name="descricaoOpcional" label="Nome do Opcional" />
 
                 </Box>
                 <Stack sx={{

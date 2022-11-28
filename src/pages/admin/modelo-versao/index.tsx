@@ -151,70 +151,70 @@ export default function MarcasPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Modelo Versão"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Modelo Versão', href: rodandoLocal ? '/admin/modelo-versao' : '/admin/modelo-versao/modelo-versao.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/modelo-versao/create' : '/admin/modelo-versao/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Modelo Versão
-                  </Button>
-                </NextLink>
-              }
-            />
-            <Stack
-              spacing={2}
-              alignItems="center"
-              direction={{
-                xs: 'column',
-                md: 'row',
-              }}
-              sx={{ py: 3 }}
-            >
-              <FormControl fullWidth>
-                <Autocomplete
-                  noOptionsText="Nenhuma marca encontrada"
-                  disablePortal
-                  clearIcon={null}
-                  value={marcas?.find((marca) => marca.id === selectIdMarca)}
-                  onChange={(event, value) => {
-                    setSelectIdModelo(null)
-                    setSelectIdMarca(Number(value?.id))
-                  }}
-                  options={marcas}
-                  renderInput={(params) => <TextField  {...params} label="Marcas" />}
-                />
-              </FormControl>
-              <FormControl fullWidth>
-                <Autocomplete
-                  noOptionsText="Nenhum modelo encontrado"
-                  clearIcon={null}
-                  disablePortal
-                  value={modelos?.find((modelos) => modelos.id === selectIdModelo)}
-                  onChange={(event, value) => setSelectIdModelo(Number(value?.id))}
-                  options={modelos}
-                  renderInput={(params) => <TextField  {...params} label="Modelos" />}
-                />
-              </FormControl>
-            </Stack>
-
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={modelosVersao?.length}
-                    onSort={onSort}
+          !isSSR && (
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Modelo Versão"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Modelo Versão', href: rodandoLocal ? '/admin/modelo-versao' : '/admin/modelo-versao/modelo-versao.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/modelo-versao/create' : '/admin/modelo-versao/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Nova Modelo Versão
+                    </Button>
+                  </NextLink>
+                }
+              />
+              <Stack
+                spacing={2}
+                alignItems="center"
+                direction={{
+                  xs: 'column',
+                  md: 'row',
+                }}
+                sx={{ py: 3 }}
+              >
+                <FormControl fullWidth>
+                  <Autocomplete
+                    noOptionsText="Nenhuma marca encontrada"
+                    disablePortal
+                    clearIcon={null}
+                    value={marcas?.find((marca) => marca.id === selectIdMarca) || null}
+                    onChange={(event, value) => {
+                      setSelectIdModelo(null)
+                      setSelectIdMarca(Number(value?.id))
+                    }}
+                    options={marcas}
+                    renderInput={(params) => <TextField  {...params} label="Marcas" />}
                   />
-                  {
-                    !isSSR && (
+                </FormControl>
+                <FormControl fullWidth>
+                  <Autocomplete
+                    noOptionsText="Nenhum modelo encontrado"
+                    clearIcon={null}
+                    disablePortal
+                    value={modelos?.find((modelos) => modelos.id === selectIdModelo) || null}
+                    onChange={(event, value) => setSelectIdModelo(Number(value?.id))}
+                    options={modelos}
+                    renderInput={(params) => <TextField  {...params} label="Modelos" />}
+                  />
+                </FormControl>
+              </Stack>
+
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={modelosVersao?.length}
+                      onSort={onSort}
+                    />
+                    {
                       <TableBody>
                         {
                           dataInPage.map((row) => (
@@ -234,20 +234,20 @@ export default function MarcasPage() {
                         <TableNoData isNotFound={!dataInPage?.length} text="Escolha Marca e Modelo" />
 
                       </TableBody>
-                    )
-                  }
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                    }
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
 
-            <TablePaginationCustom
-              count={modelosVersao?.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+              <TablePaginationCustom
+                count={modelosVersao?.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
     </>
   );

@@ -59,6 +59,16 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       <NavSectionVertical sx={{ mt: 4 }} data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
+
+      <Button
+        onClick={logout}
+        variant='contained' sx={{
+          width: '80%',
+          m: 2
+        }}>
+        Sair
+      </Button>
+
     </Scrollbar>
   );
 
@@ -83,17 +93,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           }}
         >
           {renderContent}
-          <Button
-            onClick={logout}
-            variant='contained' sx={{
-              mb: 2,
-              width: '90%',
-              justifySelf: 'center',
-              alignSelf: 'center',
-              display: 'flex',
-            }}>
-            Sair
-          </Button>
+
         </Drawer>
       ) : (
         <Drawer

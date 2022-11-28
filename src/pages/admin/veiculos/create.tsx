@@ -97,7 +97,7 @@ export default function FranqueadosCreatePage() {
     formState: { isSubmitting },
   } = methods;
 
-  const values = watch();
+  const watchAllFields = watch();
 
   const onSubmitAdd = async (data: FormValuesProps) => {
     const foto1 = data?.images && data?.images[0] ? await convertBase64(data?.images[0]) : undefined;
@@ -262,7 +262,7 @@ export default function FranqueadosCreatePage() {
   }
 
   const handleGetModelos = async () => {
-    const response = await getModelos(Number(values.idMarca))
+    const response = await getModelos(Number(watchAllFields.idMarca))
     if (response) {
       const modelosReturn = response.map((item: { descricaoModelo: any; idModelo: any; }) => ({
         label: item.descricaoModelo,
@@ -275,7 +275,7 @@ export default function FranqueadosCreatePage() {
   }
 
   const handleGetModeloVersao = async () => {
-    const response = await getModelosVersao(Number(values.idModelo))
+    const response = await getModelosVersao(Number(watchAllFields.idModelo))
     if (response) {
       const modeloVersaoReturn = response.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
         label: item.descricaoModeloVersao,
@@ -309,8 +309,8 @@ export default function FranqueadosCreatePage() {
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const files = values.images || [];
-      const filesBase64 = values.imagesBase64 || [];
+      const files = watchAllFields.images || [];
+      const filesBase64 = watchAllFields.imagesBase64 || [];
 
       const newFiles = acceptedFiles.map((file) => Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -324,11 +324,11 @@ export default function FranqueadosCreatePage() {
       setValue('images', [...files, ...newFiles]);
       setValue('imagesBase64', [...filesBase64, ...newFilesBase64]);
     },
-    [setValue, values.images]
+    [setValue, watchAllFields.images]
   );
 
   const handleRemoveFile = (inputFile: File | string) => {
-    const filtered = values.images && values.images?.filter((file) => file !== inputFile);
+    const filtered = watchAllFields.images && watchAllFields.images?.filter((file) => file !== inputFile);
     setValue('images', filtered);
   };
 
@@ -355,16 +355,16 @@ export default function FranqueadosCreatePage() {
   }, []);
 
   useEffect(() => {
-    if (values.idMarca) {
+    if (watchAllFields.idMarca) {
       handleGetModelos()
     }
-  }, [values.idMarca]);
+  }, [watchAllFields.idMarca]);
 
   useEffect(() => {
-    if (values.idModelo) {
+    if (watchAllFields.idModelo) {
       handleGetModeloVersao()
     }
-  }, [values.idModelo]);
+  }, [watchAllFields.idModelo]);
 
 
   useEffect(() => {
@@ -418,8 +418,9 @@ export default function FranqueadosCreatePage() {
                       <FormControl fullWidth>
                         <InputLabel>Marcas</InputLabel>
                         <Select
-                          value={values.idMarca || ''}
+                          value={watchAllFields.idMarca || ''}
                           label="Marcas"
+                          id="idMarca"
                           {...register('idMarca')}
                         >
                           {
@@ -438,11 +439,13 @@ export default function FranqueadosCreatePage() {
                               backgroundColor: colors.grey[300]
                             }
                           }}
-                          disabled={!values.idMarca}
-                          value={values.idModelo || ''}
+                          id="idModelo"
+                          disabled={!watchAllFields.idMarca}
+                          value={watchAllFields.idModelo || ''}
                           label="Modelos"
                           {...register('idModelo')}
                         >
+                          <MenuItem disabled value="choose">Selecione...</MenuItem>
                           {
                             modelos.map(item => (
                               <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
@@ -459,14 +462,17 @@ export default function FranqueadosCreatePage() {
                               backgroundColor: colors.grey[300]
                             }
                           }}
-                          disabled={!values.idModelo}
-                          value={values.idModeloVersao || ''}
+                          id="idModeloVersao"
+                          defaultValue="choose"
+                          disabled={!watchAllFields.idModelo}
+                          value={watchAllFields.idModeloVersao || ''}
                           label="Modelo Versão"
                           {...register('idModeloVersao')}
                         >
+                          <MenuItem disabled value="choose">Selecione...</MenuItem>
                           {
-                            modelosVersao.map(item => (
-                              <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                            modelosVersao.map((item, index) => (
+                              <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
                             ))
                           }
                         </Select>
@@ -474,7 +480,7 @@ export default function FranqueadosCreatePage() {
                       <FormControl fullWidth>
                         <InputLabel>Categorias</InputLabel>
                         <Select
-                          value={values.idCategoria || ''}
+                          value={watchAllFields.idCategoria || ''}
                           label="Categoria"
                           {...register('idCategoria')}
                         >
@@ -486,10 +492,10 @@ export default function FranqueadosCreatePage() {
                         </Select>
                       </FormControl>
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="chassi" label="Chassi" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} value={watchAllFields?.chassi || ''} name="chassi" label="Chassi" />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="placa" label="Placa"
-                        value={normalizePlaca(values.placa)}
+                        value={normalizePlaca(watchAllFields.placa)}
                         inputProps={{
                           maxLength: 8,
                           style: {
@@ -498,19 +504,19 @@ export default function FranqueadosCreatePage() {
                         }}
                       />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" value={normalizeYear(values.fab)} label="Ano Fabricação"
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="fab" value={normalizeYear(watchAllFields.fab) || ''} label="Ano Fabricação"
                         inputProps={{
                           maxLength: 4,
                         }}
                       />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" value={normalizeYear(values.mod)} label="Ano Modelo"
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="mod" value={normalizeYear(watchAllFields.mod) || ''} label="Ano Modelo"
                         inputProps={{
                           maxLength: 4,
                         }}
                       />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="cor" label="Cor" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="cor" label="Cor" value={watchAllFields.cor || ''} />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="km" label="Km" inputProps={{
                         maxLength: 4,
@@ -519,13 +525,13 @@ export default function FranqueadosCreatePage() {
                       />
 
                       <RHFTextField InputLabelProps={{ shrink: true }} name="renavam" label="Renavam"
-                        value={normalizeRenavam(values.renavam)}
+                        value={normalizeRenavam(watchAllFields.renavam) || ''}
                         inputProps={{
                           maxLength: 11,
                         }}
                       />
 
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="valor" label="Valor" type="number" />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="valor" label="Valor" type="number" value={watchAllFields.valor || ''} />
 
                       <RHFAutocomplete
                         name="Opcionais"
@@ -536,7 +542,7 @@ export default function FranqueadosCreatePage() {
                           setValue('opcionais', newValue.map((item) => item));
                         }}
                         options={optionals}
-                        value={values.opcionais || []}
+                        value={watchAllFields.opcionais || []}
                         // @ts-ignore
                         getOptionLabel={(option) => option.descricaoOpcional}
                         renderTags={(value, getTagProps) => (
@@ -558,7 +564,7 @@ export default function FranqueadosCreatePage() {
                       columnGap={2}
                       display="grid"
                     >
-                      <RHFTextField InputLabelProps={{ shrink: true }} name="obs" label="Observação" rows={3} multiline />
+                      <RHFTextField InputLabelProps={{ shrink: true }} name="obs" label="Observação" rows={3} multiline value={watchAllFields.obs || ''} />
                     </Box>
 
                     <Box
