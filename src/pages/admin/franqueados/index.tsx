@@ -56,6 +56,7 @@ export default function FranqueadosPage() {
 
   const [franqueados, setFranqueados] = useState<IFranqueados[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const dataInPage = franqueados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -66,7 +67,7 @@ export default function FranqueadosPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/franqueados/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/franqueados/create?id=${id}`) : push(`/admin/franqueados/create.html?id=${id}`)
   };
 
   const handleGetAllFranqueados = async () => {
@@ -86,6 +87,13 @@ export default function FranqueadosPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -99,20 +107,18 @@ export default function FranqueadosPage() {
             <CustomBreadcrumbs
               heading="Lista de Franqueados"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Franqueados', href: '/admin/franqueados' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Franqueados', href: rodandoLocal ? '/admin/franqueados' : '/admin/franqueados.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/franqueados/create.html'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/franqueados/create' : '/admin/franqueados/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Franqueado
                   </Button>
                 </NextLink>
               }
             />
-
-
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
               <Scrollbar>
 

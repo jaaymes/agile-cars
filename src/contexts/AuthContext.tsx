@@ -1,145 +1,125 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify'
+import { createContext, useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
-import { createCookie, eraseAllCookies, getCookie } from '@/utils/cookie';
+import { eraseAllCookies } from "@/utils/cookie";
 
-import api from '@/services/api';
-import accountService from '@/services/login';
+import api from "@/services/api";
+import accountService from "@/services/login";
 
 interface SignInCredentials {
-  descricaoFuncionario: string
-  senha: string
+  descricaoFuncionario: string;
+  senha: string;
 }
 
 interface IUser {
-  descricaocliente: string
-  descricaofranqueado: string
-  descricaofuncionario: string
-  email: string
-  idfranqueado: number
-  idfuncionario: number
-  token: string
+  descricaocliente: string;
+  descricaofranqueado: string;
+  descricaofuncionario: string;
+  email: string;
+  idfranqueado: number;
+  idfuncionario: number;
+  token: string;
 }
 
 interface AuthContextData {
-  login: (credentials: SignInCredentials) => Promise<void>
-  logout: () => void
-  user: IUser
-  isAuthenticated: boolean
-  token: string
+  login: (credentials: SignInCredentials) => Promise<void>;
+  logout: () => void;
+  user: IUser;
+  isAuthenticated: boolean;
+  token: string;
 }
 
 export const AuthContext = createContext<AuthContextData | null>(null);
 type AuthProviderProps = {
-
   children: React.ReactNode;
 };
 
 function setApiAuthHeader(token: string | null) {
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string>('');
+  // rodandoLocal
+  const [token, setToken] = useState<string>("");
 
-  const [user, setUser] = useState<any>(null)
-  const router = useRouter()
-
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (window !== undefined) {
-      const user = localStorage.getItem('user')
-      const token = getCookie('token')
-      const IsAuthenticated = getCookie('IsAuthenticated')
+      const user = sessionStorage.getItem("user");
+      const token = sessionStorage.getItem("token");
+      const IsAuthenticated = sessionStorage.getItem("isAuthenticated");
       if (user) {
-        setUser(JSON.parse(user))
-        setApiAuthHeader(JSON.parse(user).token)
+        setUser(JSON.parse(user));
+        setApiAuthHeader(JSON.parse(user).token);
       }
       if (Boolean(IsAuthenticated)) {
-        setIsAuthenticated(true)
+        setIsAuthenticated(true);
       }
       if (token) {
-        setToken(token)
+        setToken(token);
       }
     }
   }, [router]);
 
 
-  const login = useCallback(async ({
-    descricaoFuncionario,
-    senha
-  }: SignInCredentials) => {
-    try {
-      const { data } = await accountService.login({
-        descricaoFuncionario,
-        senha
-      })
-      const newUser = { ...data }
-      setUser(newUser)
-      setApiAuthHeader(data.token)
+  const login = useCallback(
+    async ({ descricaoFuncionario, senha }: SignInCredentials) => {
+      try {
+        const { data } = await accountService.login({
+          descricaoFuncionario,
+          senha,
+        });
+        const newUser = { ...data };
+        setUser(newUser);
+        setApiAuthHeader(data.token);
 
-      createCookie('token', data.token, undefined, {
-        maxAge: 60 * 60 * 24, // 24 Hour
-        path: '/'
-      })
+        sessionStorage.setItem("user", JSON.stringify(newUser));
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("IsAuthenticated", "true");
 
-      createCookie('IsAuthenticated', true, undefined, {
-        maxAge: 60 * 60 * 24, // 24 Hour
-        path: '/'
-      })
+        setIsAuthenticated(true);
 
-      localStorage.setItem('user', JSON.stringify(newUser))
+        const rodandoLocal = window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= -1
 
-      setIsAuthenticated(true)
-
-      let rodandoLocal = '';
-
-      if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
-        //const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
-        rodandoLocal = '/admin/dashboard';
-      else
-        rodandoLocal = '/admin/dashboard.html';
-
-
-      router.push(rodandoLocal);
-
-      // if (rodandoLocal)
-      //   router.push('/admin/dashboard');
-      // else
-      //   router.push('/admin/dashboard.html');
-
-    } catch (error: any) {
-      toast.error(error.response.data.message)
-    }
-  }, [])
-
+        router.push(rodandoLocal ? "/admin/dashboard" : "/admin/dashboard.html");
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
+    },
+    []
+  );
 
   const logout = useCallback(async () => {
-    sessionStorage.removeItem('user')
-    eraseAllCookies()
-    setApiAuthHeader(null)
-    setUser(null)
-    router.push('/admin')
-  }, [])
+    sessionStorage.removeItem("user");
+    eraseAllCookies();
+    setApiAuthHeader(null);
+    setUser(null);
+    const rodandoLocal = window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= -1
+
+    router.push(rodandoLocal ? "/admin" : "/admin.html");
+
+  }, []);
 
   useEffect(() => {
     api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response.status === 401) {
-          logout()
+          logout();
         }
         if (error.response.status === 403) {
-          logout()
+          logout();
         }
         if (error.response.status === 500) {
-          logout()
+          logout();
         }
-        return Promise.reject(error)
+        return Promise.reject(error);
       }
-    )
+    );
   }, [router]);
 
   return (
@@ -149,7 +129,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout,
         user,
         isAuthenticated,
-        token
+        token,
       }}
     >
       {children}

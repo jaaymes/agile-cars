@@ -60,6 +60,7 @@ export default function MarcasPage() {
 
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
   const [isLoading, setIsLoading] = useState(false)
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const dataInPage = optionals?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -70,7 +71,7 @@ export default function MarcasPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/opcionais/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/opcionais/create?id=${id}`) : push(`/admin/opcionais/create.html?id=${id}`)
   };
 
   const handleGetAllOpcionais = async () => {
@@ -93,6 +94,13 @@ export default function MarcasPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -106,12 +114,12 @@ export default function MarcasPage() {
             <CustomBreadcrumbs
               heading="Lista de Marcas"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Opcionais', href: '/admin/opcionais' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Opcionais', href: rodandoLocal ? '/admin/opcionais' : '/admin/opcionais.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/opcionais/create.html'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/opcionais/create.html' : '/admin/opcionais/create'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Opcional
                   </Button>

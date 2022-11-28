@@ -51,6 +51,7 @@ export default function FranqueadosCreatePage() {
   const [active, setActive] = useState<boolean>(false);
   const [dataFranqueador, setDataFranqueador] = useState<FormValuesProps | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [rodandoLocal, setRodandoLocal] = useState(false);
 
   const NewUserSchema = Yup.object().shape({
     descricaoFranqueado: Yup.string().required('Nome é obrigatório'),
@@ -92,7 +93,7 @@ export default function FranqueadosCreatePage() {
         logr: ""
       })
       enqueueSnackbar('Franqueado criado com sucesso', { variant: 'success' });
-      push('/admin/franqueados')
+      rodandoLocal ? push("/admin/franqueados") : push("/admin/franqueados.html")
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -122,7 +123,7 @@ export default function FranqueadosCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/franqueados');
+      rodandoLocal ? push("/admin/franqueados") : push("/admin/franqueados.html")
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -186,6 +187,14 @@ export default function FranqueadosCreatePage() {
   useEffect(() => {
     loadData()
   }, [id]);
+
+
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
   return (
     <>
       <Head>
@@ -201,11 +210,11 @@ export default function FranqueadosCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/admin',
+                  href: rodandoLocal ? '/admin' : '/admin/index.html',
                 },
                 {
                   name: 'Franqueados',
-                  href: '/admin/franqueados',
+                  href: rodandoLocal ? '/admin/franqueados' : '/admin/franqueados.html',
                 },
                 { name: 'Novo Franqueador' },
               ]}
@@ -352,7 +361,7 @@ export default function FranqueadosCreatePage() {
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Franqueado' : 'Salvar Mudanças'}
                       </LoadingButton>
-                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/franqueados')}>
+                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/franqueados') : push('/admin/franqueados.html')}>
                         Cancelar
                       </Button>
                     </Stack>

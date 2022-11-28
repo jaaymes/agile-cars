@@ -61,6 +61,8 @@ export default function ColaboladoresPage() {
 
   const [colaboradores, setColaboradores] = useState<IColaboradores[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  // setRodandoLocal
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const dataInPage = colaboradores.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -71,7 +73,7 @@ export default function ColaboladoresPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/colaboradores/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/colaboradores/create?id=${id}`) : push(`/admin/colaboradores/create.html?id=${id}`)
   };
 
   const handleGetAllColaboradores = async () => {
@@ -95,6 +97,13 @@ export default function ColaboladoresPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -108,12 +117,12 @@ export default function ColaboladoresPage() {
             <CustomBreadcrumbs
               heading="Lista de Colaboradores"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Colaboradores', href: '/admin/colaboradores' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Colaboradores', href: rodandoLocal ? '/admin/colaboradores' : '/admin/colaboradores.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/colaboradores/create.html'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/colaboradores/create' : '/admin/colaboradores/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Colaborador
                   </Button>

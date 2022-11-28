@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Head from 'next/head';
@@ -30,6 +30,8 @@ export default function MarcasCreatePage() {
   const { push, query: { id } } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
+  const [rodandoLocal, setRodandoLocal] = useState(false)
+
 
   const NewOpcionalSchema = Yup.object().shape({
     descricaoOpcional: Yup.string().required('Nome é obrigatório'),
@@ -52,7 +54,8 @@ export default function MarcasCreatePage() {
         descricaoOpcional: data.descricaoOpcional
       })
       enqueueSnackbar('Opcional criada com sucesso', { variant: 'success' });
-      push('/admin/opcionais')
+
+      rodandoLocal ? push('/admin/opcionais') : push('/admin/opcionais.html')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -68,7 +71,7 @@ export default function MarcasCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/opcionais');
+      rodandoLocal ? push('/admin/opcionais') : push('/admin/opcionais.html')
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -94,6 +97,14 @@ export default function MarcasCreatePage() {
   useEffect(() => {
     loadData()
   }, [id]);
+
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -109,7 +120,7 @@ export default function MarcasCreatePage() {
             },
             {
               name: 'Opcionais',
-              href: '/admin/opcionais',
+              href: rodandoLocal ? '/admin/opcionais' : '/admin/opcionais.html',
             },
             { name: 'Novo Opcional' },
           ]}
@@ -151,7 +162,7 @@ export default function MarcasCreatePage() {
                     type="submit" variant="contained" loading={isSubmitting}>
                     {!id ? 'Criar Opcional' : 'Salvar Mudanças'}
                   </LoadingButton>
-                  <Button variant="outlined" color="inherit" onClick={() => push('/admin/opcionais')}>
+                  <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/opcionais') : push('/admin/opcionais.html')}>
                     Cancelar
                   </Button>
                 </Stack>

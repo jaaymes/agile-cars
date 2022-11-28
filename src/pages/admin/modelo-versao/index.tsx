@@ -80,6 +80,7 @@ export default function MarcasPage() {
   const [selectIdMarca, setSelectIdMarca] = useState<number | null>(null);
   const [selectIdModelo, setSelectIdModelo] = useState<number | null>(null);
   const [dataInPage, setDataInPage] = useState<IModelosVersao[]>([]);
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const handleDeleteRow = async (id: number) => {
     await deleteModeloVersao(id)
@@ -88,7 +89,7 @@ export default function MarcasPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/modelo-versao/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/modelo-versao?id=${id}`) : push(`/admin/modelo-versao/create.html?id=${id}`)
   };
 
   const handleGetAllMarcas = async () => {
@@ -134,6 +135,13 @@ export default function MarcasPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -147,12 +155,12 @@ export default function MarcasPage() {
             <CustomBreadcrumbs
               heading="Lista de Modelo Versão"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Modelo Versão', href: '/admin/modelo-versao' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Modelo Versão', href: rodandoLocal ? '/admin/modelo-versao' : '/admin/modelo-versao/modelo-versao.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/modelo-versao/create.html'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/modelo-versao/create' : '/admin/modelo-versao/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Nova Modelo Versão
                   </Button>

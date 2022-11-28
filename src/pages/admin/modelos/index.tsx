@@ -77,6 +77,7 @@ export default function MarcasPage() {
   const [modelos, setModelos] = useState<IModelos[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectIdMarca, setSelectIdMarca] = useState<number | null>(1);
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const dataInPage = modelos?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -88,7 +89,7 @@ export default function MarcasPage() {
 
 
   const handleEditRow = (id: number) => {
-    push(`/admin/modelos/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/modelos/create?id=${id}`) : push(`/admin/modelos/create.html?id=${id}`)
   };
 
   const handleGetAllMarcas = async () => {
@@ -120,6 +121,13 @@ export default function MarcasPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -133,12 +141,12 @@ export default function MarcasPage() {
             <CustomBreadcrumbs
               heading="Lista de Modelos por Marca"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Modelos', href: '/admin/modelos' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Modelos', href: rodandoLocal ? '/admin/modelos' : '/admin/modelos.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/modelos/create.html'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/modelos/create' : '/admin/modelos/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Nova Modelo
                   </Button>

@@ -94,7 +94,7 @@ export default function ShopProductCard({ product }: Props) {
           {!rodandoLocal &&
             <Link href={`/shop/veiculo.html?id=${product?.idVeiculo}&idFranqueado=${product?.idFranqueado}`} passHref>
               {/* @ts-ignore */}
-              <Button target="_blank" rel="noopener noreferrer" > + Detalhes</Button>
+              <Button target="_blank" rel="noopener noreferrer" variant='contained' > + Detalhes</Button>
             </Link>
           }
 

@@ -32,6 +32,7 @@ export default function MarcasCreatePage() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false)
+  const [rodandoLocal, setrodandoLocal] = useState(true);
 
   const NewMarcaSchema = Yup.object().shape({
     descricaoMarca: Yup.string().required('Nome é obrigatório'),
@@ -69,18 +70,12 @@ export default function MarcasCreatePage() {
   };
 
 
-  //const rodandoLocal = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
-
-  const [rodandoLocal, setrodandoLocal] = useState(true);
-
   useEffect(() => {
-
-    //if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
     if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
       setrodandoLocal(true);
     else
       setrodandoLocal(false);
-  });
+  }, []);
 
 
   const onSubmitEdit = async (data: FormValuesProps) => {
@@ -208,20 +203,10 @@ export default function MarcasCreatePage() {
                         {!id ? 'Criar Marca' : 'Salvar Mudanças'}
                       </LoadingButton>
 
-                      {rodandoLocal &&
-                        <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas')}>
-                          Cancelar
-                        </Button>
-                      }
-
-                      {!rodandoLocal &&
-                        <Button variant="outlined" color="inherit" onClick={() => push('/admin/marcas.html')}>
-                          Cancelar
-                        </Button>
-                      }
-
+                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/marcas') : push('/admin/marcas.html')}>
+                        Cancelar
+                      </Button>
                     </Stack>
-
                   </Card>
                 </Grid>
               </Grid>

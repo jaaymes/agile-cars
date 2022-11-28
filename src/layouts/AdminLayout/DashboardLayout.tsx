@@ -4,8 +4,6 @@ import { useRouter } from 'next/router';
 
 import { useAuth } from '@/hooks/useAuth';
 
-import { getCookie } from '@/utils/cookie';
-
 import { Box } from '@mui/material';
 
 import Header from './header';
@@ -30,7 +28,7 @@ export default function DashboardLayout({ children }: Props) {
   };
 
   useEffect(() => {
-    const IsAuthenticated = getCookie('IsAuthenticated')
+    const IsAuthenticated = sessionStorage.getItem("IsAuthenticated");
     if (!Boolean(IsAuthenticated)) {
       logout()
     }

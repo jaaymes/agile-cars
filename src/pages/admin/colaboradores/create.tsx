@@ -57,6 +57,8 @@ export default function UserCreatePage() {
   const [franqueados, setFranqueados] = useState<IOptions[]>([])
   const [dataUser, setDataUser] = useState<FormValuesProps | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  // setRodandoLocal
+  const [rodandoLocal, setRodandoLocal] = useState(false);
 
   const NewUserSchema = Yup.object().shape({
     descricaoFuncionario: Yup.string().required('Nome é obrigatório'),
@@ -106,7 +108,7 @@ export default function UserCreatePage() {
         idFranqueado: Number(data?.idFranqueado),
       })
       enqueueSnackbar('Colaborador criado com sucesso', { variant: 'success' });
-      push('/admin/colaboradores')
+      rodandoLocal ? push('/admin/colaboradores') : push('/admin/colaboradores.html')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -130,7 +132,7 @@ export default function UserCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/colaboradores');
+      rodandoLocal ? push('/admin/colaboradores') : push('/admin/colaboradores.html')
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -182,6 +184,14 @@ export default function UserCreatePage() {
   useEffect(() => {
     loadData()
   }, [id]);
+
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -197,11 +207,11 @@ export default function UserCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/admin',
+                  href: rodandoLocal ? '/admin' : '/admin.html',
                 },
                 {
                   name: 'Colaboradores',
-                  href: '/admin/colaboradores',
+                  href: rodandoLocal ? '/admin/colaboradores' : '/admin/colaboradores.html',
                 },
                 { name: 'Novo Colaborador' },
               ]}
@@ -335,7 +345,7 @@ export default function UserCreatePage() {
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Colaborador' : 'Salvar Mudanças'}
                       </LoadingButton>
-                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/colaboradores')}>
+                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/colaboradores') : push('/admin/colaboradores.html')}>
                         Cancelar
                       </Button>
                     </Stack>

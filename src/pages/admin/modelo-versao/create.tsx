@@ -44,6 +44,7 @@ export default function MarcasCreatePage() {
   const [selectOptionsMarca, setSelectOptionsMarca] = useState<IOptions | null>()
   const [selectOptionsModelo, setSelectOptionsModelo] = useState<IOptions | null>()
   const [modelos, setModelos] = useState<IOptions[]>([])
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
 
   const NewModeloSchema = Yup.object().shape({
@@ -69,7 +70,7 @@ export default function MarcasCreatePage() {
         descricaoModeloVersao: data.descricaoModeloVersao,
       })
       enqueueSnackbar('Modelo Versão criado com sucesso', { variant: 'success' });
-      push('/admin/modelo-versao')
+      rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -91,7 +92,7 @@ export default function MarcasCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/modelo-versao');
+      rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -155,6 +156,13 @@ export default function MarcasCreatePage() {
     handleGetAllModelos()
   }, [selectIdMarca]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -166,11 +174,11 @@ export default function MarcasCreatePage() {
           links={[
             {
               name: 'Início',
-              href: '/admin',
+              href: rodandoLocal ? '/admin' : '/admin.html',
             },
             {
               name: 'Modelo Versão',
-              href: '/admin/modelo-versao',
+              href: rodandoLocal ? '/admin/modelo-versao' : '/admin/modelo-versao.html',
             },
             { name: 'Novo Modelo Versão' },
           ]}
@@ -235,7 +243,7 @@ export default function MarcasCreatePage() {
                     type="submit" variant="contained" loading={isSubmitting}>
                     {!id ? 'Criar Modelo' : 'Salvar Mudanças'}
                   </LoadingButton>
-                  <Button variant="outlined" color="inherit" onClick={() => push('/admin/modelo-versao')}>
+                  <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')}>
                     Cancelar
                   </Button>
                 </Stack>

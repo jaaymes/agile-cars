@@ -60,6 +60,7 @@ export default function VeiculosPage() {
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const { user } = useAuth()
 
@@ -75,7 +76,6 @@ export default function VeiculosPage() {
   const handleEditRow = (id: number) => {
     push(`/admin/veiculos/create.html?id=${id}`);
   };
-
 
   const handleGetAllVeiculos = async () => {
     setIsLoading(true)
@@ -103,6 +103,13 @@ export default function VeiculosPage() {
     }
   }, [isSSR]);
 
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
+
   return (
     <>
       <Head>
@@ -116,12 +123,12 @@ export default function VeiculosPage() {
             <CustomBreadcrumbs
               heading="Lista de Veiculos"
               links={[
-                { name: 'Inicio', href: '/admin/dashboard.html' },
-                { name: 'Veiculos', href: '/admin/veiculos' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin' : '/admin/dashboard.html' },
+                { name: 'Veiculos', href: rodandoLocal ? '/admin/veiculos' : '/admin/veiculos.html' },
                 { name: 'Lista' },
               ]}
               action={
-                <NextLink href={'/admin/veiculos/create'} passHref>
+                <NextLink href={rodandoLocal ? '/admin/veiculos/create' : '/admin/veiculos/create.html'} passHref>
                   <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                     Novo Veiculo
                   </Button>

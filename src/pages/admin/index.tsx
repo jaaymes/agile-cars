@@ -13,9 +13,9 @@ import { Stack, Typography } from '@mui/material';
 export default function Login() {
   const { ['token']: token } = parseCookies();
   const router = useRouter();
+
   useEffect(() => {
     const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
-    //(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "");
 
     if (token) {
       if (rodandoLocal)

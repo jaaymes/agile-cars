@@ -7,7 +7,6 @@
     "prettier"
   ],
   "rules": {
-    // eval
     "no-eval": "off",
     "react-hooks/exhaustive-deps": "off",
     "arrow-body-style": 1,

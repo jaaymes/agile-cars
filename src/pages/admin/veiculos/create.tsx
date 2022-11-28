@@ -67,6 +67,7 @@ export default function FranqueadosCreatePage() {
   const [modelosVersao, setModelosVersao] = useState<IOptions[]>([]);
   const [categories, setCategories] = useState<IOptions[]>([]);
   const [optionals, setOptionals] = useState<IOptionals[]>([]);
+  const [rodandoLocal, setRodandoLocal] = useState(false)
 
   const NewUserSchema = Yup.object().shape({
     idMarca: Yup.string().required('Campo obrigatório'),
@@ -137,7 +138,7 @@ export default function FranqueadosCreatePage() {
         foto8: foto8 ? String(foto8) : undefined,
       })
       enqueueSnackbar('Veiculo criado com sucesso', { variant: 'success' });
-      push('/admin/veiculos')
+      rodandoLocal ? push('/admin/veiculos') : push('/admin/veiculos.html');
     } catch (error: any) {
       console.log('error', error)
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
@@ -185,7 +186,8 @@ export default function FranqueadosCreatePage() {
       })
       reset();
       enqueueSnackbar('Atualizado com Sucesso');
-      push('/admin/veiculos');
+      rodandoLocal ? push('/admin/veiculos') : push('/admin/veiculos.html');
+
     } catch (error: any) {
       enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
     }
@@ -363,6 +365,14 @@ export default function FranqueadosCreatePage() {
       handleGetModeloVersao()
     }
   }, [values.idModelo]);
+
+
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
   return (
     <>
       <Head>
@@ -379,11 +389,11 @@ export default function FranqueadosCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: '/admin',
+                  href: rodandoLocal ? '/admin' : '/admin.html',
                 },
                 {
                   name: 'Veículos',
-                  href: '/admin/veiculos',
+                  href: rodandoLocal ? '/admin/veiculos' : '/admin/veiculos.html',
                 },
                 { name: 'Novo Veiculo' },
               ]}
@@ -586,7 +596,7 @@ export default function FranqueadosCreatePage() {
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Veiculo' : 'Salvar Mudanças'}
                       </LoadingButton>
-                      <Button variant="outlined" color="inherit" onClick={() => push('/admin/modelos')}>
+                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/modelos') : push('/admin/modelos.html')}>
                         Cancelar
                       </Button>
                     </Stack>
