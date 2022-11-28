@@ -142,21 +142,18 @@ export default function MarcasCreatePage() {
                   }}
                 >
                   <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoOpcional" label="Nome do Opcional" />
-                </Box>
 
+                </Box>
                 <Stack sx={{
                   flexDirection: 'row',
                   display: 'flex',
                   mt: 3,
                   gap: 2,
-                  justifyContent: 'flex-end'
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  alignContent: 'center',
                 }}>
                   <LoadingButton
-                    sx={{
-                      width: '70%',
-                      display: 'flex',
-                      justifySelf: 'center',
-                    }}
                     type="submit" variant="contained" loading={isSubmitting}>
                     {!id ? 'Criar Opcional' : 'Salvar Mudanças'}
                   </LoadingButton>
