@@ -9,10 +9,11 @@ import ImageWithFallback from '../ImageWithFallback';
 
 export interface LogoProps extends BoxProps {
   disabledLink?: boolean;
+  href?: string;
 }
 
 const Logo = forwardRef<HTMLDivElement, LogoProps>(
-  ({ disabledLink = false, sx }, ref) => {
+  ({ disabledLink = false, sx, href }, ref) => {
     const theme = useThemeMui();
     const logo = (
       <Box
@@ -38,7 +39,7 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
     }
 
     return (
-      <NextLink href="/" passHref>
+      <NextLink href={href ? href : "/"} passHref>
         <Link sx={{ display: 'contents' }}>{logo}</Link>
       </NextLink>
     );

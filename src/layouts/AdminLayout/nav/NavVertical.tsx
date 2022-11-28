@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -25,6 +25,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { logout } = useAuth()
 
   const isDesktop = useResponsive('up', 'lg');
+  const [rodandoLocal, setRodandoLocal] = useState(false);
 
   useEffect(() => {
     if (openNav) {
@@ -32,6 +33,13 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  useEffect(() => {
+    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
+      setRodandoLocal(true);
+    else
+      setRodandoLocal(false);
+  }, []);
 
   const renderContent = (
     <Scrollbar
@@ -53,7 +61,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           flexShrink: 0,
         }}
       >
-        <Logo />
+        <Logo href={rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html'} />
 
       </Stack>
       <NavSectionVertical sx={{ mt: 4 }} data={navConfig} />
