@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import { useProduct } from '@/hooks/useProduct';
 
@@ -15,6 +18,15 @@ EcommerceShopPage.getLayout = (page: React.ReactElement) => (
 
 export default function EcommerceShopPage() {
   const { product, isLoading } = useProduct()
+  const router = useRouter();
+
+  useEffect(() => {
+    const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
+    if (!rodandoLocal) {
+      router.push("/shop.html");
+    }
+
+  }, []);
   return (
     <>
       <Head>
