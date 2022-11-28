@@ -1,5 +1,3 @@
-import { isValid, addHours, isDate } from 'date-fns'
-
 // normalize Placa de Carro com 3 letras
 export const normalizePlaca = (value: string) => value
     ?.replace(/[^a-zA-Z0-9]/g, '')
@@ -19,55 +17,6 @@ export const normalizeYear = (value: string) => {
   const year = parseInt(value, 10) 
   if (Number.isNaN(year)) return '' 
   return year 
-}
-
-
-export const normalizeCurrency = (value: any, styled = false): string => {
-  if (!value) {
-    return value
-  }
-
-  const isNegative = value < 0
-
-  const parsedValue = Number(String(value).replace(/\D/g, '')) / 100
-
-  if (styled) {
-    return parsedValue.toLocaleString('pt-br', {
-      style: 'currency',
-      currency: 'BRL'
-    })
-  }
-  return isNegative
-    ? `- ${parsedValue.toLocaleString('pt-br', {
-      minimumFractionDigits: 2
-    })}`
-    : parsedValue.toLocaleString('pt-br', {
-      minimumFractionDigits: 2
-    })
-}
-
-
-export const subString = (value: string, max = 100): string => {
-  if (String(value).length > max) {
-    return `${String(value).slice(0, max - 3)}...`
-  }
-  return value
-}
-
-export const normalizePercentage = (value: string): string => {
-  if (!value) {
-    return value
-  }
-
-  const parsedValue = Number(value.replace(/\D/g, '')) / 100
-
-  if (parsedValue > 10_000) {
-    return value
-  }
-
-  return parsedValue.toLocaleString('pt-br', {
-    minimumFractionDigits: 2
-  })
 }
 
 export const normalizeNumber = (value: string): string => {
@@ -283,56 +232,4 @@ export const normalizePhone = (value: string): string => {
 export const orderDate = (date: string): string => {
   const dateArray = date.split('/')
   return `${dateArray[2]}${dateArray[1]}${dateArray[0]}`
-}
-
-export const stringToDate = (value: any): Date | boolean => {
-  if (!value) {
-    return false
-  }
-
-  if (value.length < 10) {
-    return false
-  }
-
-  const d = value.split('/')
-
-  const date = new Date(`${d[2]}-${d[1]}-${d[0]}`)
-
-  if (isValid(date)) {
-    return addHours(date, 3)
-  }
-
-  return false
-}
-
-export const dateIsValid = (value: string | Date): boolean => {
-  if (!value) {
-    return false
-  }
-  try {
-    if (isDate(new Date(value))) {
-      return true
-    }
-    return false
-  } catch {
-    return false
-  }
-}
-
-export const formatDate = (value: string): string => {
-  const d = dateIsValid(value)
-  if (d) {
-    const a = value.split('-')
-    return `${a[2]}/${a[1]}/${a[0]}`
-  }
-  return ''
-}
-
-export const formatDateTime = (value: string): string => {
-  const d_ = dateIsValid(value)
-  if (d_) {
-    const a = value.split('-')
-    return `${a[2]}/${a[1]}/${a[0]}`
-  }
-  return ''
 }

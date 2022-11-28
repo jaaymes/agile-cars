@@ -116,69 +116,66 @@ export default function VeiculosPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Veiculos"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Veiculos', href: rodandoLocal ? '/admin/veiculos' : '/admin/veiculos.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/veiculos/create' : '/admin/veiculos/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Novo Veiculo
-                  </Button>
-                </NextLink>
-              }
-            />
+          !isSSR && (
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Veiculos"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Veiculos', href: rodandoLocal ? '/admin/veiculos' : '/admin/veiculos.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/veiculos/create' : '/admin/veiculos/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Novo Veiculo
+                    </Button>
+                  </NextLink>
+                }
+              />
 
 
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
 
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={veiculos.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {veiculos
-                          .map((row) => (
-                            <VeiculosCustomTable
-                              key={row.idVeiculo}
-                              row={row}
-                              onDeleteRow={() => handleDeleteRow(row.idVeiculo)}
-                              onEditRow={() => handleEditRow(row.idVeiculo)}
-                            />
-                          ))}
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={veiculos.length}
+                      onSort={onSort}
+                    />
+                    <TableBody>
+                      {veiculos
+                        .map((row) => (
+                          <VeiculosCustomTable
+                            key={row.idVeiculo}
+                            row={row}
+                            onDeleteRow={() => handleDeleteRow(row.idVeiculo)}
+                            onEditRow={() => handleEditRow(row.idVeiculo)}
+                          />
+                        ))}
 
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, veiculos.length)}
-                        />
+                      <TableEmptyRows
+                        emptyRows={emptyRows(page, rowsPerPage, veiculos.length)}
+                      />
 
-                        <TableNoData isNotFound={!veiculos.length} />
-                      </TableBody>
-                    )
-                  }
+                      <TableNoData isNotFound={!veiculos.length} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
 
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-
-            <TablePaginationCustom
-              count={veiculos.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+              <TablePaginationCustom
+                count={veiculos.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
 
     </>
