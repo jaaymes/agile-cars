@@ -210,7 +210,7 @@ export default function FranqueadosCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: rodandoLocal ? '/admin' : '/admin/index.html',
+                  href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
                 },
                 {
                   name: 'Franqueados',

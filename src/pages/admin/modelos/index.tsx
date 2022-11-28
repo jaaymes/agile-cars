@@ -102,9 +102,11 @@ export default function MarcasPage() {
   const handleGetModelos = async () => {
     setIsLoading(true)
     const modelos = await getModelos(Number(selectIdMarca))
-    setModelos(modelos)
-    setIsLoading(false)
-    setPage(0)
+    if (modelos) {
+      setModelos(modelos)
+      setIsLoading(false)
+      setPage(0)
+    }
   }
 
   useEffect(() => {

@@ -111,7 +111,7 @@ export default function MarcasPage() {
     const modelos = await getModelosVersao(Number(selectIdModelo))
     if (modelos) {
       setDataInPage(modelos?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
-      setModelosVersao(modelos.collection)
+      setModelosVersao(modelos)
       setIsLoading(false)
       setPage(0)
     }

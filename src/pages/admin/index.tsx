@@ -3,20 +3,17 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { parseCookies } from 'nookies';
-
 import AuthLoginForm from '@/components/auth/AuthLoginForm';
 
 import LoginLayout from '@/layouts/login';
 import { Stack, Typography } from '@mui/material';
 
 export default function Login() {
-  const { ['token']: token } = parseCookies();
   const router = useRouter();
 
   useEffect(() => {
     const rodandoLocal = (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1);
-
+    const token = sessionStorage.getItem("token");
     if (token) {
       if (rodandoLocal)
         router.push('/admin/dashboard');

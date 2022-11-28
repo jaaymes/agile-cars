@@ -132,41 +132,20 @@ export default function MarcasCreatePage() {
           <LoadingScreen />
         ) :
           <Container maxWidth={false}>
-
-            {!rodandoLocal &&
-              <CustomBreadcrumbs
-                heading={id ? "Editar Marca" : "Criar nova Marca"}
-                links={[
-                  {
-                    name: 'Início',
-                    href: '/admin',
-                  },
-                  {
-                    name: 'Marcas',
-                    href: '/admin/marcas',
-                  },
-                  { name: 'Nova Marca' },
-                ]}
-              />
-            }
-
-            {!rodandoLocal &&
-              <CustomBreadcrumbs
-                heading={id ? "Editar Marca" : "Criar nova Marca"}
-                links={[
-                  {
-                    name: 'Início',
-                    href: '/admin.html',
-                  },
-                  {
-                    name: 'Marcas',
-                    href: '/admin/marcas.html',
-                  },
-                  { name: 'Nova Marca' },
-                ]}
-              />
-            }
-
+            <CustomBreadcrumbs
+              heading={id ? "Editar Marca" : "Criar nova Marca"}
+              links={[
+                {
+                  name: 'Início',
+                  href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
+                },
+                {
+                  name: 'Marcas',
+                  href: rodandoLocal ? '/admin/marcas' : '/admin/marcas.html',
+                },
+                { name: 'Nova Marca' },
+              ]}
+            />
 
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
@@ -213,7 +192,6 @@ export default function MarcasCreatePage() {
             </FormProvider>
           </Container>
       }
-
     </>
   );
 }

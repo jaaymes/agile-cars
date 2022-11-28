@@ -389,7 +389,7 @@ export default function FranqueadosCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: rodandoLocal ? '/admin' : '/admin.html',
+                  href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
                 },
                 {
                   name: 'Veículos',
@@ -596,7 +596,7 @@ export default function FranqueadosCreatePage() {
                       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                         {!id ? 'Criar Veiculo' : 'Salvar Mudanças'}
                       </LoadingButton>
-                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/modelos') : push('/admin/modelos.html')}>
+                      <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/veiculos') : push('/admin/veiculos.html')}>
                         Cancelar
                       </Button>
                     </Stack>

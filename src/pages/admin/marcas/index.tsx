@@ -80,12 +80,7 @@ export default function MarcasPage() {
       setrodandoLocal(true);
     else
       setrodandoLocal(false);
-
-    console.log("rodandoLocal");
-    console.log(rodandoLocal);
-    console.log(window.location.hostname);
-
-  });
+  },)
 
 
   const handleEditRow = (id: number) => {
@@ -129,42 +124,21 @@ export default function MarcasPage() {
 
 
           <Container maxWidth={false}>
-            {rodandoLocal &&
-              <CustomBreadcrumbs
-                heading="Lista de Marcas"
-                links={[
-                  { name: 'Inicio', href: '/admin/dashboard' },
-                  { name: 'Marcas', href: '/admin/marcas' },
-                  { name: 'Lista' },
-                ]}
-                action={
-                  <NextLink href={'/admin/marcas/create'} passHref>
-                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                      Nova Marca
-                    </Button>
-                  </NextLink>
-                }
-              />
-            }
-
-            {!rodandoLocal &&
-              <CustomBreadcrumbs
-                heading="Lista de Marcas"
-                links={[
-                  { name: 'Inicio', href: '/admin/dashboard.html' },
-                  { name: 'Marcas', href: '/admin/marcas' },
-                  { name: 'Lista' },
-                ]}
-                action={
-                  <NextLink href={'/admin/marcas/create.html'} passHref>
-                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                      Nova Marca
-                    </Button>
-                  </NextLink>
-                }
-              />
-            }
-
+            <CustomBreadcrumbs
+              heading="Lista de Marcas"
+              links={[
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                { name: 'Marcas', href: rodandoLocal ? '/admin/marcas' : '/admin/marcas.html' },
+                { name: 'Lista' },
+              ]}
+              action={
+                <NextLink href={rodandoLocal ? '/admin/marcas/create' : '/admin/marcas/create.html'} passHref>
+                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                    Nova Marca
+                  </Button>
+                </NextLink>
+              }
+            />
 
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
               <Scrollbar>

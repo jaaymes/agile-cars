@@ -116,7 +116,7 @@ export default function MarcasCreatePage() {
           links={[
             {
               name: 'Início',
-              href: '/admin',
+              href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
             },
             {
               name: 'Opcionais',

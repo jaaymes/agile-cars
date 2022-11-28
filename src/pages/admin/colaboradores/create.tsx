@@ -207,7 +207,7 @@ export default function UserCreatePage() {
               links={[
                 {
                   name: 'Início',
-                  href: rodandoLocal ? '/admin' : '/admin.html',
+                  href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
                 },
                 {
                   name: 'Colaboradores',

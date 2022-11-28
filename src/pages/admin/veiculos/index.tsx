@@ -53,8 +53,6 @@ export default function VeiculosPage() {
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-    setTotalPage,
-    totalPage
   } = useTable();
 
   const { push } = useRouter();
@@ -74,7 +72,7 @@ export default function VeiculosPage() {
   };
 
   const handleEditRow = (id: number) => {
-    push(`/admin/veiculos/create.html?id=${id}`);
+    rodandoLocal ? push(`/admin/veiculos/create?id=${id}`) : push(`/admin/veiculos/create.html?id=${id}`)
   };
 
   const handleGetAllVeiculos = async () => {
@@ -86,8 +84,8 @@ export default function VeiculosPage() {
       order: orderBy
     }).then(response => {
       if (response) {
+        console.log("🚀 ~ file: index.tsx ~ line 89 ~ handleGetAllVeiculos ~ response", response)
         setVeiculos(response.collection)
-        setTotalPage(response.pagination.totalResults)
         setIsLoading(false)
       }
     }).catch(error => console.log(error))
@@ -123,7 +121,7 @@ export default function VeiculosPage() {
             <CustomBreadcrumbs
               heading="Lista de Veiculos"
               links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin' : '/admin/dashboard.html' },
+                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
                 { name: 'Veiculos', href: rodandoLocal ? '/admin/veiculos' : '/admin/veiculos.html' },
                 { name: 'Lista' },
               ]}
@@ -175,13 +173,7 @@ export default function VeiculosPage() {
             </TableContainer>
 
             <TablePaginationCustom
-              nextIconButtonProps={{
-                disabled: isLoading ? true : false
-              }}
-              backIconButtonProps={{
-                disabled: isLoading ? true : false
-              }}
-              count={totalPage}
+              count={veiculos.length}
               page={page}
               rowsPerPage={rowsPerPage}
               onPageChange={onChangePage}
