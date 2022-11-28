@@ -84,7 +84,6 @@ export default function VeiculosPage() {
       order: orderBy
     }).then(response => {
       if (response) {
-        console.log("🚀 ~ file: index.tsx ~ line 89 ~ handleGetAllVeiculos ~ response", response)
         setVeiculos(response.collection)
         setIsLoading(false)
       }

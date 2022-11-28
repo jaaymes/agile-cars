@@ -277,7 +277,7 @@ export default function FranqueadosCreatePage() {
   const handleGetModeloVersao = async () => {
     const response = await getModelosVersao(Number(values.idModelo))
     if (response) {
-      const modeloVersaoReturn = response.collection.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
+      const modeloVersaoReturn = response.map((item: { descricaoModeloVersao: any; idModeloVersao: any; }) => ({
         label: item.descricaoModeloVersao,
         value: item.idModeloVersao
       }))
