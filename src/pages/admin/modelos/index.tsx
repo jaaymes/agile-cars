@@ -139,87 +139,86 @@ export default function MarcasPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Modelos por Marca"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Modelos', href: rodandoLocal ? '/admin/modelos' : '/admin/modelos.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/modelos/create' : '/admin/modelos/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Modelo
-                  </Button>
-                </NextLink>
-              }
-            />
-            <Stack
-              spacing={2}
-              alignItems="center"
-              direction={{
-                xs: 'column',
-                md: 'row',
-              }}
-              sx={{ py: 3 }}
-            >
-              <FormControl fullWidth>
-                <Autocomplete
-                  noOptionsText="Nenhuma marca encontrada"
-                  clearIcon={null}
-                  disablePortal
-                  value={marcas.find((marca) => marca.id === selectIdMarca)}
-                  onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
-                  options={marcas}
-                  renderInput={(params) => <TextField  {...params} label="Marcas" />}
-                />
-              </FormControl>
-            </Stack>
+          !isSSR && (
 
-
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={marcas?.length}
-                    onSort={onSort}
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Modelos por Marca"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Modelos', href: rodandoLocal ? '/admin/modelos' : '/admin/modelos.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/modelos/create' : '/admin/modelos/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Nova Modelo
+                    </Button>
+                  </NextLink>
+                }
+              />
+              <Stack
+                spacing={2}
+                alignItems="center"
+                direction={{
+                  xs: 'column',
+                  md: 'row',
+                }}
+                sx={{ py: 3 }}
+              >
+                <FormControl fullWidth>
+                  <Autocomplete
+                    noOptionsText="Nenhuma marca encontrada"
+                    clearIcon={null}
+                    disablePortal
+                    value={marcas.find((marca) => marca.id === selectIdMarca)}
+                    onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
+                    options={marcas}
+                    renderInput={(params) => <TextField  {...params} label="Marcas" />}
                   />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage?.map((row) => (
-                          <ModelosCustomTable
-                            key={row.idModelo}
-                            row={row}
-                            onDeleteRow={() => handleDeleteRow(row.idModelo)}
-                            onEditRow={() => handleEditRow(row.idModelo)}
-                          />
-                        ))}
+                </FormControl>
+              </Stack>
 
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={marcas?.length}
+                      onSort={onSort}
+                    />
+                    <TableBody>
+                      {dataInPage?.map((row) => (
+                        <ModelosCustomTable
+                          key={row.idModelo}
+                          row={row}
+                          onDeleteRow={() => handleDeleteRow(row.idModelo)}
+                          onEditRow={() => handleEditRow(row.idModelo)}
                         />
+                      ))}
 
-                        <TableNoData isNotFound={!dataInPage?.length} />
-                      </TableBody>
-                    )
-                  }
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                      <TableEmptyRows
+                        emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+                      />
 
-            <TablePaginationCustom
-              count={modelos?.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+                      <TableNoData isNotFound={!dataInPage?.length} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
+
+              <TablePaginationCustom
+                count={modelos?.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
     </>
   );

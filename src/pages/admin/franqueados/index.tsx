@@ -103,68 +103,65 @@ export default function FranqueadosPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Franqueados"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Franqueados', href: rodandoLocal ? '/admin/franqueados' : '/admin/franqueados.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/franqueados/create' : '/admin/franqueados/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Novo Franqueado
-                  </Button>
-                </NextLink>
-              }
-            />
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
+          !isSSR && (
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Franqueados"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Franqueados', href: rodandoLocal ? '/admin/franqueados' : '/admin/franqueados.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/franqueados/create' : '/admin/franqueados/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Novo Franqueado
+                    </Button>
+                  </NextLink>
+                }
+              />
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
 
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={franqueados.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row) => (
-                            <FranqueadoCustomTable
-                              key={row.idFranqueado}
-                              row={row}
-                              onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
-                              onEditRow={() => handleEditRow(row.idFranqueado)}
-                            />
-                          ))}
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={franqueados.length}
+                      onSort={onSort}
+                    />
+                    <TableBody>
+                      {dataInPage
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row) => (
+                          <FranqueadoCustomTable
+                            key={row.idFranqueado}
+                            row={row}
+                            onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
+                            onEditRow={() => handleEditRow(row.idFranqueado)}
+                          />
+                        ))}
 
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
-                        />
+                      <TableEmptyRows
+                        emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
+                      />
 
-                        <TableNoData isNotFound={!dataInPage.length} />
-                      </TableBody>
-                    )
-                  }
+                      <TableNoData isNotFound={!dataInPage.length} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
 
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-
-            <TablePaginationCustom
-              count={dataInPage.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+              <TablePaginationCustom
+                count={dataInPage.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
     </>
   );

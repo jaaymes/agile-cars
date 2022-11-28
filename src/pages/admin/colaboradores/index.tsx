@@ -113,70 +113,68 @@ export default function ColaboladoresPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Colaboradores"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Colaboradores', href: rodandoLocal ? '/admin/colaboradores' : '/admin/colaboradores.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/colaboradores/create' : '/admin/colaboradores/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Novo Colaborador
-                  </Button>
-                </NextLink>
-              }
-            />
+          !isSSR && (
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Colaboradores"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Colaboradores', href: rodandoLocal ? '/admin/colaboradores' : '/admin/colaboradores.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/colaboradores/create' : '/admin/colaboradores/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Novo Colaborador
+                    </Button>
+                  </NextLink>
+                }
+              />
 
 
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
 
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={colaboradores.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row) => (
-                            <UserTableRow
-                              key={row.idFuncionario}
-                              row={row}
-                              onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
-                              onEditRow={() => handleEditRow(row.idFuncionario)}
-                            />
-                          ))}
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={colaboradores.length}
+                      onSort={onSort}
+                    />
 
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, colaboradores.length)}
-                        />
+                    <TableBody>
+                      {dataInPage
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row) => (
+                          <UserTableRow
+                            key={row.idFuncionario}
+                            row={row}
+                            onDeleteRow={() => handleDeleteRow(row.idFuncionario)}
+                            onEditRow={() => handleEditRow(row.idFuncionario)}
+                          />
+                        ))}
 
-                        <TableNoData isNotFound={!dataInPage.length} />
-                      </TableBody>
-                    )
-                  }
+                      <TableEmptyRows
+                        emptyRows={emptyRows(page, rowsPerPage, colaboradores.length)}
+                      />
 
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                      <TableNoData isNotFound={!dataInPage.length} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
 
-            <TablePaginationCustom
-              count={dataInPage.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+              <TablePaginationCustom
+                count={dataInPage.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
     </>
   );

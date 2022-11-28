@@ -121,68 +121,65 @@ export default function MarcasPage() {
         isLoading ? (
           <LoadingScreen />
         ) :
+          !isSSR && (
 
+            <Container maxWidth={false}>
+              <CustomBreadcrumbs
+                heading="Lista de Marcas"
+                links={[
+                  { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
+                  { name: 'Marcas', href: rodandoLocal ? '/admin/marcas' : '/admin/marcas.html' },
+                  { name: 'Lista' },
+                ]}
+                action={
+                  <NextLink href={rodandoLocal ? '/admin/marcas/create' : '/admin/marcas/create.html'} passHref>
+                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                      Nova Marca
+                    </Button>
+                  </NextLink>
+                }
+              />
 
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Marcas"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Marcas', href: rodandoLocal ? '/admin/marcas' : '/admin/marcas.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/marcas/create' : '/admin/marcas/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Marca
-                  </Button>
-                </NextLink>
-              }
-            />
+              <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                <Scrollbar>
 
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
-
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={marcas?.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage.map((row) => (
-                          <MarcasCustomTable
-                            key={row.idMarca}
-                            row={row}
-                            onDeleteRow={() => handleDeleteRow(row.idMarca)}
-                            onEditRow={() => handleEditRow(row.idMarca)}
-                          />
-                        ))}
-
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+                  <Table size={'medium'} sx={{ minWidth: 800 }}>
+                    <TableHeadCustom
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={marcas?.length}
+                      onSort={onSort}
+                    />
+                    <TableBody>
+                      {dataInPage.map((row) => (
+                        <MarcasCustomTable
+                          key={row.idMarca}
+                          row={row}
+                          onDeleteRow={() => handleDeleteRow(row.idMarca)}
+                          onEditRow={() => handleEditRow(row.idMarca)}
                         />
+                      ))}
 
-                        <TableNoData isNotFound={!dataInPage?.length} />
-                      </TableBody>
-                    )
-                  }
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                      <TableEmptyRows
+                        emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+                      />
 
-            <TablePaginationCustom
-              count={marcas?.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
+                      <TableNoData isNotFound={!dataInPage?.length} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
+
+              <TablePaginationCustom
+                count={marcas?.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+              />
+            </Container>
+          )
       }
     </>
   );

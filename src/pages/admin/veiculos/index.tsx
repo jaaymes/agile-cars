@@ -133,8 +133,6 @@ export default function VeiculosPage() {
                   </NextLink>
                 }
               />
-
-
               <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
                 <Scrollbar>
 

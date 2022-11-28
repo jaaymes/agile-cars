@@ -226,7 +226,6 @@ export default function MarcasPage() {
                             />
                           )
                           )}
-
                         <TableEmptyRows
                           emptyRows={emptyRows(page, rowsPerPage, modelosVersao?.length)}
                         />
