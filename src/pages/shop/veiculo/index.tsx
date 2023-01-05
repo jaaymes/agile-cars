@@ -1,46 +1,57 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import { useRouter } from "next/router";
 
-import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
-import ProductDetailsCarousel from '@/components/shop/ProductDetailsCarousel';
-import ProductDetailsSummary from '@/components/shop/ProductDetailsSummary';
-import { useSnackbar } from '@/components/snackbar';
+import CustomBreadcrumbs from "@/components/custom-breadcrumbs";
+import ProductDetailsCarousel from "@/components/shop/ProductDetailsCarousel";
+import ProductDetailsSummary from "@/components/shop/ProductDetailsSummary";
+import { useSnackbar } from "@/components/snackbar";
 
-import { getProducts } from '@/services/products';
+import { getProducts } from "@/services/products";
 
-import { IProduct } from '@/@types/product';
-import CompactLayout from '@/layouts/compact';
-import { Grid, Container } from '@mui/material';
+import { IProduct } from "@/@types/product";
+import CompactLayout from "@/layouts/compact";
+import { Grid, Container } from "@mui/material";
 
 ProductDetails.getLayout = (page: React.ReactElement) => (
   <CompactLayout>{page}</CompactLayout>
 );
 
 export default function ProductDetails() {
-
-  const { query: { id, idFranqueado } } = useRouter();
+  const {
+    query: { id, idFranqueado },
+  } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
   const [product, setProduct] = useState<IProduct | null>(null);
 
-  const handleGetProduct = useCallback(async (id: number, idFranqueado: number) => {
-
-    try {
-      const { collection } = await getProducts({
-        id,
-        idFranqueado
-      });
-      if (collection[0]) {
-        collection[0].images = [collection[0]?.foto1, collection[0]?.foto2, collection[0]?.foto3, collection[0]?.foto4, collection[0]?.foto5, collection[0]?.foto6, collection[0]?.foto7, collection[0]?.foto8].filter(index =>
-          index !== undefined)
-        setProduct(collection[0]);
+  const handleGetProduct = useCallback(
+    async (id: number, idFranqueado: number) => {
+      try {
+        const { collection } = await getProducts({
+          id,
+          idFranqueado,
+        });
+        if (collection[0]) {
+          collection[0].images = [
+            collection[0]?.foto1,
+            collection[0]?.foto2,
+            collection[0]?.foto3,
+            collection[0]?.foto4,
+            collection[0]?.foto5,
+            collection[0]?.foto6,
+            collection[0]?.foto7,
+            collection[0]?.foto8,
+          ].filter((index) => index !== undefined);
+          setProduct(collection[0]);
+        }
+      } catch (error: any) {
+        enqueueSnackbar("Erro ao buscar produto", { variant: "error" });
       }
-    } catch (error: any) {
-      enqueueSnackbar('Erro ao buscar produto', { variant: 'error' });
-    }
-  }, [id])
+    },
+    [id]
+  );
 
   useEffect(() => {
     if (id) {
@@ -58,7 +69,7 @@ export default function ProductDetails() {
         <CustomBreadcrumbs
           heading="Detalhes do Veículo"
           links={[
-            { name: 'Início', href: '/veiculo.html' },
+            { name: "Início", href: "/veiculo" },
             { name: product?.descricaoModeloVersao },
           ]}
         />

@@ -1,29 +1,42 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import { useRouter } from "next/router";
 
-import { useSnackbar } from 'notistack';
-import * as Yup from 'yup';
+import { useSnackbar } from "notistack";
+import * as Yup from "yup";
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
-import FormProvider, {
-  RHFTextField,
-} from '@/components/hook-form';
+import CustomBreadcrumbs from "@/components/custom-breadcrumbs";
+import FormProvider, { RHFTextField } from "@/components/hook-form";
 
-import { createModeloVersao, getMarcas, getModelos, getModeloVersao } from '@/services/products';
+import {
+  createModeloVersao,
+  getMarcas,
+  getModelos,
+  getModeloVersao,
+} from "@/services/products";
 
-import DashboardLayout from '@/layouts/AdminLayout';
-import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Box, Button, Card, colors, Container, Grid, Stack, TextField, } from '@mui/material';
+import DashboardLayout from "@/layouts/AdminLayout";
+import { LoadingButton } from "@mui/lab";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  colors,
+  Container,
+  Grid,
+  Stack,
+  TextField,
+} from "@mui/material";
 
-import { IMarcas } from '../marcas';
+import { IMarcas } from "../marcas";
 
 interface FormValuesProps {
-  descricaoModeloVersao: string
+  descricaoModeloVersao: string;
 }
 
 interface IOptions {
@@ -31,28 +44,37 @@ interface IOptions {
   id: number;
 }
 
-MarcasCreatePage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+MarcasCreatePage.getLayout = (page: React.ReactElement) => (
+  <DashboardLayout>{page}</DashboardLayout>
+);
 
 export default function MarcasCreatePage() {
-  const { push, query: { id } } = useRouter();
+  const {
+    push,
+    query: { id },
+  } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
-  const [selectIdMarca, setSelectIdMarca] = useState<number | undefined | null>(undefined);
-  const [selectIdModelo, setSelectIdModelo] = useState<number | undefined | null>(undefined);
+  const [selectIdMarca, setSelectIdMarca] = useState<number | undefined | null>(
+    undefined
+  );
+  const [selectIdModelo, setSelectIdModelo] = useState<
+    number | undefined | null
+  >(undefined);
 
-  const [marcas, setMarcas] = useState<IOptions[]>([])
-  const [selectOptionsMarca, setSelectOptionsMarca] = useState<IOptions | null>()
-  const [selectOptionsModelo, setSelectOptionsModelo] = useState<IOptions | null>()
-  const [modelos, setModelos] = useState<IOptions[]>([])
-  const [rodandoLocal, setRodandoLocal] = useState(false)
-
+  const [marcas, setMarcas] = useState<IOptions[]>([]);
+  const [selectOptionsMarca, setSelectOptionsMarca] =
+    useState<IOptions | null>();
+  const [selectOptionsModelo, setSelectOptionsModelo] =
+    useState<IOptions | null>();
+  const [modelos, setModelos] = useState<IOptions[]>([]);
 
   const NewModeloSchema = Yup.object().shape({
-    descricaoModeloVersao: Yup.string().required('Nome é obrigatório'),
+    descricaoModeloVersao: Yup.string().required("Nome é obrigatório"),
   });
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewModeloSchema)
+    resolver: yupResolver(NewModeloSchema),
   });
 
   const {
@@ -71,19 +93,20 @@ export default function MarcasCreatePage() {
         idMarca: Number(selectIdMarca),
         idModelo: Number(selectIdModelo),
         descricaoModeloVersao: data.descricaoModeloVersao,
-      })
-      enqueueSnackbar('Modelo Versão criado com sucesso', { variant: 'success' });
-      rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')
+      });
+      enqueueSnackbar("Modelo Versão criado com sucesso", {
+        variant: "success",
+      });
+      push("/admin/modelo-versao");
     } catch (error: any) {
-      console.log('error', error)
-      enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
+      console.log("error", error);
+      enqueueSnackbar(error.response.data.mensagem, { variant: "error" });
     }
-
   };
 
   const onSubmitEdit = async (data: FormValuesProps) => {
     if (!selectIdModelo) {
-      enqueueSnackbar('Selecione um modelo', { variant: 'error' });
+      enqueueSnackbar("Selecione um modelo", { variant: "error" });
       return;
     }
     try {
@@ -91,99 +114,98 @@ export default function MarcasCreatePage() {
         idMarca: Number(selectIdMarca),
         idModelo: Number(selectIdModelo),
         descricaoModeloVersao: data.descricaoModeloVersao,
-        idModeloVersao: Number(id)
-      })
+        idModeloVersao: Number(id),
+      });
       reset();
-      enqueueSnackbar('Atualizado com Sucesso');
-      rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')
+      enqueueSnackbar("Atualizado com Sucesso");
+      push("/admin/modelo-versao");
     } catch (error: any) {
-      enqueueSnackbar(error.response.data.mensagem, { variant: 'error' });
+      enqueueSnackbar(error.response.data.mensagem, { variant: "error" });
     }
-  }
+  };
 
   const handleGetAllMarcas = async () => {
-    const marcas = await getMarcas({})
-    const options = marcas.map((marca: IMarcas) => ({ label: marca.descricaoMarca, id: marca.idMarca }))
-    setMarcas(options)
-  }
+    const marcas = await getMarcas({});
+    const options = marcas.map((marca: IMarcas) => ({
+      label: marca.descricaoMarca,
+      id: marca.idMarca,
+    }));
+    setMarcas(options);
+  };
 
   const handleGetAllModelos = async () => {
     if (selectIdMarca) {
-      const modelo = await getModelos(Number(selectIdMarca))
+      const modelo = await getModelos(Number(selectIdMarca));
       if (modelo) {
-        const optionsModelo = modelo.map((model: any) => ({ label: model.descricaoModelo, id: model.idModelo }))
-        setModelos(optionsModelo)
+        const optionsModelo = modelo.map((model: any) => ({
+          label: model.descricaoModelo,
+          id: model.idModelo,
+        }));
+        setModelos(optionsModelo);
       }
     }
-
-  }
+  };
 
   const loadData = useCallback(async () => {
     if (id) {
-      const response = await getModeloVersao(Number(id))
+      const response = await getModeloVersao(Number(id));
       if (response) {
-        setValue('descricaoModeloVersao', response[0].descricaoModeloVersao)
-        setSelectIdMarca(response[0].idMarca)
-        setSelectIdModelo(response[0].idModelo)
+        setValue("descricaoModeloVersao", response[0].descricaoModeloVersao);
+        setSelectIdMarca(response[0].idMarca);
+        setSelectIdModelo(response[0].idModelo);
 
         setSelectOptionsMarca({
           label: response[0].descricaoMarca,
-          id: response[0].idMarca
-        })
+          id: response[0].idMarca,
+        });
         setSelectOptionsModelo({
           label: response[0].descricaoModelo,
-          id: response[0].idModelo
-        })
+          id: response[0].idModelo,
+        });
       }
     }
-
-  }, [id])
+  }, [id]);
 
   const onSubmit = async (data: FormValuesProps) => {
     if (!id) {
-      await onSubmitAdd(data)
+      await onSubmitAdd(data);
     } else {
-      await onSubmitEdit(data)
+      await onSubmitEdit(data);
     }
-  }
+  };
 
   useEffect(() => {
-    loadData()
+    loadData();
   }, [id]);
 
   useEffect(() => {
-    handleGetAllMarcas()
+    handleGetAllMarcas();
   }, []);
 
   useEffect(() => {
-    handleGetAllModelos()
+    handleGetAllModelos();
   }, [selectIdMarca]);
-
-  useEffect(() => {
-    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
-      setRodandoLocal(true);
-    else
-      setRodandoLocal(false);
-  }, []);
 
   return (
     <>
       <Head>
-        <title>{id ? "Editar Modelo Versão" : "Criar novo Modelo Versão"}</title>
+        <title>
+          {id ? "Editar Modelo Versão" : "Criar novo Modelo Versão"}
+        </title>
       </Head>
       <Container maxWidth={false}>
         <CustomBreadcrumbs
           heading={id ? "Editar Modelo Versão" : "Criar novo Modelo Versão"}
           links={[
             {
-              name: 'Início',
-              href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html',
+              name: "Início",
+              href: "/admin/dashboard",
             },
             {
-              name: 'Modelo Versão',
-              href: rodandoLocal ? '/admin/modelo-versao' : '/admin/modelo-versao.html',
+              name: "Modelo Versão",
+              href: "/admin/modelo-versao",
             },
-            { name: 'Novo Modelo Versão' },
+            { name: "Novo Modelo Versão" },
           ]}
         />
 
@@ -199,50 +221,78 @@ export default function MarcasCreatePage() {
                   columnGap={2}
                   display="grid"
                   gridTemplateColumns={{
-                    xs: 'repeat(1, 1fr)',
-                    sm: 'repeat(2, 1fr)',
+                    xs: "repeat(1, 1fr)",
+                    sm: "repeat(2, 1fr)",
                   }}
                 >
                   <Autocomplete
                     clearIcon={null}
                     value={selectOptionsMarca || null}
                     onChange={(event, value) => {
-                      setSelectOptionsMarca(value)
-                      setSelectOptionsModelo(null)
-                      setSelectIdModelo(null)
-                      setSelectIdMarca(Number(value?.id))
+                      setSelectOptionsMarca(value);
+                      setSelectOptionsModelo(null);
+                      setSelectIdModelo(null);
+                      setSelectIdMarca(Number(value?.id));
                     }}
                     options={marcas}
-                    renderInput={(params) => <TextField sx={{ zIndex: 9999 }}  {...params} label="Marcas" />}
+                    renderInput={(params) => (
+                      <TextField
+                        sx={{ zIndex: 9999 }}
+                        {...params}
+                        label="Marcas"
+                      />
+                    )}
                   />
 
                   <Autocomplete
                     clearIcon={null}
                     sx={{
-                      '& .Mui-disabled': {
-                        backgroundColor: colors.grey[300]
-                      }
+                      "& .Mui-disabled": {
+                        backgroundColor: colors.grey[300],
+                      },
                     }}
                     disabled={!selectIdMarca}
                     value={selectOptionsModelo ? selectOptionsModelo : null}
-                    onChange={(event, value) => setSelectIdModelo(Number(value?.id))}
+                    onChange={(event, value) =>
+                      setSelectIdModelo(Number(value?.id))
+                    }
                     options={modelos}
-                    renderInput={(params) => <TextField sx={{ zIndex: 9999 }}  {...params} label="Modelos" />}
+                    renderInput={(params) => (
+                      <TextField
+                        sx={{ zIndex: 9999 }}
+                        {...params}
+                        label="Modelos"
+                      />
+                    )}
                   />
-                  <RHFTextField InputLabelProps={{ shrink: true }} name="descricaoModeloVersao" label="Nome do Modelo Versão" value={watchAllFields?.descricaoModeloVersao || ''} />
+                  <RHFTextField
+                    InputLabelProps={{ shrink: true }}
+                    name="descricaoModeloVersao"
+                    label="Nome do Modelo Versão"
+                    value={watchAllFields?.descricaoModeloVersao || ""}
+                  />
                 </Box>
-                <Stack sx={{
-                  flexDirection: 'row',
-                  display: 'flex',
-                  mt: 3,
-                  gap: 2,
-                  justifyContent: 'flex-end'
-                }}>
+                <Stack
+                  sx={{
+                    flexDirection: "row",
+                    display: "flex",
+                    mt: 3,
+                    gap: 2,
+                    justifyContent: "flex-end",
+                  }}
+                >
                   <LoadingButton
-                    type="submit" variant="contained" loading={isSubmitting}>
-                    {!id ? 'Criar Modelo' : 'Salvar Mudanças'}
+                    type="submit"
+                    variant="contained"
+                    loading={isSubmitting}
+                  >
+                    {!id ? "Criar Modelo" : "Salvar Mudanças"}
                   </LoadingButton>
-                  <Button variant="outlined" color="inherit" onClick={() => rodandoLocal ? push('/admin/modelo-versao') : push('/admin/modelo-versao.html')}>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={() => push("/admin/modelo-versao")}
+                  >
                     Cancelar
                   </Button>
                 </Stack>

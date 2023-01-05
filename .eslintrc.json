@@ -35,7 +35,6 @@
         "newlinesBetween": "always",
         "groups": [
           "/^react/",
-          // next
           "/^next/",
           ["/^autosuggest-highlight/"],
           "module",

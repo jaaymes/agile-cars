@@ -63,7 +63,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [router]);
 
-
   const login = useCallback(
     async ({ descricaoFuncionario, senha }: SignInCredentials) => {
       try {
@@ -81,9 +80,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         setIsAuthenticated(true);
 
-        const rodandoLocal = window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= -1
-
-        router.push(rodandoLocal ? "/admin/dashboard" : "/admin/dashboard.html");
+        router.push("/admin/dashboard");
       } catch (error: any) {
         toast.error(error.response.data.message);
       }
@@ -97,10 +94,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     sessionStorage.removeItem("isAuthenticated");
     setApiAuthHeader(null);
     setUser(null);
-    const rodandoLocal = window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= -1
 
-    router.push(rodandoLocal ? "/admin" : "/admin.html");
-
+    router.push("/admin");
   }, []);
 
   useEffect(() => {

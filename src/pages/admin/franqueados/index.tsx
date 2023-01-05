@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 
-import { isBrowser } from 'framer-motion';
+import { isBrowser } from "framer-motion";
 
-import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
-import { FranqueadoCustomTable } from '@/components/FranqueadoCustomTable';
-import Iconify from '@/components/iconify';
-import LoadingScreen from '@/components/loading-screen';
-import Scrollbar from '@/components/scrollbar';
+import CustomBreadcrumbs from "@/components/custom-breadcrumbs";
+import { FranqueadoCustomTable } from "@/components/FranqueadoCustomTable";
+import Iconify from "@/components/iconify";
+import LoadingScreen from "@/components/loading-screen";
+import Scrollbar from "@/components/scrollbar";
 import {
   useTable,
   emptyRows,
@@ -18,26 +18,28 @@ import {
   TableEmptyRows,
   TableHeadCustom,
   TablePaginationCustom,
-} from '@/components/table';
+} from "@/components/table";
 
-import { deleteFranqueado, getFranqueados } from '@/services/franqueados';
+import { deleteFranqueado, getFranqueados } from "@/services/franqueados";
 
-import DashboardLayout from '@/layouts/AdminLayout';
+import DashboardLayout from "@/layouts/AdminLayout";
 import {
   Table,
   Button,
   TableBody,
   Container,
-  TableContainer
-} from '@mui/material';
+  TableContainer,
+} from "@mui/material";
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nome', align: 'left' },
-  { id: 'status', label: 'Status', align: 'left' },
-  { id: 'actions', label: 'Ações', align: 'center' },
+  { id: "name", label: "Nome", align: "left" },
+  { id: "status", label: "Status", align: "left" },
+  { id: "actions", label: "Ações", align: "center" },
 ];
 
-FranqueadosPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+FranqueadosPage.getLayout = (page: React.ReactElement) => (
+  <DashboardLayout>{page}</DashboardLayout>
+);
 
 export default function FranqueadosPage() {
   const {
@@ -54,31 +56,35 @@ export default function FranqueadosPage() {
 
   const [isSSR, setIsSSR] = useState(true);
 
-  const [franqueados, setFranqueados] = useState<IFranqueados[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [rodandoLocal, setRodandoLocal] = useState(false)
+  const [franqueados, setFranqueados] = useState<IFranqueados[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const dataInPage = franqueados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = franqueados.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const handleDeleteRow = async (id: number) => {
-    await deleteFranqueado(id)
-    const newFranqueados = franqueados.filter((colaborador) => colaborador.idFranqueado !== id)
-    setFranqueados(newFranqueados)
+    await deleteFranqueado(id);
+    const newFranqueados = franqueados.filter(
+      (colaborador) => colaborador.idFranqueado !== id
+    );
+    setFranqueados(newFranqueados);
   };
 
   const handleEditRow = (id: number) => {
-    rodandoLocal ? push(`/admin/franqueados/create?id=${id}`) : push(`/admin/franqueados/create.html?id=${id}`)
+    push(`/admin/franqueados/create?id=${id}`);
   };
 
   const handleGetAllFranqueados = async () => {
-    setIsLoading(true)
-    const franqueados = await getFranqueados()
-    setFranqueados(franqueados.collection)
-    setIsLoading(false)
-  }
+    setIsLoading(true);
+    const franqueados = await getFranqueados();
+    setFranqueados(franqueados.collection);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    handleGetAllFranqueados()
+    handleGetAllFranqueados();
   }, []);
 
   useEffect(() => {
@@ -87,85 +93,89 @@ export default function FranqueadosPage() {
     }
   }, [isSSR]);
 
-  useEffect(() => {
-    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
-      setRodandoLocal(true);
-    else
-      setRodandoLocal(false);
-  }, []);
-
   return (
     <>
       <Head>
         <title> Franqueados: Lista</title>
       </Head>
-      {
-        isLoading ? (
-          <LoadingScreen />
-        ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Franqueados"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Franqueados', href: rodandoLocal ? '/admin/franqueados' : '/admin/franqueados.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/franqueados/create' : '/admin/franqueados/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Novo Franqueado
-                  </Button>
-                </NextLink>
-              }
-            />
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
-
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={franqueados.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row) => (
-                            <FranqueadoCustomTable
-                              key={row.idFranqueado}
-                              row={row}
-                              onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
-                              onEditRow={() => handleEditRow(row.idFranqueado)}
-                            />
-                          ))}
-
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, franqueados.length)}
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <Container maxWidth={false}>
+          <CustomBreadcrumbs
+            heading="Lista de Franqueados"
+            links={[
+              {
+                name: "Inicio",
+                href: "/admin/dashboard",
+              },
+              {
+                name: "Franqueados",
+                href: "/admin/franqueados",
+              },
+              { name: "Lista" },
+            ]}
+            action={
+              <NextLink href={"/admin/franqueados/create"} passHref>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                >
+                  Novo Franqueado
+                </Button>
+              </NextLink>
+            }
+          />
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
+            <Scrollbar>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
+                <TableHeadCustom
+                  order={order}
+                  orderBy={orderBy}
+                  headLabel={TABLE_HEAD}
+                  rowCount={franqueados.length}
+                  onSort={onSort}
+                />
+                {!isSSR && (
+                  <TableBody>
+                    {dataInPage
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row) => (
+                        <FranqueadoCustomTable
+                          key={row.idFranqueado}
+                          row={row}
+                          onDeleteRow={() => handleDeleteRow(row.idFranqueado)}
+                          onEditRow={() => handleEditRow(row.idFranqueado)}
                         />
+                      ))}
 
-                        <TableNoData isNotFound={!dataInPage.length} />
-                      </TableBody>
-                    )
-                  }
+                    <TableEmptyRows
+                      emptyRows={emptyRows(
+                        page,
+                        rowsPerPage,
+                        franqueados.length
+                      )}
+                    />
 
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                    <TableNoData isNotFound={!dataInPage.length} />
+                  </TableBody>
+                )}
+              </Table>
+            </Scrollbar>
+          </TableContainer>
 
-            <TablePaginationCustom
-              count={dataInPage.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
-      }
+          <TablePaginationCustom
+            count={dataInPage.length}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={onChangePage}
+            onRowsPerPageChange={onChangeRowsPerPage}
+          />
+        </Container>
+      )}
     </>
   );
 }

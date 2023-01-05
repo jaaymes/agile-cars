@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 
-import { isBrowser } from 'framer-motion';
+import { isBrowser } from "framer-motion";
 
-import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
-import Iconify from '@/components/iconify';
-import LoadingScreen from '@/components/loading-screen';
-import { ModelosCustomTable } from '@/components/ModelosCustomTable';
-import Scrollbar from '@/components/scrollbar';
+import CustomBreadcrumbs from "@/components/custom-breadcrumbs";
+import Iconify from "@/components/iconify";
+import LoadingScreen from "@/components/loading-screen";
+import { ModelosCustomTable } from "@/components/ModelosCustomTable";
+import Scrollbar from "@/components/scrollbar";
 import {
   useTable,
   emptyRows,
@@ -18,11 +18,11 @@ import {
   TableEmptyRows,
   TableHeadCustom,
   TablePaginationCustom,
-} from '@/components/table';
+} from "@/components/table";
 
-import { deleteMarca, getMarcas, getModelos } from '@/services/products';
+import { deleteMarca, getMarcas, getModelos } from "@/services/products";
 
-import DashboardLayout from '@/layouts/AdminLayout';
+import DashboardLayout from "@/layouts/AdminLayout";
 import {
   Table,
   Button,
@@ -32,15 +32,17 @@ import {
   Stack,
   FormControl,
   Autocomplete,
-  TextField
-} from '@mui/material';
+  TextField,
+} from "@mui/material";
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nome', align: 'left' },
-  { id: 'actions', label: 'Ações', align: 'center' },
+  { id: "name", label: "Nome", align: "left" },
+  { id: "actions", label: "Ações", align: "center" },
 ];
 
-MarcasPage.getLayout = (page: React.ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
+MarcasPage.getLayout = (page: React.ReactElement) => (
+  <DashboardLayout>{page}</DashboardLayout>
+);
 
 export interface IMarcas {
   idMarca: number;
@@ -66,55 +68,63 @@ export default function MarcasPage() {
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-    setPage
+    setPage,
   } = useTable();
 
   const { push } = useRouter();
 
   const [isSSR, setIsSSR] = useState(true);
 
-  const [marcas, setMarcas] = useState<IOptions[]>([])
-  const [modelos, setModelos] = useState<IModelos[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [marcas, setMarcas] = useState<IOptions[]>([]);
+  const [modelos, setModelos] = useState<IModelos[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectIdMarca, setSelectIdMarca] = useState<number | null>(1);
-  const [rodandoLocal, setRodandoLocal] = useState(false)
 
-  const dataInPage = modelos?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = modelos?.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const handleDeleteRow = async (id: number) => {
-    await deleteMarca(id)
-    const newFranqueados = modelos.filter((colaborador) => colaborador.idModelo !== id)
-    setModelos(newFranqueados)
+    await deleteMarca(id);
+    const newFranqueados = modelos.filter(
+      (colaborador) => colaborador.idModelo !== id
+    );
+    setModelos(newFranqueados);
   };
 
-
   const handleEditRow = (id: number) => {
-    rodandoLocal ? push(`/admin/modelos/create?id=${id}`) : push(`/admin/modelos/create.html?id=${id}`)
+    push(`/admin/modelos/create?id=${id}`);
   };
 
   const handleGetAllMarcas = async () => {
-    setIsLoading(true)
-    const marcas = await getMarcas({})
-    setMarcas(marcas.map((marca: { descricaoMarca: any; idMarca: any; }) => ({ label: marca.descricaoMarca, id: marca.idMarca })))
-    setIsLoading(false)
-  }
+    setIsLoading(true);
+    const marcas = await getMarcas({});
+    setMarcas(
+      marcas.map((marca: { descricaoMarca: any; idMarca: any }) => ({
+        label: marca.descricaoMarca,
+        id: marca.idMarca,
+      }))
+    );
+    setIsLoading(false);
+  };
 
   const handleGetModelos = async () => {
-    setIsLoading(true)
-    const modelos = await getModelos(Number(selectIdMarca))
+    setIsLoading(true);
+    const modelos = await getModelos(Number(selectIdMarca));
     if (modelos) {
-      setModelos(modelos)
-      setIsLoading(false)
-      setPage(0)
+      setModelos(modelos);
+      setIsLoading(false);
+      setPage(0);
     }
-  }
+  };
 
   useEffect(() => {
-    handleGetAllMarcas()
+    handleGetAllMarcas();
   }, []);
 
   useEffect(() => {
-    handleGetModelos()
+    handleGetModelos();
   }, [selectIdMarca]);
 
   useEffect(() => {
@@ -123,104 +133,98 @@ export default function MarcasPage() {
     }
   }, [isSSR]);
 
-  useEffect(() => {
-    if (window.location.hostname.toLocaleLowerCase().indexOf("agileveiculos") <= - 1)
-      setRodandoLocal(true);
-    else
-      setRodandoLocal(false);
-  }, []);
-
   return (
     <>
       <Head>
         <title> Marcas: Lista</title>
       </Head>
-      {
-        isLoading ? (
-          <LoadingScreen />
-        ) :
-          <Container maxWidth={false}>
-            <CustomBreadcrumbs
-              heading="Lista de Modelos por Marca"
-              links={[
-                { name: 'Inicio', href: rodandoLocal ? '/admin/dashboard' : '/admin/dashboard.html' },
-                { name: 'Modelos', href: rodandoLocal ? '/admin/modelos' : '/admin/modelos.html' },
-                { name: 'Lista' },
-              ]}
-              action={
-                <NextLink href={rodandoLocal ? '/admin/modelos/create' : '/admin/modelos/create.html'} passHref>
-                  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-                    Nova Modelo
-                  </Button>
-                </NextLink>
-              }
-            />
-            <Stack
-              spacing={2}
-              alignItems="center"
-              direction={{
-                xs: 'column',
-                md: 'row',
-              }}
-              sx={{ py: 3 }}
-            >
-              <FormControl fullWidth>
-                <Autocomplete
-                  noOptionsText="Nenhuma marca encontrada"
-                  clearIcon={null}
-                  disablePortal
-                  value={marcas.find((marca) => marca.id === selectIdMarca)}
-                  onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
-                  options={marcas}
-                  renderInput={(params) => <TextField  {...params} label="Marcas" />}
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <Container maxWidth={false}>
+          <CustomBreadcrumbs
+            heading="Lista de Modelos por Marca"
+            links={[
+              { name: "Inicio", href: "/admin/dashboard" },
+              { name: "Modelos", href: "/admin/modelos" },
+              { name: "Lista" },
+            ]}
+            action={
+              <NextLink href={"/admin/modelos/create"} passHref>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                >
+                  Nova Modelo
+                </Button>
+              </NextLink>
+            }
+          />
+          <Stack
+            spacing={2}
+            alignItems="center"
+            direction={{
+              xs: "column",
+              md: "row",
+            }}
+            sx={{ py: 3 }}
+          >
+            <FormControl fullWidth>
+              <Autocomplete
+                noOptionsText="Nenhuma marca encontrada"
+                clearIcon={null}
+                disablePortal
+                value={marcas.find((marca) => marca.id === selectIdMarca)}
+                onChange={(event, value) => setSelectIdMarca(Number(value?.id))}
+                options={marcas}
+                renderInput={(params) => (
+                  <TextField {...params} label="Marcas" />
+                )}
+              />
+            </FormControl>
+          </Stack>
+
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
+            <Scrollbar>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
+                <TableHeadCustom
+                  order={order}
+                  orderBy={orderBy}
+                  headLabel={TABLE_HEAD}
+                  rowCount={marcas?.length}
+                  onSort={onSort}
                 />
-              </FormControl>
-            </Stack>
+                {!isSSR && (
+                  <TableBody>
+                    {dataInPage?.map((row) => (
+                      <ModelosCustomTable
+                        key={row.idModelo}
+                        row={row}
+                        onDeleteRow={() => handleDeleteRow(row.idModelo)}
+                        onEditRow={() => handleEditRow(row.idModelo)}
+                      />
+                    ))}
 
+                    <TableEmptyRows
+                      emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
+                    />
 
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <Scrollbar>
-                <Table size={'medium'} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={marcas?.length}
-                    onSort={onSort}
-                  />
-                  {
-                    !isSSR && (
-                      <TableBody>
-                        {dataInPage?.map((row) => (
-                          <ModelosCustomTable
-                            key={row.idModelo}
-                            row={row}
-                            onDeleteRow={() => handleDeleteRow(row.idModelo)}
-                            onEditRow={() => handleEditRow(row.idModelo)}
-                          />
-                        ))}
+                    <TableNoData isNotFound={!dataInPage?.length} />
+                  </TableBody>
+                )}
+              </Table>
+            </Scrollbar>
+          </TableContainer>
 
-                        <TableEmptyRows
-                          emptyRows={emptyRows(page, rowsPerPage, marcas?.length)}
-                        />
-
-                        <TableNoData isNotFound={!dataInPage?.length} />
-                      </TableBody>
-                    )
-                  }
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-
-            <TablePaginationCustom
-              count={modelos?.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-            />
-          </Container>
-      }
+          <TablePaginationCustom
+            count={modelos?.length}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={onChangePage}
+            onRowsPerPageChange={onChangeRowsPerPage}
+          />
+        </Container>
+      )}
     </>
   );
 }
